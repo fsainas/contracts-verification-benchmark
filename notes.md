@@ -35,3 +35,7 @@ Running the test after uncommenting only `assert(b[0] == c[0])` produces 3 warni
 "By default, the SMTChecker does not assume that compile-time available code is
 the same as the runtime code for external calls" from the documentation.
 `--model-checker-ext-calls=trusted` option must be set.
+
+### deploy_trusted_state_flow.sol & deploy_trusted_state_flow_2.sol
+In the second one both assertion holds because x can't be incremented in
+contract D.
