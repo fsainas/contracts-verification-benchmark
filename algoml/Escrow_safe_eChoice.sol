@@ -132,6 +132,6 @@ contract Escrow {
     }
 
     function invariant() public view {
-        assert(eChoice == address(0) || eChoice == buyer_choice || eChoice == seller_choice);       // this is interensting
+        assert(eChoice == address(0) || eChoice == buyer_choice || eChoice == seller_choice);
     }
 }
