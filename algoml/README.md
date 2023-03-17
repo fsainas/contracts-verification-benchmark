@@ -1,5 +1,8 @@
 # Escrow 
 
+## Bug or vulnerabilities found thanks to SMTChecker
+- Fee greater than deposit (underflow warning)
+
 ## feeRate bug
 In the original algoml contract there is probably a bug where the fee for the
 escrow can be more than the deposit.
@@ -117,3 +120,11 @@ Escrow.redeem(){ block.number: 7721 }
 ```
 The block number of `arbitrate()` is greater than the one of `redeem()` which
 is executed after.
+
+## Escrow_underflow_overflow.sol
+SMTChecker easily proves that no underflow can happen.
+It has more difficulty in proving that there are no overflows, indeed it does not seem to terminate.
+
+## Notes
+- SMTChecker assumes that `address(0)` can do transactions. Sometimes it can be
+  helpful to add the constraint explicitly.
