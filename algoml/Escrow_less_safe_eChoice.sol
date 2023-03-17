@@ -102,7 +102,7 @@ contract Escrow {
             require(block.number > end_join);
             uint amount = deposit;
             deposit -= amount;
-            (bool success,) = buyer.call{value: deposit}("");      
+            (bool success,) = buyer.call{value: amount}("");      
             if (!success) deposit += amount;
             require(success);
         }
@@ -110,7 +110,7 @@ contract Escrow {
         if (buyer_choice == seller_choice) {        // the transaction can proceed
             uint amount = deposit;
             deposit -= amount;
-            (bool success,) = seller_choice.call{value: deposit}("");
+            (bool success,) = seller_choice.call{value: amount}("");
             if (!success) deposit += amount;
 
             require(success);
