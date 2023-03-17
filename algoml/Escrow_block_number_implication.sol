@@ -133,7 +133,6 @@ contract Escrow {
     }
 
     function invariant() public view {
-        //assert(eChoice != address(0) && block.number < end_redeem);     // this gives a counterexample
         assert(!(block.number < end_redeem && !(eChoice == address(0)))); //
     }
 }

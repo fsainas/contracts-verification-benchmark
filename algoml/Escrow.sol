@@ -142,7 +142,7 @@ contract Escrow {
     function invariant() public view {
         //assert(eChoice == address(0) || eChoice == buyer_choice || eChoice == seller_choice);       // this is interensting
         //assert(eChoice != address(0) && block.number < end_redeem);     // this gives a counterexample
-        assert(!(block.number < end_redeem && !(eChoice == address(0)))); //
+        //assert(!(block.number < end_redeem && !(eChoice == address(0)))); //
         //assert(deposit >= 0);           // Proven, deposit is a uint so it's better to check if deposit can underflow
     }
 }
