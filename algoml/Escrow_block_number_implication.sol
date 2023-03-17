@@ -27,7 +27,6 @@ contract Escrow {
         require(_end_join < _end_choice);
         require(_end_choice < _end_redeem);
 
-        // added because CHC warned for an overflow
         require(_fee_rate <= 10000);    // The fee cannot be more then the deposit
 
         escrow = _escrow;
@@ -61,8 +60,6 @@ contract Escrow {
         buyer = msg.sender;
         seller = _seller;
         deposit = msg.value;
-
-        //assert(buyer != seller);        // Proven
     }
 
     /*****************
@@ -115,15 +112,12 @@ contract Escrow {
         require(block.number > end_redeem);
         
         require(fee_rate <= 10000);     // The fee cannot be more then the deposit
-        //assert(fee_rate / 10000 <= 1);  // Proven
         uint fee = deposit * (fee_rate / 10000);
-        //assert(deposit >= fee);         // Proven
         deposit = deposit - fee;
-        //assert(deposit >= fee);         // CHC: Assertion violation (fee_rate > 50%)
-        //(bool success,) = escrow.call{value: fee}("");
-        //if (!success) deposit += fee;
+        (bool success,) = escrow.call{value: fee}("");
+        if (!success) deposit += fee;
     
-        //require(success);
+        require(success);
         eChoice = _eChoice;
     }
 
@@ -136,13 +130,10 @@ contract Escrow {
         (bool success,) = eChoice.call{value: amount}("");
         if (!success) deposit += amount;
         require(success);
-        //assert(eChoice == address(0) || eChoice == buyer_choice || eChoice == seller_choice);       // this is interensting
     }
 
     function invariant() public view {
-        //assert(eChoice == address(0) || eChoice == buyer_choice || eChoice == seller_choice);       // this is interensting
         //assert(eChoice != address(0) && block.number < end_redeem);     // this gives a counterexample
         assert(!(block.number < end_redeem && !(eChoice == address(0)))); //
-        //assert(deposit >= 0);           // Proven, deposit is a uint so it's better to check if deposit can underflow
     }
 }
