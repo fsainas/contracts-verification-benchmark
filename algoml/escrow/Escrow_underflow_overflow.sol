@@ -51,7 +51,7 @@ contract Escrow {
         _;
     }
 
-        modifier afterEndReedem() {
+    modifier afterEndReedem() {
         require(block.number > end_redeem);
         _;
     }
@@ -107,7 +107,6 @@ contract Escrow {
             deposit -= amount;
             (bool success,) = seller_choice.call{value: amount}("");
             if (!success) deposit += amount;
-
             require(success);
         }
     }
@@ -127,8 +126,8 @@ contract Escrow {
         deposit -= fee;
         (bool success,) = escrow.call{value: fee}("");
         if (!success) deposit += fee;
-    
         require(success);
+
         eChoice = _eChoice;
     }
 

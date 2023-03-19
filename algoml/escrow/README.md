@@ -8,8 +8,7 @@ In the original algoml contract there is probably a bug where the fee for the
 escrow can be more than the deposit.
 
 ## Escrow_sent.sol
-When trying to prove `assert(sent <= deposit)` in the `invariant()` function it
-seems that SMTChecker does not terminate.
+SMTChecker cannot prove that the amount sent by the contract is always equal or less than the initial amount deposited.
 
 ## Escrow_safe_eChoice.sol
 SMTChecker successfully proved that `eChoice` is always `address(0)`, when the

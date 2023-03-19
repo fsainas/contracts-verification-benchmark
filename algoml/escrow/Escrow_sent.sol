@@ -11,6 +11,7 @@ contract Escrow {
     address seller;
     address escrow;
     uint deposit;       // buyer's deposit
+    uint init_deposit;
     uint sent;          // amout sent from this contract
 
     address buyer_choice;   // recipient of the deposit
@@ -27,6 +28,8 @@ contract Escrow {
         require(block.number < _end_join);
         require(_end_join < _end_choice);
         require(_end_choice < _end_redeem);
+
+        require(_fee_rate <= 10000);    // The fee cannot be more then the deposit
 
         escrow = _escrow;
         end_join = _end_join;
@@ -50,17 +53,27 @@ contract Escrow {
         _;
     }
 
+    modifier afterEndReedem() {
+        require(block.number > end_redeem);
+        _;
+    }
+     
+    modifier nonZeroSender() {
+        require(msg.sender != address(0));  // this should probably be a default assumption
+        _;
+    }
+
     /*****************
           Join Phase
         *****************/
-    function join(address _seller) public payable beforeEndJoin {
+    function join(address _seller) public payable beforeEndJoin nonZeroSender {
 
         require(msg.sender != _seller);
         buyer = msg.sender;
         seller = _seller;
         deposit = msg.value;
-
-        assert(buyer != seller);        // Proven
+        init_deposit = msg.value;
+        require(init_deposit == deposit);
     }
 
     /*****************
@@ -71,10 +84,10 @@ contract Escrow {
         require(msg.sender == buyer || msg.sender == seller);    // may be redundant
 
         if (msg.sender == seller) {
-            //require(seller_choice == address(0));       // Can choose only once
+            require(seller_choice == address(0));       // Can choose only once
             seller_choice = _choice;
         } else if (msg.sender == buyer) {
-            //require(buyer_choice == address(0));
+            require(buyer_choice == address(0));
             buyer_choice = _choice;
         }
     }
@@ -82,21 +95,31 @@ contract Escrow {
     /*****************
          Redeem Phase 
         *****************/
-    function redeem() public beforeEndReedem {
+    function redeem() public beforeEndReedem nonZeroSender {
 
         if (seller == address(0)) {          // if the seller has not joined
             require(block.number > end_join);
-            (bool success,) = buyer.call{value: deposit}("");      
+            uint amount = deposit;
+            deposit -= amount;
+            sent += amount;
+            (bool success,) = buyer.call{value: amount}("");      
+            if (!success) {
+                deposit += amount;
+                sent -= amount;
+            }
             require(success);
-            sent += deposit;
-            deposit -= deposit;
         }
 
         if (buyer_choice == seller_choice) {        // the transaction can proceed
-            (bool success,) = seller_choice.call{value: deposit}("");
+            uint amount = deposit;
+            deposit -= amount;
+            sent += amount;
+            (bool success,) = seller_choice.call{value: amount}("");
+            if (!success) {
+                deposit += amount;
+                sent -= amount;
+            }
             require(success);
-            sent += deposit;
-            deposit -= deposit;
         }
 
     }
@@ -107,14 +130,18 @@ contract Escrow {
     function arbitrate(address _eChoice) public {
 
         require(msg.sender == escrow);
-        require(_eChoice == buyer || _eChoice == seller);
+        require(_eChoice == buyer_choice || _eChoice == seller_choice);
         require(block.number > end_redeem);
         
         uint fee = deposit * fee_rate / 10000;
-        (bool success,) = escrow.call{value: fee}("");
-        require(success);
+        deposit -= fee;
         sent += fee;
-        deposit = deposit - fee;
+        (bool success,) = escrow.call{value: fee}("");
+        if (!success) {
+            deposit += fee;
+            sent -= fee;
+        }
+        require(success);
 
         eChoice = _eChoice;
     }
@@ -123,13 +150,18 @@ contract Escrow {
 
         require(eChoice != address(0));
 
-        (bool success,) = eChoice.call{value: deposit}("");
+        uint amount = deposit;
+        deposit -= amount;
+        sent += amount;
+        (bool success,) = eChoice.call{value: amount}("");
+        if (!success) {
+            deposit += amount;
+            sent -= amount;
+        }
         require(success);
-        sent += deposit;
-        deposit -= deposit;
     }
 
     function invariant() public view {
-        assert(sent <= deposit);
+        assert(sent <= init_deposit);
     }
 }
