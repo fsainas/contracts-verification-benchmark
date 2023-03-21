@@ -22,11 +22,11 @@ If we remove the requires in the `choose()` function, the buyer and the seller
 can change their choice as many times they want. SMTChecker finds a
 counterexample: the escrow calls the the `arbitrate()` function and agrees with
 the seller choice, then the seller calls again the `choose()` function and
-changes he's choice. The assert is therefore false.
+changes he's choice. Therefore the assert is false
 
 ### Steps to reproduce
 ```
-time solc Escrow_less_safe_eChoice.sol --model-checker-engine chc --model-checker-timeout 0 --model-checker-show-unproved
+solc Escrow_less_safe_eChoice.sol --model-checker-engine chc --model-checker-timeout 0 --model-checker-show-unproved
 ```
 Output:
 ```
