@@ -1,5 +1,5 @@
 # Escrow Sent
-These tests aim at verifying that the amount spent by the contract is always
+These tests are aimed at verifying that the amount spent by the contract is always
 less than or equal to the initial deposit. The functions are divided into
 phases and have **chronological constraints** expressed using the block number.
 SMTChecker does not assume that `block.number >= prev_block.number` (issue
