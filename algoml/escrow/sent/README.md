@@ -20,3 +20,19 @@ solc escrow_basic_sent_verified.sol --model-checker-engine chc --model-checker-t
 
 Interestingly, changing the order of `t_id` and `prev_t_id` declarations has
 a considerable impact on the speed.
+
+## Escrow Sent with `call()`
+This test adds the actual `call()` method to transfer ether from the contract.
+We also add a `require(success)` statement that reverts the transaction if
+something goes wrong in the transfer.\
+Despite the fact that the assert doesn't involve variables modified by the
+`call()` method, SMTChecker does not seem to terminate after +4h.
+
+Command:
+```
+solc escrow_sent_successful_call.sol \
+--model-checker-engine chc \
+--model-checker-timeout 0 \
+--model-checker-targets "assert" \
+--model-checker-show-unproved
+```
