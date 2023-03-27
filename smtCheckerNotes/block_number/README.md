@@ -9,3 +9,5 @@ Key ingredients are:
 
 When a function with `new_t()` is called the state of the three previous data
 structures are updated. This method could break in cases of internal calls.
+
+This technique is applied in [escrow](../../algoml/escrow/).
