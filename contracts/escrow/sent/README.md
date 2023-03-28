@@ -11,6 +11,14 @@ block number constraint.
 ## Escrow Basic Sent
 This contract simulate sending funds using auxiliary variables and nothing more.
 In addition, it assumes that all transfers are successful. \
+
+How the state is modified:
+```solidity
+uint amount = deposit;
+deposit -= amount;
+sent += amount;
+```
+
 SMTChecker proves the invariant property in a short amount of time.
 
 Command:
