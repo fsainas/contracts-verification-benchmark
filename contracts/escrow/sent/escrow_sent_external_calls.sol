@@ -14,9 +14,9 @@ contract Escrow {
     uint deposit;       // buyer's deposit
 
     uint init_deposit;  // aux
-    uint sent;          // aux: amout sent from this contract
+    uint sent;          // aux: amount sent from this contract
 
-    // changing the order of the following 2 lines impacts the speed
+    // changing the order of the following 2 lines impacts a lot on the speed
     uint prev_t_id;
     uint t_id;          
     mapping(uint => uint) blockn;   // maps the id of a transaction 
@@ -101,9 +101,9 @@ contract Escrow {
         
         require(msg.sender == buyer || msg.sender == seller);    // may be redundant
 
-        if (msg.sender == seller && seller_choice == address(0)) {
+        if (msg.sender == seller) {
             seller_choice = _choice;
-        } else if (msg.sender == buyer && buyer_choice == address(0)) {
+        } else if (msg.sender == buyer) {
             buyer_choice = _choice;
         }
     }
@@ -112,7 +112,6 @@ contract Escrow {
          Redeem Phase 
         *****************/
     // The seller has not made a choice
-    /*
     function redeem_without_seller() public new_t beforeEndReedem nonZeroSender {
 
         require(msg.sender == buyer);
@@ -123,38 +122,28 @@ contract Escrow {
         deposit -= amount;
         sent += amount; 
 
-        uint success = block.timestamp % 2;
-
-        if (success == 0) {
-            deposit += amount;
-            sent -= amount;
-        }
+        (bool success,) = buyer.call{value: amount}("");      
+        require(success);
     }
-*/
+
     function redeem() public new_t beforeEndReedem nonZeroSender {
 
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
+        require(seller_choice != address(0));
         require(blockn[t_id] >= end_choice);
 
         uint amount = deposit;
         deposit -= amount;
         sent += amount;
 
-        uint success = block.timestamp % 2;
-
-        if (success == 0) {
-            deposit += amount;
-            sent -= amount;
-        }
-        
-        assert(sent <= init_deposit);
+        (bool success,) = seller_choice.call{value: amount}("");
+        require(success);
     }
 
     /*****************
           Arbitrate
         *****************/
-    /*
     function arbitrate(address _eChoice) public new_t afterEndReedem {
 
         require(msg.sender == escrow);
@@ -167,12 +156,8 @@ contract Escrow {
         deposit -= fee;
         sent += fee;
 
-        uint success = block.timestamp % 2;
-
-        if (success == 0) {
-            deposit += fee;
-            sent -= fee;
-        }
+        (bool success,) = escrow.call{value: fee}("");
+        require(success);
     }
 
     function redeem_arbitrated() public new_t {
@@ -183,15 +168,11 @@ contract Escrow {
         deposit -= amount;
         sent += amount;
 
-        uint success = block.timestamp % 2;
-
-        if (success == 0) {
-            deposit += amount;
-            sent -= amount;
-        }
+        (bool success,) = eChoice.call{value: amount}("");
+        require(success);
     }
-    */
 
     function invariant() public view {
+        assert(sent <= init_deposit);
     }
 }

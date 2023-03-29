@@ -29,7 +29,7 @@ solc escrow_basic_sent_verified.sol --model-checker-engine chc --model-checker-t
 Interestingly, changing the order of `t_id` and `prev_t_id` declarations has
 a considerable impact on the speed.
 
-## Escrow Sent with `call()`
+## Escrow Sent with external calls
 This test adds the actual `call()` method to transfer ether from the contract.
 We also add a `require(success)` statement that reverts the transaction if
 something goes wrong in the transfer.\
