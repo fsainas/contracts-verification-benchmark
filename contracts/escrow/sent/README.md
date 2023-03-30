@@ -38,7 +38,7 @@ Despite the fact that the assert doesn't involve variables modified by the
 
 Command:
 ```
-solc escrow_sent_successful_call.sol \
+solc escrow_sent_external_calls.sol \
 --model-checker-engine chc \
 --model-checker-timeout 0 \
 --model-checker-targets "assert" \
