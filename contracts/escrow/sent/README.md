@@ -10,6 +10,11 @@ technique shown [here](../../../smtCheckerNotes/block_number/). We use
 `init_deposit` and `sent` as auxiliary variables, plus those needed for the
 block number constraint.
 
+Ghost variables:
+- `uint init_deposit` $\to$ initial deposit;
+- `uint sent` $\to$ amount sent by the contract;
+- [block number](../../../smtCheckerNotes/block_number/) related variables.
+
 ## Escrow Basic Sent :heavy_check_mark:
 This contract simulate sending funds using auxiliary variables and nothing more.
 In addition, it assumes that all transfers are successful.

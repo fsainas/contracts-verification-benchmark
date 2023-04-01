@@ -13,6 +13,13 @@ contract Escrow {
     address escrow;
     uint deposit;       // buyer's deposit
 
+    address buyer_choice;   // recipient of the deposit
+    address seller_choice;  // recipient of the deposit
+    address eChoice;        // choice of the escrow
+
+    /*********************
+        Ghost variables 
+     *********************/
     uint init_deposit;  // aux
     uint sent;          // aux: amout sent from this contract
 
@@ -22,11 +29,6 @@ contract Escrow {
     uint t_id;          
     mapping(uint => uint) blockn;   // maps the id of a transaction 
                                     // to the number of the corresponding block
-
-    address buyer_choice;   // recipient of the deposit
-    address seller_choice;  // recipient of the deposit
-    address eChoice;        // choice of the escrow
-
     constructor (
         address _escrow, 
         uint _end_join, 
