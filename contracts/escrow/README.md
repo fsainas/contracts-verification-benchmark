@@ -8,5 +8,5 @@ funds after a set deadline. The contract operates in three phases: Join,
 Choose, and Redeem. Each phase has a final block, and after that block the
 functions of it can no longer be called.
 
-The original contract is in the file [escrow.sol](.escrow.sol), there are no
+The original contract is in the [escrow.sol](./escrow.sol) file, there are no
 asserts or ghost variables.
