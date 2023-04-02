@@ -7,3 +7,6 @@ the two. If the seller does not choose an address, the buyer can redeem the
 funds after a set deadline. The contract operates in three phases: Join,
 Choose, and Redeem. Each phase has a final block, and after that block the
 functions of it can no longer be called.
+
+The original contract is in the file [escrow.sol](.escrow.sol), there are no
+asserts or ghost variables.
