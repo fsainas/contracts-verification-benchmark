@@ -38,7 +38,11 @@ a considerable impact on the speed.
 ## Escrow Sent with External Calls :x:
 This test adds the actual `call()` method to transfer ether from the contract.
 We also add a `require(success)` statement that reverts the transaction if
-something goes wrong in the transfer.\
+something goes wrong in the transfer:
+```
+(bool success,) = recipient.call{value: sent}("");
+require(success);
+```
 Despite the fact that the assert doesn't involve variables modified by the
 `call()` method, SMTChecker does not seem to terminate after +4h.
 
