@@ -15,7 +15,7 @@ Ghost variables:
 - `uint sent` $\to$ amount sent by the contract;
 - [block number](../../../smtCheckerNotes/block_number/) related variables.
 
-## Escrow Basic Sent :heavy_check_mark:
+## Escrow Sent No External Calls :heavy_check_mark:
 This contract simulate sending funds using auxiliary variables and nothing more.
 In addition, it assumes that all transfers are successful.
 
