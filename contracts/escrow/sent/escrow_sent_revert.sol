@@ -20,8 +20,8 @@ contract Escrow {
     /*********************
         Ghost variables 
      *********************/
-    uint init_deposit;  // aux
-    uint sent;          // aux: amout sent from this contract
+    uint init_deposit;  
+    uint sent;          // amout sent from this contract
 
     // changing the order of the following 2 lines impacts the speed
     // ~2.90s vs ~12.50s
@@ -65,6 +65,11 @@ contract Escrow {
         _;
     }
 
+    modifier afterEndChoice() {
+        require(blockn[t_id] >= end_choice);
+        _;
+    }
+
     modifier afterEndReedem() {
         require(blockn[t_id] >= end_redeem);
         _;
@@ -86,15 +91,14 @@ contract Escrow {
     /*****************
           Join Phase
         *****************/
-    function join(address _seller) public payable new_t beforeEndJoin nonZeroSender {
+    function join(address _seller) public payable 
+    new_t beforeEndJoin nonZeroSender {
 
         require(msg.sender != _seller);
         buyer = msg.sender;
         seller = _seller;
         deposit = msg.value;
         init_deposit = msg.value;
-
-        require(deposit == init_deposit);
     }
 
     /*****************
@@ -115,33 +119,29 @@ contract Escrow {
          Redeem Phase 
         *****************/
     // The seller has not made a choice
-    function redeem_without_seller() public new_t nonZeroSender {
+    function redeem_without_seller() public 
+    new_t afterEndChoice beforeEndReedem nonZeroSender {
 
         require(msg.sender == buyer);
         require(seller_choice == address(0));
-        require(blockn[t_id] >= end_choice);
 
-        uint amount = deposit;
-        deposit -= amount;
-        sent += amount; 
+        sent += deposit; 
+        deposit = 0;
 
         uint success = block.timestamp % 2;
-
         if (success == 0) revert();
     }
 
-    function redeem() public new_t beforeEndReedem nonZeroSender {
+    function redeem() public 
+    new_t afterEndChoice beforeEndReedem nonZeroSender{
 
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
-        require(blockn[t_id] >= end_choice);
 
-        uint amount = deposit;
-        deposit -= amount;
-        sent += amount;
+        sent += deposit; 
+        deposit = 0;
 
         uint success = block.timestamp % 2;
-
         if (success == 0) revert();
     }
 
@@ -161,7 +161,6 @@ contract Escrow {
         sent += fee;
 
         uint success = block.timestamp % 2;
-
         if (success == 0) revert();
     }
 
@@ -169,20 +168,19 @@ contract Escrow {
 
         require(eChoice != address(0));
 
-        uint amount = deposit;
-        deposit -= amount;
-        sent += amount;
+        sent += deposit; 
+        deposit = 0;
 
         uint success = block.timestamp % 2;
-
         if (success == 0) revert();
     }
 
     function invariant() public view {
         assert(sent <= init_deposit);
     }
+
 }
 // ====
 // SMTEngine: CHC
-// Time: 3.60s
+// Time: 2.90s
 // ----

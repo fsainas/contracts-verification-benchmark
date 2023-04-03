@@ -74,7 +74,6 @@ In this test we use `revert()` to restore the state in case of failure, rather
 than manually writing to storage.
 ```
 uint success = block.timestamp % 2;
-
 if (success == 0) revert();
 ```
 SMTChecker proves `assert(sent <= init_deposit)` in ~3.60s.
