@@ -21,9 +21,8 @@ In addition, it assumes that all transfers are successful.
 
 How the state is modified:
 ```solidity
-uint amount = deposit;
-deposit -= amount;
-sent += amount;
+sent += deposit;
+deposit = 0;
 ```
 
 SMTChecker proves the invariant property in a short amount of time.
