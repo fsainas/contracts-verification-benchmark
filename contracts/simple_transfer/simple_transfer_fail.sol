@@ -9,7 +9,6 @@ contract SimpleTransfer {
     uint init_balance;
 
     constructor (uint _deposit) {
-        require(_deposit > 0);
         balance = _deposit;
         init_balance = balance;
     }
@@ -21,8 +20,12 @@ contract SimpleTransfer {
         sent += _amount;
         balance -= _amount;
 
-        (bool succ,) = msg.sender.call{value: sent}("");
-        require(succ);
+        uint success = block.number % 2;
+
+        if (success == 0) {
+            sent -= _amount;
+            balance += _amount;
+        }
     }
 
     function invariant() public view {
@@ -31,6 +34,6 @@ contract SimpleTransfer {
 }
 // ====
 // SMTEngine: CHC
-// Time: 1.70s
+// Time: 0.99s
 // Targets: "all"
 // ----
