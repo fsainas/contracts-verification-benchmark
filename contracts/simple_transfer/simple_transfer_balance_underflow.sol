@@ -6,20 +6,23 @@ contract SimpleTransfer {
     uint balance;
     uint sent;
 
-    uint init_balance;
+    uint deposited;
 
     constructor (uint _deposit) {
         balance = _deposit;
-        init_balance = balance;
+        deposited = balance;
     }
 
     function withdraw(uint _amount) public {
+
+        //require(_amount <= balance);
+
         balance -= _amount;
         sent += _amount;
     }
 
     function invariant() public view {
-        assert(sent <= init_balance);
+        assert(sent <= deposited);
     }
 }
 // ====

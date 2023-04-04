@@ -6,12 +6,11 @@ contract SimpleTransfer {
     uint balance;
     uint sent;
 
-    uint init_balance;
+    uint deposited;
 
     constructor (uint _deposit) {
-        require(_deposit > 0);
         balance = _deposit;
-        init_balance = balance;
+        deposited = balance;
     }
 
     function withdraw(uint _amount) public {
@@ -26,7 +25,7 @@ contract SimpleTransfer {
     }
 
     function invariant() public view {
-        assert(sent <= init_balance);
+        assert(sent <= deposited);
     }
 }
 // ====
