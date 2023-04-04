@@ -14,8 +14,6 @@ contract SimpleTransfer {
     }
 
     function withdraw(uint _amount) public {
-        require(_amount <= balance);
-
         balance -= _amount;
         sent += _amount;
     }
@@ -26,6 +24,11 @@ contract SimpleTransfer {
 }
 // ====
 // SMTEngine: CHC
-// Time: 0.55s
+// Time: 0.13s
+// Targets: "assert"
+// ----
+// SMTEngine: CHC
+// Time: 0.67s
 // Targets: "all"
+// Warning: CHC: Underflow line 17
 // ----
