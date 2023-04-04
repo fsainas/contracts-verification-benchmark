@@ -20,7 +20,7 @@ contract SimpleTransfer {
         sent += _amount;
         balance -= _amount;
 
-        (bool succ,) = msg.sender.call{value: sent}("");
+        (bool succ,) = msg.sender.call{value: _amount}("");
         require(succ);
     }
 
