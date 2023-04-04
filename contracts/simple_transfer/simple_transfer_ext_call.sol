@@ -9,6 +9,7 @@ contract SimpleTransfer {
     uint init_balance;
 
     constructor (uint _deposit) {
+        require(_deposit > 0);
         balance = _deposit;
         init_balance = balance;
     }
@@ -17,8 +18,11 @@ contract SimpleTransfer {
 
         require(_amount <= balance);
 
-        balance -= _amount;
         sent += _amount;
+        balance -= _amount;
+
+        (bool succ,) = msg.sender.call{value: sent}("");
+        require(succ);
     }
 
     function invariant() public view {
