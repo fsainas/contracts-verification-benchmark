@@ -1,26 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-contract Deposit {
+contract Simple {
 
     uint balance;
     uint sent;
 
     uint deposited;
 
-    constructor () {
-        balance = address(this).balance;    // real balance
-        deposited = balance;
+    constructor () payable {
+        balance = msg.value;
+        deposited = msg.value;
     }
 
-    receive() external payable {
-        balance += msg.value;
-        deposited += msg.value;
-    }
-
-    fallback() external payable {
-        balance += msg.value;
-        deposited += msg.value;
+    function deposit(uint _amount) public {
+        balance += _amount;
+        deposited += _amount;
     }
 
     function withdraw(uint _amount) public {
@@ -36,10 +31,12 @@ contract Deposit {
 
     function withdraw_all() public {
 
+        uint amount = balance;
+
         sent += balance;
         balance = 0;
 
-        (bool succ,) = msg.sender.call{value: address(this).balance}("");       // real balance
+        (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
 
@@ -49,9 +46,8 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 57.76s
+// Time: 12.87s
 // Targets: "all"
 // ----
+// Warning: CHC: Overflow line 17
 // Warning: CHC: Overflow line 18
-// Warning: CHC: Overflow line 23
-// ----

@@ -8,14 +8,14 @@ contract Deposit {
 
     uint deposited;
 
-    constructor () payable {
-        balance = address(this).balance + msg.value;    // real balance + ethers received
-        deposited = balance;
+    constructor () {
+        balance = address(this).balance;
+        deposited = address(this).balance;
     }
 
-    function deposit() public payable {
-        balance += msg.value;           // ethers received
-        deposited += msg.value;         // ethers received
+    function deposit(uint _amount) public {
+        balance += _amount;
+        deposited += _amount;
     }
 
     function withdraw(uint _amount) public {
@@ -46,7 +46,6 @@ contract Deposit {
             sent -= amount;
             balance += amount;
         }
-
     }
 
     function invariant() public view {
@@ -55,10 +54,9 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 6.09s
+// Time: 5.76s
 // Targets: "all"
 // ----
-// Warning: CHC: Overflow line 12
 // Warning: CHC: Overflow line 17
 // Warning: CHC: Overflow line 18
 // ----

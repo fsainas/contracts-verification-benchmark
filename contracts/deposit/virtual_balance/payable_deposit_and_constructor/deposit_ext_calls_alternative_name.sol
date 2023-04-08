@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-contract Deposit {
+contract Simple {
 
     uint balance;
     uint sent;
@@ -9,8 +9,8 @@ contract Deposit {
     uint deposited;
 
     constructor () payable {
-        balance = address(this).balance + msg.value;    // real balance + ethers received
-        deposited = balance;
+        balance = msg.value;
+        deposited = msg.value;
     }
 
     function deposit() public payable {
@@ -46,9 +46,8 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 19.00s
+// Time: 13.27s
 // Targets: "all"
 // ----
-// Warning: CHC: Overflow line 12
-// Warning: CHC: Overflow line 17
 // Warning: CHC: Overflow line 18
+// ----

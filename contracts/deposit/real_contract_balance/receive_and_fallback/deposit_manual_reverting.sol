@@ -9,13 +9,18 @@ contract Deposit {
     uint deposited;
 
     constructor () {
-        balance = address(this).balance;    // real balance
-        deposited = balance;
+        balance = address(this).balance;
+        deposited = address(this).balance;
     }
 
-    function deposit(uint _amount) public {
-        balance += _amount;
-        deposited += _amount;
+    receive() external payable {
+        balance += msg.value;
+        deposited += msg.value;
+    }
+
+    fallback() external payable {
+        balance += msg.value;
+        deposited += msg.value;
     }
 
     function withdraw(uint _amount) public {
@@ -25,8 +30,12 @@ contract Deposit {
         sent += _amount;
         balance -= _amount;
 
-        (bool succ,) = msg.sender.call{value: _amount}("");
-        require(succ);
+        uint succ = block.number % 2;
+
+        if (succ == 0) {
+            sent -= _amount;
+            balance += _amount;
+        }
     }
 
     function withdraw_all() public {
@@ -36,8 +45,12 @@ contract Deposit {
         sent += balance;
         balance = 0;
 
-        (bool succ,) = msg.sender.call{value: amount}("");
-        require(succ);
+        uint succ = block.number % 2;
+
+        if (succ == 0) {
+            sent -= amount;
+            balance += amount;
+        }
     }
 
     function invariant() public view {
@@ -46,8 +59,6 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 14.39s
+// Time: 7.94s
 // Targets: "all"
 // ----
-// Warning: CHC: Overflow line 17
-// Warning: CHC: Overflow line 18

@@ -8,7 +8,7 @@ contract Deposit {
     uint deposited;
 
     constructor () {
-        deposited = address(this).balance;      // real balance
+        deposited = address(this).balance;
     }
 
     receive() external payable {
@@ -20,21 +20,12 @@ contract Deposit {
     }
 
     function withdraw(uint _amount) public {
-
-        require(_amount <= address(this).balance);      // real balance
-
+        require(_amount <= address(this).balance);
         sent += _amount;
-
-        (bool succ,) = msg.sender.call{value: _amount}("");
-        require(succ);
     }
 
     function withdraw_all() public {
-
-        sent += address(this).balance;      // real balance
-
-        (bool succ,) = msg.sender.call{value: address(this).balance}("");   // real balance
-        require(succ);
+        sent += address(this).balance;
     }
 
     function invariant() public view {
@@ -43,7 +34,10 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 6:24.62s
+// Time: 27.77s
 // Targets: "all"
 // ----
-// Does not seem to terminate
+// Warning: CHC: Overflow line 24
+// Warning: CHC: Overflow line 28
+// Warning: CHC: Assertion violation happens here line 32
+// ----

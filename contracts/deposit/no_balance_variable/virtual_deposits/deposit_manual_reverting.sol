@@ -3,33 +3,33 @@ pragma solidity >= 0.8.2;
 
 contract Deposit {
 
-    uint balance;
     uint sent;
 
     uint deposited;
 
     constructor () {
-        balance = address(this).balance;    // real balance
-        deposited = balance;
+        deposited = address(this).balance;
     }
 
     function deposit(uint _amount) public {
-        balance += _amount;
         deposited += _amount;
     }
 
     function withdraw(uint _amount) public {
-
-        require(_amount <= balance);
-
+        require(_amount <= address(this).balance);
         sent += _amount;
-        balance -= _amount;
+
+        uint succ = block.number % 2;
+
+        if (succ == 0) sent -= _amount;
     }
 
     function withdraw_all() public {
+        sent += address(this).balance;
 
-        sent += balance;
-        balance = 0;
+        uint succ = block.number % 2;
+
+        if (succ == 0) sent -= address(this).balance;
     }
 
     function invariant() public view {
@@ -38,9 +38,10 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 14.00s
+// Time: 2.37s
 // Targets: "all"
 // ----
-// Warning: CHC: Overflow line 17
-// Warning: CHC: Overflow line 18
+// Warning: CHC: Overflow line 20
+// Warning: CHC: Overflow line 28
+// Warning: CHC: Assertion violation happens here line 36
 // ----

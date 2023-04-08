@@ -10,12 +10,12 @@ contract Deposit {
 
     constructor () payable {
         balance = msg.value;
-        deposited = balance;
+        deposited = msg.value;
     }
 
-    function deposit(uint _amount) public {
-        balance += _amount;
-        deposited += _amount;
+    function deposit() public payable {
+        balance += msg.value;           // ethers received
+        deposited += msg.value;         // ethers received
     }
 
     function withdraw(uint _amount) public {
@@ -38,9 +38,6 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 12.73s
+// Time: 16.26s
 // Targets: "all"
-// ----
-// Warning: CHC: Overflow line 17
-// Warning: CHC: Overflow line 18
 // ----

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-contract Simple {
+contract Deposit {
 
     uint balance;
     uint sent;
@@ -9,8 +9,8 @@ contract Simple {
     uint deposited;
 
     constructor () {
-        balance = address(this).balance;    // real balance
-        deposited = balance;
+        balance = address(this).balance;
+        deposited = address(this).balance;
     }
 
     function deposit(uint _amount) public {
@@ -46,12 +46,8 @@ contract Simple {
 }
 // ====
 // SMTEngine: CHC
-// Time: 11:13.28s
+// Time: 14.39s
 // Targets: "all"
 // ----
-// Does not seem to terminate.
-// ====
-// SMTEngine: CHC
-// Time: 2.00s
-// Targets: "assert"
-// ----
+// Warning: CHC: Overflow line 17
+// Warning: CHC: Overflow line 18

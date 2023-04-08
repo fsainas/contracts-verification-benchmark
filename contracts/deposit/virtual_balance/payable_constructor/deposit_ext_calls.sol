@@ -8,9 +8,9 @@ contract Deposit {
 
     uint deposited;
 
-    constructor (uint _amount) {
-        balance = _amount;
-        deposited = balance;
+    constructor () payable {
+        balance = msg.value;
+        deposited = msg.value;
     }
 
     function deposit(uint _amount) public {
@@ -46,9 +46,8 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 19.56s
+// Time: 15.79s
 // Targets: "all"
 // ----
 // Warning: CHC: Overflow line 17
 // Warning: CHC: Overflow line 18
-// ----

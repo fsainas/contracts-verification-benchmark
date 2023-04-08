@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-contract Deposit {
+contract Simple {
 
     uint balance;
     uint sent;
@@ -9,8 +9,8 @@ contract Deposit {
     uint deposited;
 
     constructor () {
-        balance = address(this).balance;    // real balance
-        deposited = balance;
+        balance = address(this).balance;
+        deposited = address(this).balance;
     }
 
     function deposit(uint _amount) public {
@@ -25,12 +25,8 @@ contract Deposit {
         sent += _amount;
         balance -= _amount;
 
-        uint succ = block.number % 2;
-
-        if (succ == 0) {
-            sent -= _amount;
-            balance += _amount;
-        }
+        (bool succ,) = msg.sender.call{value: _amount}("");
+        require(succ);
     }
 
     function withdraw_all() public {
@@ -40,13 +36,8 @@ contract Deposit {
         sent += balance;
         balance = 0;
 
-        uint succ = block.number % 2;
-
-        if (succ == 0) {
-            sent -= amount;
-            balance += amount;
-        }
-
+        (bool succ,) = msg.sender.call{value: amount}("");
+        require(succ);
     }
 
     function invariant() public view {
@@ -55,9 +46,12 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 5.76s
+// Time: 11:13.28s
 // Targets: "all"
 // ----
-// Warning: CHC: Overflow line 17
-// Warning: CHC: Overflow line 18
+// Does not seem to terminate.
+// ====
+// SMTEngine: CHC
+// Time: 2.00s
+// Targets: "assert"
 // ----

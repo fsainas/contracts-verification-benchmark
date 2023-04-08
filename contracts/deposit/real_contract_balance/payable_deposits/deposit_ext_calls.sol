@@ -8,17 +8,12 @@ contract Deposit {
 
     uint deposited;
 
-    constructor () payable {
-        balance = address(this).balance + msg.value;    // real balance + ethers received
-        deposited = balance;
+    constructor () {
+        balance = address(this).balance;
+        deposited = address(this).balance;
     }
 
-    receive() external payable {
-        balance += msg.value;
-        deposited += msg.value;
-    }
-
-    fallback() external payable {
+    function deposit() public payable {
         balance += msg.value;
         deposited += msg.value;
     }
@@ -36,10 +31,12 @@ contract Deposit {
 
     function withdraw_all() public {
 
+        uint amount = balance;
+
         sent += balance;
         balance = 0;
 
-        (bool succ,) = msg.sender.call{value: address(this).balance}("");       // real balance
+        (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
 
@@ -49,10 +46,8 @@ contract Deposit {
 }
 // ====
 // SMTEngine: CHC
-// Time: 31.29s
+// Time: 17.59s
 // Targets: "all"
 // ----
 // Warning: CHC: Overflow line 18
-// Warning: CHC: Overflow line 22
-// Warning: CHC: Overflow line 23
 // ----
