@@ -12,19 +12,16 @@ Upon contract creation, the committer:
 in case the deposit is not revealed within the deadline.
 
 Upon contract creation, the HTLC allows two actions:
-- **reveal**, which requires the caller to provide a preimage of the commit,
+- `reveal`, which requires the caller to provide a preimage of the commit,
 and tranfers the whole contract balance to the committer;
-- **timeout**, which can be called only after the deadline, and
+- `timeout`, which can be called only after the deadline, and
 and tranfers the whole contract balance to the receiver.
 
-## Execution traces
+## Versions
 
-### Trace 1
+- **v1**: conformant to the specification
 
-1. The committer creates the contract, setting a deadline of 100 rounds;
-1. After 50 rounds, A performs the **reveal** action.
+## Invariants
 
-### Trace 2
-
-1. The committer creates the contract, setting a deadline of 100 rounds;
-1. After 100 rounds, the receiver performs the **timeout** action.
+- **p1**: amount sent does not exceed deposit
+- **p2**: `reveal` and `timeout` can only be called after `commit`
