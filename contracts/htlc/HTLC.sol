@@ -12,6 +12,9 @@ contract HTLC {
    uint _balance;
    uint _sent;
    uint _deposited;
+   bool _commit_called = false;   
+   bool _withdraw_called = false;
+   bool _timeout_called = false;
    
    constructor(address payable v) {
        owner = payable(msg.sender);
@@ -27,7 +30,8 @@ contract HTLC {
        require (!isCommitted);
        _deposited = msg.value + _balance;      
        hash = h;
-       isCommitted = true;       
+       isCommitted = true;
+       _commit_called = true;
    }
 
    function reveal(string memory s) public {
@@ -36,6 +40,7 @@ contract HTLC {
        require (isCommitted);       
        _sent += _balance;
        _balance -= _sent;
+       _withdraw_called = true;       
        (bool success,) = owner.call{value: _sent}("");
        require (success, "Transfer failed.");
    }
@@ -44,13 +49,18 @@ contract HTLC {
        require (block.number > start + 1000);
        require (isCommitted);       
        _sent += _balance;
-       _balance -= _sent;       
+       _balance -= _sent;
+       _timeout_called = true;
        (bool success,) = verifier.call{value: _sent}("");
        require (success, "Transfer failed.");
    }
 
-   function invariant() public view {
+   function invariant1() public view {
        assert(_sent <= _deposited);
+   }
+
+   function invariant2() public view {
+       assert(!(_timeout_called && !_commit_called));
    }
    
 }
