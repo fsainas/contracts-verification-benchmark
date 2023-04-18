@@ -51,3 +51,14 @@ contract HTLC {
    }
    
 }
+
+// ====
+// SMTEngine: CHC
+// Time: 0.92s
+// Targets: "assert"
+// ====
+// SMTEngine: CHC
+// Time: 1.40s
+// Targets: "all"
+// ----
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 42
