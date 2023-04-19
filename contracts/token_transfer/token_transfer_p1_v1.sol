@@ -10,8 +10,10 @@ contract TokenTransfer {
     uint sent;
     uint deposited;
 
-    constructor (IERC20 _token) {
+    constructor (IERC20 _token, uint _amount) {
         token = _token;
+        token.approve(msg.sender, _amount);
+        token.transferFrom(msg.sender, address(this), _amount);
         deposited = token.balanceOf(address(this));
     }
 
@@ -24,17 +26,13 @@ contract TokenTransfer {
     function invariant() public view {
         assert(sent <= deposited);
     }
+
 }
 // ====
 // SMTEngine: CHC
-// Time: 0.12s
-// Targets: "all"
-// Ext Calls: trusted
-// ====
-// SMTEngine: CHC
-// Time: 0.12s
+// Time: 1.51s
 // Targets: "all"
 // Ext Calls: untrusted
 // ----
-// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 20
-// Warning: CHC: Assertion violation happens here - line 25
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 22
+// Warning: CHC: Assertion violation happens here - line 27
