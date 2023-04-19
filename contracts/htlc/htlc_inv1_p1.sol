@@ -53,3 +53,16 @@ contract HTLC {
        assert(_sent <= _deposited);
    }   
 }
+
+// ====
+// SMTEngine: CHC
+// Time: 2.41s
+// Targets: "assert"
+// ====
+// SMTEngine: CHC
+// Time: 15.88s
+// Targets: "all"
+// ----
+// Warning: CHC: Underflow (resulting value less than 0) happens here - line 38
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 44
+// Warning: CHC: Underflow (resulting value less than 0) happens here - line 47
