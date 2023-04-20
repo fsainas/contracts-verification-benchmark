@@ -15,6 +15,9 @@ incremented.
 - **v1**: conformant to specification;
 - **v2**: instead of accessing `token.balanceOf(address(this))` directly, the `balance`
   variable is used to keep track of the balance. 
+- **v3**: safe interactions with ERC20 tokens by using
+  [`SafeERC20.sol`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol)
+  (OpenZeppelin)
 
 ## Invariants
 - **p1**: amount sent does not exceed deposit
@@ -25,3 +28,4 @@ incremented.
 | ---- | ------------------ |
 |**v1**| :x:                |
 |**v2**| :heavy_check_mark: |
+|**v3**| :x:                |
