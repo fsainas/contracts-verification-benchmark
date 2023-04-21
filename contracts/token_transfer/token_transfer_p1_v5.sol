@@ -2,8 +2,10 @@
 pragma solidity >= 0.8.2;
 
 import "./lib/IERC20.sol";
+import "./lib/SafeERC20.sol";
 
 contract TokenTransfer {
+    using SafeERC20 for IERC20;
 
     IERC20 token;
 
@@ -24,7 +26,7 @@ contract TokenTransfer {
         require(!ever_deposited);
         ever_deposited = true;
         uint allowance = token.allowance(msg.sender, address(this));
-        token.transferFrom(msg.sender, address(this), allowance);
+        token.safeTransferFrom(msg.sender, address(this), allowance);
         balance += allowance;
         _deposited = balance;
     }
@@ -33,7 +35,7 @@ contract TokenTransfer {
         require (amount <= balance);
         _sent += amount;
         balance -= amount;
-        token.transfer(msg.sender, amount);
+        token.safeTransfer(msg.sender, amount);
     }
 
     function invariant() public view {
@@ -44,7 +46,9 @@ contract TokenTransfer {
 
 // ====
 // SMTEngine: CHC
-// Time: 15.87s
+// Time: 123.34s
 // Targets: "all"
 // Ext Calls: untrusted
 // ----
+// Warning: Assertion checker does not yet support this expression - lib/Address.sol - line 41
+// Warning: Assertion checker does not yet implement this type of function call - lib/Address.sol - line 185

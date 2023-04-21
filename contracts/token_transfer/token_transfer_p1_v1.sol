@@ -7,32 +7,43 @@ contract TokenTransfer {
 
     IERC20 token;
 
-    uint sent;
-    uint deposited;
+    bool ever_deposited;
 
-    constructor (IERC20 _token, uint _amount) {
-        token = _token;
-        token.approve(msg.sender, _amount);
-        token.transferFrom(msg.sender, address(this), _amount);
-        deposited = token.balanceOf(address(this));
+    // ghost variables
+    uint _sent;
+    uint _deposited;
+    
+    // The deposits can be made by interacting with the ERC20 contract
+    constructor(IERC20 token_) {
+        token = token_;
     }
 
-    function withdraw(uint _amount) external {
-        require (_amount <= token.balanceOf(address(this)));
-        sent += _amount;
-        token.transfer(msg.sender, _amount);
+    // This is the only valid deposit method
+    function deposit() external {
+        require(!ever_deposited);
+        ever_deposited = true;
+        uint allowance = token.allowance(msg.sender, address(this));
+        token.transferFrom(msg.sender, address(this), allowance);
+        _deposited = allowance;
+    }
+
+    function withdraw(uint amount) external {
+        require (amount <= token.balanceOf(address(this)));
+        _sent += amount;
+        token.transfer(msg.sender, amount);
     }
 
     function invariant() public view {
-        assert(sent <= deposited);
+        assert(_sent <= _deposited);
     }
 
 }
+
 // ====
 // SMTEngine: CHC
-// Time: 1.51s
+// Time: 1.56s
 // Targets: "all"
 // Ext Calls: untrusted
 // ----
-// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 22
-// Warning: CHC: Assertion violation happens here - line 27
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 37
+// Warning: CHC: Assertion violation happens here - line 32

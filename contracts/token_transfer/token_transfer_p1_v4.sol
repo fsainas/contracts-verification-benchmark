@@ -22,9 +22,9 @@ contract TokenTransfer {
     // This is the only valid deposit method
     function deposit() external {
         require(!ever_deposited);
-        ever_deposited = true;
         uint allowance = token.allowance(msg.sender, address(this));
         token.transferFrom(msg.sender, address(this), allowance);
+        ever_deposited = true;
         balance += allowance;
         _deposited = balance;
     }
@@ -44,7 +44,10 @@ contract TokenTransfer {
 
 // ====
 // SMTEngine: CHC
-// Time: 15.87s
+// Time: 18.33s
 // Targets: "all"
 // Ext Calls: untrusted
 // ----
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 28
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 34
+// Warning: CHC: Assertion violation happens here - line 40

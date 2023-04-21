@@ -2,41 +2,51 @@
 pragma solidity >= 0.8.2;
 
 import "./lib/IERC20.sol";
-import "./lib/SafeERC20.sol";
 
 contract TokenTransfer {
-    using SafeERC20 for IERC20;
 
     IERC20 token;
 
-    uint sent;
-    uint deposited;
+    bool ever_deposited;
+    uint balance;
 
-    constructor (IERC20 _token, uint _init_amount) {
-        token = _token;
-        token.safeApprove(msg.sender, _init_amount);
-        token.safeTransferFrom(msg.sender, address(this), _init_amount);
-        deposited = token.balanceOf(address(this));
+    // ghost variables
+    uint _sent;
+    uint _deposited;
+    
+    // The deposits can be made by interacting with the ERC20 contract
+    constructor(IERC20 token_) {
+        token = token_;
     }
 
-    function withdraw(uint _amount) external {
-        require (_amount <= token.balanceOf(address(this)));
-        sent += _amount;
-        token.safeTransfer(msg.sender, _amount);
+    // This is the only valid deposit method
+    function deposit() external {
+        require(!ever_deposited);
+        ever_deposited = true;
+        uint allowance = token.allowance(msg.sender, address(this));
+        token.transferFrom(msg.sender, address(this), allowance);
+        balance += allowance;
+        _deposited = balance;
+    }
+
+    function withdraw(uint amount) external {
+        require (amount <= balance);
+        _sent += amount;
+        token.transfer(msg.sender, amount);
     }
 
     function invariant() public view {
-        assert(sent <= deposited);
+        assert(_sent <= _deposited);
     }
 
 }
+
 // ====
 // SMTEngine: CHC
-// Time: 3.77s
+// Time: 7.51s
 // Targets: "all"
 // Ext Calls: untrusted
 // ----
-// Warning: Assertion checker does not yet support this expression - line 41 
-// Warning: Assertion checker does not yet implement this type of function call - line 185
-// Warning: CHC: Error trying to invoke SMT solver - line 29
-// Warning: CHC: Assertion violation might happen here - line 29
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 28
+// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 34
+// Warning: CHC: Assertion violation happens here - line 39
