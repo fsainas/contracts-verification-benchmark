@@ -33,32 +33,22 @@ contract HTLC {
        require (msg.sender==owner);
        require(keccak256(abi.encodePacked(s))==hash);
        require (isCommitted);       
-       _reveal_called = true;       
        (bool success,) = owner.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
+       _reveal_called = true;            
    }
 
    function timeout() public {
        require (block.number > start + 1000);
        require (isCommitted);       
-       _timeout_called = true;
        (bool success,) = verifier.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
+       _timeout_called = true;      
    }
 
+   // if timeout or reveal are called, then commit must have been called
    function invariant() public view {
        assert(!((_timeout_called || _reveal_called) && !_commit_called));
    }
    
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 0.92s
-// Targets: "assert"
-// ====
-// SMTEngine: CHC
-// Time: 1.40s
-// Targets: "all"
-// ----
-// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 42

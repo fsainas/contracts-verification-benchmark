@@ -18,21 +18,10 @@ and tranfers the whole contract balance to the committer;
 and tranfers the whole contract balance to the receiver.
 
 
-## Versions
-
-- **v1**: conformant to the specification
-- **v2**: removed check that `commit` must be called before `reveal` and `timeout`
-
 ## Invariants
 
-- **p1**: amount sent does not exceed deposit
-- **p2**: `reveal` and `timeout` can only be called after `commit`
-
-
-## Experiments
-
-|       | p1 | p2 |   |
-|-------|----|----|---|
-| v1_p1 | 1  | -  |   |
-| v1_p2 | -  | 1  |   |
-| v2_p2 | -  | 0  |   |
+- **inv1**: amount sent does not exceed deposit
+  - **p1**: conformant to the specification
+- **inv2**: `reveal` and `timeout` can only be called after `commit`
+  - **p1**: conformant to the specification
+  - **n2**: removed check that `commit` must be called before `reveal` and `timeout`  
