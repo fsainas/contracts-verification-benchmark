@@ -16,6 +16,7 @@ contract VestingWallet is Context, BlockNumberSMT {
 
     constructor(address beneficiaryAddress, uint64 startTimestamp, uint64 durationSeconds) payable {
         require(beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
+        require(durationSeconds > 0);
         _beneficiary = beneficiaryAddress;
         _start = startTimestamp;
         _duration = durationSeconds;
@@ -71,7 +72,7 @@ contract VestingWallet is Context, BlockNumberSMT {
 
 // ====
 // SMTEngine: CHC
-// Time: 50:17.55
+// Time: 10.87s
 // Targets: assert
 // ----
-// Warning: CHC: Assertion violation might happen here - line 111
+// Warning: CHC: Assertion violation might happen here - line 69
