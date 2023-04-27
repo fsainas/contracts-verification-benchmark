@@ -14,14 +14,17 @@ releasable.
 - **v1**: conformant to specification;
 - **v2**: virtual block.number variable, see
   [BlockNumberSMT](../../smtCheckerNotes/block_number/);
+- **v3**: virtual block.number, `_balance` & `_deposited` ghost variables.
 
 ## Invariants
 - **p1**: the amount releasable is always less than or equal to the contract
-  balance.
+  balance;
+- **p2**: balance plus released equals total ever deposited.
 
 ## Experiments
 
-|      | p1                 |
-| ---- | ------------------ |
-|**v1**| :x:                |
-|**v2**| :x:                |
+|      | p1                 | p2                    |
+| ---- | ------------------ | --------------------- |
+|**v1**| :x:                | -                     |
+|**v2**| :x:                | -                     |
+|**v3**| :x:                | :heavy_check_mark:    |
