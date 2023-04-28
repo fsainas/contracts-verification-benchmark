@@ -8,9 +8,10 @@ contract Crowdfund {
     address receiver;   // receiver of the donated funds
     mapping(address => uint) public donors;
 
-    constructor (address payable receiver_, uint end_donate_) {
+    constructor (address payable receiver_, uint end_donate_, uint256 goal_) {
         receiver = receiver_;
         end_donate = end_donate_;
+	goal = goal_;	
     }
     
     function donate() public payable {
