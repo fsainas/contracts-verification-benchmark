@@ -12,44 +12,39 @@ contract Crowdfund {
     enum Tx{I,D,W,R}
     Tx _tx1;            // previous tx
     Tx _tx2;            // last tx
-
-    mapping(uint => uint) blockn;
-
-    uint prev_t_id;
-    uint t_id;
-
+    uint256 _balance;
+    uint _blockn;       // current block number
+    
     constructor (address payable receiver_, uint end_donate_, uint goal_) {
 	require (goal > 0);
         receiver = receiver_;
 	goal = goal_;
         end_donate = end_donate_;
 
-	t_id = 0;
-        blockn[t_id] = block.number;
-	
+        _blockn = block.number;
+	_balance = address(this).balance;
 	_tx1 = Tx.I;
 	_tx2 = Tx.I;	
     }
 
-    modifier new_t() {
-        prev_t_id = t_id;
-        t_id += 1;
-        uint rand = uint(keccak256(abi.encode(block.number))) % 2;
-        blockn[t_id] = blockn[prev_t_id] + rand;         // could be the next block or the current one
-        _;
+    function _delay(uint n) public {
+	_blockn = _blockn + n;
     }
     
-    function donate() new_t public payable {	
-        require (block.number <= end_donate);
+    function donate() public payable {
+        require (block.number > end_donate);
+        require (_blockn <= end_donate);
         donors[msg.sender] += msg.value;
-
+	_balance += msg.value;
 	_tx1 = _tx2;
 	_tx2 = Tx.D;	
     }
 
-    function withdraw() new_t public {
+    function withdraw() public {
         require (block.number > end_donate);
-        require (address(this).balance >= goal);
+        require (_blockn > end_donate);	
+        require (_balance >= goal);
+	_balance = 0;	
         (bool succ,) = receiver.call{value: address(this).balance}("");
         require(succ);
 
@@ -57,12 +52,16 @@ contract Crowdfund {
 	_tx2 = Tx.W;	
     }
     
-    function reclaim() new_t public {	
+    function reclaim() public {	
         require (block.number > end_donate);
-        require (address(this).balance < goal);
+        require (_blockn > end_donate);
+	
+        require (_balance < goal);
         require (donors[msg.sender] > 0);
         uint amount = donors[msg.sender];
         donors[msg.sender] = 0;
+	_balance -= amount;
+	
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
 
@@ -75,9 +74,8 @@ contract Crowdfund {
     // q0 --R-> qR
     // qR --R-> qR
     function invariant() public view {
-        assert(blockn[t_id] >= blockn[prev_t_id]);	
-	// assert(_tx2!=Tx.D || _tx1==Tx.D || _tx1==Tx.I);
-	// assert(_tx2!=Tx.W || _tx1==Tx.D);
-	// assert(_tx2!=Tx.R || _tx1==Tx.D || _tx1==Tx.R);		
+	assert(_tx2!=Tx.D || _tx1==Tx.D || _tx1==Tx.I);
+	assert(_tx2!=Tx.W || _tx1==Tx.D || _tx1==Tx.I);
+	assert(_tx2!=Tx.R || _tx1==Tx.D || _tx1==Tx.R);		
    }    
 }
