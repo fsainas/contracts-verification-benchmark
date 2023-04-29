@@ -16,6 +16,8 @@ releasable.
   [BlockNumberSMT](../../smtCheckerNotes/block_number/);
 - **v3**: virtual block.number, `_balance` & `_deposited` ghost variables.
 - **v4**: `_balance` & `_deposited` ghost variables.
+- **v5**: virtual block.number variable (`delay()` method)
+- **v6**: virtual block.number (`delay()` method), `_balance` & `_deposited` ghost variables.
 
 ## Invariants
 - **p1**: the amount releasable is always less than or equal to the contract
@@ -30,3 +32,5 @@ releasable.
 |**v2**| :x:                | :x:                   |
 |**v3**| :x:                | :heavy_check_mark:    |
 |**v4**| -                  | :x:                   |
+|**v5**| :x:                | :x:                   |
+|**v6**| :x:                | :question:            |
