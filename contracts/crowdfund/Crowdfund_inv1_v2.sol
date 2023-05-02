@@ -32,7 +32,7 @@ contract Crowdfund {
     }
     
     function donate() public payable {
-        require (block.number > end_donate);
+        require (block.number <= end_donate);
         require (_blockn <= end_donate);
         donors[msg.sender] += msg.value;
 	_balance += msg.value;
