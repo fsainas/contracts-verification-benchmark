@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-contract Escrow {
+import "lib/ReentrancyGuard.sol";
+
+contract Escrow is ReentrancyGuard {
     enum Phase {JOIN, CHOICE, REDEEM}
 
     Phase phase;
@@ -21,12 +23,12 @@ contract Escrow {
     // ghost variables
     uint _sent;
     uint _init_deposit;
-    
+
     constructor (
         address escrow_, 
         uint fee_rate_) {
 
-        require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
+        //require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
 
         escrow = escrow_;
         fee_rate = fee_rate_;
@@ -52,7 +54,7 @@ contract Escrow {
     /*****************
           Join Phase
         *****************/
-    function join(address seller_) public payable phaseJoin {
+    function join(address seller_) public payable phaseJoin nonReentrant {
 
         require(msg.sender != seller_);
 
@@ -67,7 +69,7 @@ contract Escrow {
     /*****************
          Choice Phase
         *****************/
-    function choose(address choice) public phaseChoice {
+    function choose(address choice) public phaseChoice nonReentrant {
 
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
@@ -78,7 +80,7 @@ contract Escrow {
         }
     }
 
-    function refund() public phaseChoice {
+    function refund() public phaseChoice nonReentrant {
 
         require(msg.sender == buyer);
         require(seller_choice == address(0));
@@ -93,7 +95,7 @@ contract Escrow {
          Redeem Phase 
         *****************/
     
-    function redeem() public phaseRedeem {
+    function redeem() public phaseRedeem nonReentrant {
 
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
@@ -107,7 +109,7 @@ contract Escrow {
     /*****************
           Arbitrate
         *****************/
-    function arbitrate(address escrow_choice_) public phaseRedeem {
+    function arbitrate(address escrow_choice_) public phaseRedeem nonReentrant {
 
         require(msg.sender == escrow);
         require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
@@ -122,7 +124,7 @@ contract Escrow {
         require(success);
     }
 
-    function redeem_arbitrated() public phaseRedeem {
+    function redeem_arbitrated() public phaseRedeem nonReentrant {
 
         require(escrow_choice != address(0));
 
@@ -140,7 +142,6 @@ contract Escrow {
 
 // ====
 // SMTEngine: CHC
-// Time: -
+// Time: 23:20.83s
 // Targets: assert
 // ----
-// Does not seem to terminate

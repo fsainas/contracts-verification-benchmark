@@ -19,9 +19,9 @@ contract Escrow {
     address escrow_choice;      // choice of the escrow
 
     // ghost variables
-    uint _sent;
+    uint _fee;
     uint _init_deposit;
-    
+
     constructor (
         address escrow_, 
         uint fee_rate_) {
@@ -83,7 +83,6 @@ contract Escrow {
         require(msg.sender == buyer);
         require(seller_choice == address(0));
 
-        _sent += deposit;
         deposit = 0;
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
@@ -98,7 +97,6 @@ contract Escrow {
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
 
-        _sent += deposit;
         deposit = 0;
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
@@ -116,7 +114,7 @@ contract Escrow {
         escrow_choice = escrow_choice_;
 
         uint fee = deposit * (fee_rate / 10000);
-        _sent += fee;
+        _fee = fee;
         deposit -= fee;
         (bool success,) = escrow.call{value: fee}("");
         require(success);
@@ -126,14 +124,13 @@ contract Escrow {
 
         require(escrow_choice != address(0));
 
-        _sent += deposit;
         deposit = 0;
         (bool success,) = escrow_choice.call{value: deposit}("");
         require(success);
     }
 
     function invariant() public view {
-        assert(_sent <= _init_deposit);
+        assert(_fee <= _init_deposit);
     }
 
 }
