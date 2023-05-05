@@ -22,7 +22,7 @@ contract Escrow {
         address escrow_, 
         uint fee_rate_) {
 
-        require(fee_rate_ <= 10000);    // The fee cannot be more then the deposit
+        require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
 
         escrow = escrow_;
         fee_rate = fee_rate_;
@@ -103,8 +103,8 @@ contract Escrow {
     function arbitrate(address escrow_choice_) public phaseRedeem {
 
         require(msg.sender == escrow);
-        require(escrow_choice == buyer_choice || escrow_choice == seller_choice);
-        require(escrow_choice != address(0));         // can choose only once
+        require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
+        require(escrow_choice_ != address(0));         // can choose only once
         
         escrow_choice = escrow_choice_;
 
