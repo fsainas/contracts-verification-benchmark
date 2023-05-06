@@ -2,7 +2,7 @@
 pragma solidity >= 0.8.2;
 
 contract Escrow {
-    enum Phase {JOIN, CHOICE, REDEEM}
+    enum Phase {JOIN, CHOOSE, REDEEM, ARBITR, END}
 
     Phase phase;
 
@@ -40,12 +40,17 @@ contract Escrow {
     }
     
     modifier phaseChoice() {
-        require(phase == Phase.CHOICE);
+        require(phase == Phase.CHOOSE);
         _;
     }
 
     modifier phaseRedeem() {
         require(phase == Phase.REDEEM);
+        _;
+    }
+
+    modifier phaseArbitrate() {
+        require(phase == Phase.ARBITR);
         _;
     }
 
@@ -61,7 +66,7 @@ contract Escrow {
         deposit = msg.value;
         _init_deposit = deposit;
 
-        phase = Phase.CHOICE;
+        phase = Phase.CHOOSE;
     }
 
     /*****************
@@ -71,10 +76,12 @@ contract Escrow {
 
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
-            if (buyer_choice != address(0)) phase = Phase.REDEEM;
+            if (buyer_choice != address(0)) 
+                phase = Phase.REDEEM;
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
-            if (seller_choice != address(0)) phase = Phase.REDEEM;
+            if (seller_choice != address(0)) 
+                phase = Phase.REDEEM;
         }
     }
 
@@ -83,7 +90,10 @@ contract Escrow {
         require(msg.sender == buyer);
         require(seller_choice == address(0));
 
+        phase = Phase.END;
+
         deposit = 0;
+
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
     }
@@ -97,14 +107,14 @@ contract Escrow {
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
 
+        phase = Phase.END;
+
         deposit = 0;
+
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
     }
 
-    /*****************
-          Arbitrate
-        *****************/
     function arbitrate(address escrow_choice_) public phaseRedeem {
 
         require(msg.sender == escrow);
@@ -113,18 +123,28 @@ contract Escrow {
         
         escrow_choice = escrow_choice_;
 
+        phase = Phase.ARBITR;
+
         uint fee = deposit * (fee_rate / 10000);
         _fee = fee;
         deposit -= fee;
+
         (bool success,) = escrow.call{value: fee}("");
         require(success);
     }
 
-    function redeem_arbitrated() public phaseRedeem {
+    /*****************
+         Arbitrate Phase
+        *****************/
+
+    function redeem_arbitrated() public phaseArbitrate {
 
         require(escrow_choice != address(0));
 
+        phase = Phase.END;
+
         deposit = 0;
+
         (bool success,) = escrow_choice.call{value: deposit}("");
         require(success);
     }
@@ -137,7 +157,6 @@ contract Escrow {
 
 // ====
 // SMTEngine: CHC
-// Time: -
+// Time: 8.35s
 // Targets: assert
 // ----
-// Does not seem to terminate

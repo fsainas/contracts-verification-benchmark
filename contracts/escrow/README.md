@@ -5,25 +5,22 @@ This contract allows a buyer to make a deposit and indicate a seller. The buyer
 and seller can choose a payment address, and if choices match, the seller can
 redeem the funds. If they do not match, the escrow system will arbitrate and
 choose the correct address between the two. If the seller does not choose an
-address, the buyer can redeem with a refund. The contract operates in three
-phases: Join, Choose, and Redeem. Each phase has a set of callable functions.
+address, the buyer can redeem with a refund. The contract operates in five 
+phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a set of callable functions.
 
 ## Versions
-- **v1**: conformant to specification;
-- **v2**: non reentrant functions with
-  [ReentrancyGuard](lib/ReentrancyGuard.sol).
-    - **v2.1**: no `require(fee_rate <= 10000)` in the constructor.
+- **v1**: conformant to specification.
 
 ## Invariants
-- **inv1**: amount sent does not exceed deposit.
-- **inv2**: fee does not exceed deposit.
+- **inv1**: amount sent does not exceed deposit;
+- **inv2**: fee does not exceed deposit;
+- **inv3**: $p_c$ is the current phase and $p_p$ the previous one:
+    1. $p_c = R \implies p_p = C$, if the current phase is redeem the previous one is Choose;
+    1. $p_c = A \implies p_p = R$, if the current phase is arbitrate the previouse one is Redeem;
+    1. $p_c = E \implies p_p = A \lor p_p = R \lor p_p = C$, if the current phase is End, the previous is Arbitrate, Redeem or Choose.
 
 ## Experiments
 
-|         | **inv1**           | **inv2**               |
-| ------- | ------------------ | ---------------------- |
-|**v1**   | :question:         | :question:             |
-|**v2**   | :heavy_check_mark: | :heavy_check_mark:     |
-|**v2.1** | :heavy_check_mark: | :heavy_check_mark:[^1] |
-
-[^1]: To be investigated.
+|         | **inv1**           | **inv2**           | **inv3**           |
+| ------- | ------------------ | ------------------ | ------------------ |
+| **v1**  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
