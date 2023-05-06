@@ -9,7 +9,8 @@ address, the buyer can redeem with a refund. The contract operates in five
 phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a set of callable functions.
 
 ## Versions
-- **v1**: conformant to specification.
+- **v1**: conformant to specification;
+- **v2**: removed `require(fee_rate < 10000)` in the constructor.
 
 ## Invariants
 - **inv1**: amount sent does not exceed deposit;
@@ -24,3 +25,4 @@ phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a s
 |         | **inv1**           | **inv2**           | **inv3**           |
 | ------- | ------------------ | ------------------ | ------------------ |
 | **v1**  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| **v2**  | :heavy_check_mark: | :question:         | :heavy_check_mark: |
