@@ -121,8 +121,7 @@ contract Escrow {
 
         require(msg.sender == escrow);
         require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
-        require(escrow_choice_ != address(0));         // can choose only once
-        
+
         escrow_choice = escrow_choice_;
 
         phase = Phase.ARBITR;
@@ -160,6 +159,6 @@ contract Escrow {
 
 // ====
 // SMTEngine: CHC
-// Time: 10.24s
+// Time: 39.09s
 // Targets: assert
 // ----
