@@ -24,9 +24,7 @@ phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a s
 - **inv4**: 
     1. The recipient of a payment from the contranct can only be `escrow`,
        `buyer_choice`, `seller_choice`, `buyer`.
-    1. $\text{recipient} = \text{seller\_choice} \implies \text{buyer\_choice}
-       = \text{seller\_choice} \lor \text{escrow\_choice} =
-       \text{seller\_choice}$
+    1. $\text{recipient} = \text{seller\_choice} \implies \text{buyer\_choice} = \text{seller\_choice} \lor \text{escrow\_choice} = \text{seller\_choice}$
 - **inv5**: The `msg.sender` can only be `escrow`, `buyer` or `seller` for all
   functions except `redeem_arbitrated()`;
 
