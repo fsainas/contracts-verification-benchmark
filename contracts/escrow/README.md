@@ -34,8 +34,8 @@ phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a s
 
 |         | **inv1**           | **inv2**           | **inv3**           | **inv4** | **inv5**           |
 | ------- | ------------------ | ------------------ | ------------------ | -------- | ------------------ |
-| **v1**  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| **v2**  | :heavy_check_mark: | :question:         | :heavy_check_mark: |
+| **v1**  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:[^1]  | :heavy_check_mark: |
+| **v2**  | :heavy_check_mark: | :question:         | :heavy_check_mark: | | |
 | **v3**  |                    |                    |                    | :x:[^1]  | :heavy_check_mark: |
 
 [^1]: "Uncaught exception"
