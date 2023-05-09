@@ -16,7 +16,7 @@ contract Crowdfund {
     uint _blockn;       // current block number
     
     constructor (address payable receiver_, uint end_donate_, uint goal_) {
-	require (goal > 0);
+	require (goal_ > 0);
         receiver = receiver_;
 	goal = goal_;
         end_donate = end_donate_;
@@ -26,6 +26,7 @@ contract Crowdfund {
 	_tx1 = Tx.I;
 	_tx2 = Tx.I;	
     }
+
 
     function _delay(uint n) public {
 	_blockn = _blockn + n;
