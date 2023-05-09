@@ -27,12 +27,14 @@ phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a s
     1. $\text{recipient} = \text{seller-choice} \implies \text{buyer-choice} = \text{seller-choice} \lor \text{escrow-choice} = \text{seller-choice}$
 - **inv5**: The `msg.sender` can only be `escrow`, `buyer` or `seller` for all
   functions except `redeem_arbitrated()`;
+- **inv6**: If `phase` is End and `escrow_choice` is not `address(0)` then
+  `redeem_arbitrated()` has modified the balance of the contract.
 
 ## Experiments
 
-|         | **inv1**           | **inv2**           | **inv3**           | **inv4** | **inv5**           |
-| ------- | ------------------ | ------------------ | ------------------ | -------- | ------------------ |
-| **v1**  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:[^1]  | :heavy_check_mark: |
+|         | **inv1**           | **inv2**           | **inv3**           | **inv4** | **inv5**           | **inv6** |
+| ------- | ------------------ | ------------------ | ------------------ | -------- | ------------------ | -------- |
+| **v1**  | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:[^1]  | :heavy_check_mark: | :x:      |
 | **v2**  | :heavy_check_mark: | :question:         | :heavy_check_mark: | | |
 | **v3**  |                    |                    |                    | :x:[^1]  | :heavy_check_mark: |
 
