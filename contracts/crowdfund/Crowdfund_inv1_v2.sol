@@ -27,7 +27,6 @@ contract Crowdfund {
 	_tx2 = Tx.I;	
     }
 
-
     function _delay(uint n) public {
 	_blockn = _blockn + n;
     }
