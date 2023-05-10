@@ -20,14 +20,14 @@ contract Crowdfund {
     }
 
     function withdraw() public {
-        require (block.number >= end_donate);
+        require (block.number > end_donate);
         require (address(this).balance >= goal);
         (bool succ,) = receiver.call{value: address(this).balance}("");
         require(succ);
     }
     
     function reclaim() public { 
-        require (block.number >= end_donate);
+        require (block.number > end_donate);
         require (address(this).balance < goal);
         require (donors[msg.sender] > 0);
         uint amount = donors[msg.sender];
