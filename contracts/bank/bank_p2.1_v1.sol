@@ -16,19 +16,23 @@ contract Bank {
     function withdraw(uint amount) public {
         require(amount <= accounts[msg.sender]);
 
+        uint _prev_total_balance = _total_balance - accounts[msg.sender];
+
         accounts[msg.sender] -= amount;
         _total_balance -= amount;
 
+        uint _post_total_balance = _total_balance - accounts[msg.sender];
+
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
-    }
 
-    function invariant() public {
-        require(accounts[msg.sender] > 0);
-        uint prev_total_balance = _total_balance;
-        uint account_balance = accounts[msg.sender];
-        withdraw(accounts[msg.sender]);
-        assert(prev_total_balance - account_balance == _total_balance);
+        assert(_prev_total_balance == _post_total_balance);
     }
 
 }
+
+// ====
+// SMTEngine: CHC
+// Targets: assert
+// Time: 0.15s
+// ----
