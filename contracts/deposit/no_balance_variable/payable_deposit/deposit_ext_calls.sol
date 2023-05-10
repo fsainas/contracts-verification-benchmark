@@ -4,7 +4,6 @@ pragma solidity >= 0.8.2;
 contract Deposit {
 
     uint sent;
-
     uint deposited;
 
     constructor () {
@@ -34,6 +33,7 @@ contract Deposit {
         assert(sent <= deposited);
     }
 }
+
 // ====
 // SMTEngine: CHC
 // Time: 4:27.45s

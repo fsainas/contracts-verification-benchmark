@@ -27,6 +27,7 @@ contract HTLC {
        
 	if (ever_deposited) {
 	    require(r0 * x1 == r1 * x0, "Dep precondition");
+	    require(r0>0);	    
 	    toMint = (x0 * supply) / r0;
 	}
 	else {
