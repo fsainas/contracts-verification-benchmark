@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-import "./lib/IERC20.sol";
-
 contract HTLC {
     IERC20 public immutable t0;
     IERC20 public immutable t1;
@@ -13,7 +11,11 @@ contract HTLC {
     bool ever_deposited;
     uint public supply;
     mapping(address => uint) public minted;
-      
+
+    enum Tx{None, Dep, Swap, Rdm}
+    Tx _lastTx;
+    uint public _prevSupply;
+    
     constructor(address t0_, address t1_) {
 	t0 = IERC20(t0_);
 	t1 = IERC20(t1_);
@@ -21,6 +23,8 @@ contract HTLC {
 
     function deposit(uint x0, uint x1) public {
 	require (x0>0 && x1>0);
+
+	_prevSupply = supply;
 	
 	t0.transferFrom(msg.sender, address(this), x0);
 	t1.transferFrom(msg.sender, address(this), x1);
@@ -45,12 +49,16 @@ contract HTLC {
        
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+
+	_lastTx = Tx.Dep;
     }
 
     function redeeem(uint x) public {
 	require (minted[msg.sender] >= x);
 	require (x < supply);
-
+	
+	_prevSupply = supply;
+	
 	uint x0 = (x * r0) / supply;
 	uint x1 = (x * r1) / supply;
 		
@@ -63,12 +71,16 @@ contract HTLC {
 	minted[msg.sender] -= x;
 	
 	require(t0.balanceOf(address(this)) == r0);
-	require(t1.balanceOf(address(this)) == r1);	
+	require(t1.balanceOf(address(this)) == r1);
+
+	_lastTx = Tx.Rdm;	
     }
 
     function swap(address t, uint x_in) public {
 	require(t == address(t0) || t == address(t1));
         require(x_in > 0);
+
+	_prevSupply = supply;
 	
         bool is_t0 = t == address(t0);
         (IERC20 t_in, IERC20 t_out, uint r_in, uint r_out) = is_t0
@@ -87,20 +99,44 @@ contract HTLC {
 	
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+
+	_lastTx = Tx.Swap;
     }
-    
+
     function invariant() public view {
 	// strangely, this gives a violation:
 	// require (ever_deposited);
 	// assert (r0>0 && r1>0);
-	
+
+	// should fail
+	assert(_prevSupply == supply);
+
+	// should succeed
+	assert(_lastTx!=Swap || _prevSupply == supply);
+
+	// should succeed	
 	assert (!ever_deposited || (r0>0 && r1>0));
+
+	// should succeed	
 	assert (!ever_deposited || supply > 0);
     }
-   
-    /* function withdraw(uint amount) external { */
-    /*     require (amount <= token.balanceOf(address(this))); */
-    /*     _sent += amount; */
-    /*     token.transfer(msg.sender, amount); */
-    /* } */  
+}
+
+
+interface IERC20 {
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    function totalSupply() external view returns (uint256);
+
+    function balanceOf(address account) external view returns (uint256);
+
+    function transfer(address to, uint256 amount) external returns (bool);
+
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
 }
