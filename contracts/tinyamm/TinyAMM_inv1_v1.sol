@@ -11,7 +11,7 @@ contract HTLC {
     bool ever_deposited;
     uint public supply;
     mapping(address => uint) public minted;
-    
+
     constructor(address t0_, address t1_) {
 	t0 = IERC20(t0_);
 	t1 = IERC20(t1_);
@@ -19,7 +19,7 @@ contract HTLC {
 
     function deposit(uint x0, uint x1) public {
 	require (x0>0 && x1>0);
-	
+
 	t0.transferFrom(msg.sender, address(this), x0);
 	t1.transferFrom(msg.sender, address(this), x1);
        
@@ -85,6 +85,15 @@ contract HTLC {
 	
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+    }
+
+    function invariant() public view {
+	// strangely, this gives a violation:
+	// require (ever_deposited);
+	// assert (r0>0 && r1>0);
+
+	// should succeed	
+	assert (!ever_deposited || (r0>0 && r1>0));
     }
 }
 

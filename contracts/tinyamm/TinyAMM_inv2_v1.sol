@@ -67,7 +67,7 @@ contract HTLC {
     function swap(address t, uint x_in) public {
 	require(t == address(t0) || t == address(t1));
         require(x_in > 0);
-
+	
         bool is_t0 = t == address(t0);
         (IERC20 t_in, IERC20 t_out, uint r_in, uint r_out) = is_t0
             ? (t0, t1, r0, r1)
@@ -85,6 +85,11 @@ contract HTLC {
 	
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+    }
+
+    function invariant() public view {
+	// should succeed	
+	assert (!ever_deposited || supply > 0);
     }
 }
 

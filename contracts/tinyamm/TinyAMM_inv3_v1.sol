@@ -11,6 +11,10 @@ contract HTLC {
     bool ever_deposited;
     uint public supply;
     mapping(address => uint) public minted;
+
+    enum Tx{None, Dep, Swap, Rdm}
+    Tx _lastTx;
+    uint public _prevSupply;
     
     constructor(address t0_, address t1_) {
 	t0 = IERC20(t0_);
@@ -19,6 +23,8 @@ contract HTLC {
 
     function deposit(uint x0, uint x1) public {
 	require (x0>0 && x1>0);
+
+	_prevSupply = supply;
 	
 	t0.transferFrom(msg.sender, address(this), x0);
 	t1.transferFrom(msg.sender, address(this), x1);
@@ -43,11 +49,15 @@ contract HTLC {
        
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+
+	_lastTx = Tx.Dep;
     }
 
     function redeeem(uint x) public {
 	require (minted[msg.sender] >= x);
 	require (x < supply);
+	
+	_prevSupply = supply;
 	
 	uint x0 = (x * r0) / supply;
 	uint x1 = (x * r1) / supply;
@@ -62,12 +72,16 @@ contract HTLC {
 	
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+
+	_lastTx = Tx.Rdm;	
     }
 
     function swap(address t, uint x_in) public {
 	require(t == address(t0) || t == address(t1));
         require(x_in > 0);
 
+	_prevSupply = supply;
+	
         bool is_t0 = t == address(t0);
         (IERC20 t_in, IERC20 t_out, uint r_in, uint r_out) = is_t0
             ? (t0, t1, r0, r1)
@@ -85,6 +99,16 @@ contract HTLC {
 	
 	require(t0.balanceOf(address(this)) == r0);
 	require(t1.balanceOf(address(this)) == r1);
+
+	_lastTx = Tx.Swap;
+    }
+
+    function invariant() public view {
+	// should fail
+	// assert(_prevSupply == supply);
+
+	// should succeed
+	assert(_lastTx!=Swap || _prevSupply == supply);
     }
 }
 
