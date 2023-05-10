@@ -16,3 +16,22 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 1. **Withdrawal security**: funds can only be withdrawn from the account that
    deposited them.
+
+## Versions
+- **v1**: conformant to specification
+
+## Properties
+- **p1**: after a deposit, `address(this).balance` is greater than the balance
+  of the account that made the deposit
+- **p2**: after a withdrawal, the total balance of the contract, excluding the
+  balances of the accounts that have made withdrawals, remains unchanged.
+    - **p2.1**: the `_post_total_balance` is update before the external call
+- **p3**: after a withdrawal, the total balance of the contract, excluding the
+  balances of the accounts that have made withdrawals, either remains unchanged
+  or is increased.
+
+## Experiments
+
+|        | **p1**     | **p2**     | **p2.1**           | **p3**     |
+| ------ | ---------- | ---------- | ------------------ | ---------- |
+| **v1** | :question: | :question: | :heavy_check_mark: | :question: |
