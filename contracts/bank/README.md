@@ -21,7 +21,8 @@ then initiates a transfer of the specified amount to the depositor's address.
 - **v1**: conformant to specification
 
 ## Properties
-- **p1**: *TODO*
+- **p1**: after a deposit, `address(this).balance` is greater than the balance
+  of the account that made the deposit
 - **p2**: after a withdrawal, the total balance of the contract, excluding the
   balances of the accounts that have made withdrawals, remains unchanged.
     - **p2.1**: the `_post_total_balance` is update before the external call
@@ -31,6 +32,6 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 ## Experiments
 
-|        | **p1** | **p2**     | **p2.1**           | **p3**     |
-| ------ | ------ | ---------- | ------------------ | ---------- |
-| **v1** |        | :question: | :heavy_check_mark: | :question: |
+|        | **p1**     | **p2**     | **p2.1**           | **p3**     |
+| ------ | ---------- | ---------- | ------------------ | ---------- |
+| **v1** | :question: | :question: | :heavy_check_mark: | :question: |

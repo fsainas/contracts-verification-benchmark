@@ -5,22 +5,24 @@ contract Bank {
 
     mapping (address => uint256) accounts;
 
-    receive() external payable { 
+    receive() external payable {
         accounts[msg.sender] += msg.value;
+        assert(address(this).balance >= msg.value);
     }
 
-    function withdraw(uint amount) public returns (bool) {
+    function withdraw(uint amount) public {
         require(amount <= accounts[msg.sender]);
 
         accounts[msg.sender] -= amount;
 
         (bool succ,) = msg.sender.call{value: amount}("");
-        
-        return succ;
-    }
-
-    function invariant() public {
-        assert(!(accounts[msg.sender] == 1 && !(withdraw(1))));
+        require(succ);
     }
 
 }
+
+// ====
+// SMTEngine: CHC
+// Targets: assert
+// ----
+// Does not seem to terminate
