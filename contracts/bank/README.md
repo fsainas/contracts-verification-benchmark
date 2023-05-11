@@ -27,7 +27,6 @@ then initiates a transfer of the specified amount to the depositor's address.
   of the account that made the deposit
 - **p2**: after a withdrawal, the total balance of the contract, excluding the
   balances of the accounts that have made withdrawals, remains unchanged.
-    - **p2.1**: the `_post_total_balance` is update before the external call
 - **p3**: after a withdrawal, the total balance of the contract, excluding the
   balances of the accounts that have made withdrawals, either remains unchanged
   or is increased.
@@ -35,9 +34,9 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 ## Experiments
 
-|          | **p1**             | **p2**     | **p2.1**           | **p3**     | **p4**             |
-| -------- | ------------------ | ---------- | ------------------ | ---------- | ------------------ |
-| **v1**   | :question:         | :question: | :heavy_check_mark: | :question: | :question:         |
-| **v2**   | :heavy_check_mark: |            |                    |            | :x:                |
-| **v2.1** |                    |            |                    |            | :heavy_check_mark: |
+|          | **p1**             | **p2**     | **p3**     | **p4**             |
+| -------- | ------------------ | ---------- | ---------- | ------------------ |
+| **v1**   | :question:         | :question: | :question: | :question:         |
+| **v2**   | :heavy_check_mark: |            |            | :x:                |
+| **v2.1** |                    |            |            | :heavy_check_mark: |
 
