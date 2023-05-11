@@ -7,6 +7,8 @@ contract Bank {
 
     // ghost variables
     uint _total_balance;    // total balance of the contract
+    uint _prev_balance;     // balance of the contract minus accounts[msg.sender]
+    uint _post_balance;
 
     receive() external payable {
         accounts[msg.sender] += msg.value;
@@ -14,19 +16,21 @@ contract Bank {
     }
 
     function withdraw(uint amount) public {
+        require(amount > 0);
         require(amount <= accounts[msg.sender]);
-
-        uint _prev_total_balance = _total_balance - accounts[msg.sender];
 
         accounts[msg.sender] -= amount;
         _total_balance -= amount;
 
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
+    }
 
-        uint _post_total_balance = _total_balance - accounts[msg.sender];
-
-        assert(_prev_total_balance <= _post_total_balance);
+    function invariant(uint amount) public {
+        _prev_balance = _total_balance - accounts[msg.sender];
+        withdraw(amount);
+        _post_balance = _total_balance - accounts[msg.sender];
+        assert(_prev_balance <= _post_balance);     
     }
 
 }
@@ -34,5 +38,5 @@ contract Bank {
 // ====
 // SMTEngine: CHC
 // Targets: assert
+// Time: n/a
 // ----
-// Does not seem to terminate
