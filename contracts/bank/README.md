@@ -35,9 +35,9 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 ## Experiments
 
-|          | **p1**     | **p2**     | **p2.1**           | **p3**     | **p4**             |
-| -------- | ---------- | ---------- | ------------------ | ---------- | ------------------ |
-| **v1**   | :question: | :question: | :heavy_check_mark: | :question: | :question:         |
-| **v2**   |            |            |                    |            | :x:                |
-| **v2.1** |            |            |                    |            | :heavy_check_mark: |
+|          | **p1**             | **p2**     | **p2.1**           | **p3**     | **p4**             |
+| -------- | ------------------ | ---------- | ------------------ | ---------- | ------------------ |
+| **v1**   | :question:         | :question: | :heavy_check_mark: | :question: | :question:         |
+| **v2**   | :heavy_check_mark: |            |                    |            | :x:                |
+| **v2.1** |                    |            |                    |            | :heavy_check_mark: |
 
