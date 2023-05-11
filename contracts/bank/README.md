@@ -19,6 +19,8 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 ## Versions
 - **v1**: conformant to specification
+- **v2**: the bank has only one account, only `owner` can withdraw
+    - **v2.1**: Bank is [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol)
 
 ## Properties
 - **p1**: after a deposit, `address(this).balance` is greater than the balance
@@ -29,9 +31,13 @@ then initiates a transfer of the specified amount to the depositor's address.
 - **p3**: after a withdrawal, the total balance of the contract, excluding the
   balances of the accounts that have made withdrawals, either remains unchanged
   or is increased.
+- **p4**: after a withdrawal the balance of the account is decreased
 
 ## Experiments
 
-|        | **p1**     | **p2**     | **p2.1**           | **p3**     |
-| ------ | ---------- | ---------- | ------------------ | ---------- |
-| **v1** | :question: | :question: | :heavy_check_mark: | :question: |
+|          | **p1**     | **p2**     | **p2.1**           | **p3**     | **p4**             |
+| -------- | ---------- | ---------- | ------------------ | ---------- | ------------------ |
+| **v1**   | :question: | :question: | :heavy_check_mark: | :question: | :question:         |
+| **v2**   |            |            |                    |            | :x:                |
+| **v2.1** |            |            |                    |            | :heavy_check_mark: |
+
