@@ -22,8 +22,6 @@ contract Bank {
 
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
-
-        assert(msg.sender == owner);
     }
 
     function invariant(uint amount) public {
