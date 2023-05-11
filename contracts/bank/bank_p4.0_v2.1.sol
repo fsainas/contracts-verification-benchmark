@@ -18,6 +18,7 @@ contract Bank is ReentrancyGuard {
 
     function withdraw(uint amount) public nonReentrant {
         require(msg.sender == owner);
+        require(amount > 0);
         require(amount <= balance);
 
         balance -= amount;
@@ -27,11 +28,9 @@ contract Bank is ReentrancyGuard {
     }
 
     function invariant(uint amount) public {
-        require(amount > 0);
-        require(amount <= balance);
-        uint prev_balance = balance;
+        uint _prev_balance = balance;
         withdraw(amount);
-        assert(prev_balance > balance);
+        assert(_prev_balance > balance);
     }
 
 }
@@ -39,5 +38,5 @@ contract Bank is ReentrancyGuard {
 // ====
 // SMTEngine: CHC
 // Targets: assert
-// Time: 1.86s
+// Time: 0.88s
 // ----

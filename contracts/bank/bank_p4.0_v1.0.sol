@@ -5,11 +5,12 @@ contract Bank {
 
     mapping (address => uint256) accounts;
 
-    receive() external payable nonReentrant { 
+    receive() external payable { 
         accounts[msg.sender] += msg.value;
     }
 
     function withdraw(uint amount) public {
+        require(amount > 0);
         require(amount <= accounts[msg.sender]);
 
         accounts[msg.sender] -= amount;
@@ -19,11 +20,9 @@ contract Bank {
     }
 
     function invariant(uint amount) public {
-        require(amount > 0);
-        require(amount <= accounts[msg.sender]);
-        uint prev_balance = accounts[msg.sender];
+        uint _prev_balance = accounts[msg.sender];
         withdraw(amount);
-        assert(prev_balance > accounts[msg.sender]);
+        assert(_prev_balance > accounts[msg.sender]);
     }
 
 }

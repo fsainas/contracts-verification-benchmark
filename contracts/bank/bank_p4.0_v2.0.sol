@@ -16,6 +16,7 @@ contract Bank {
 
     function withdraw(uint amount) public {
         require(msg.sender == owner);
+        require(amount > 0);
         require(amount <= balance);
 
         balance -= amount;
@@ -25,11 +26,9 @@ contract Bank {
     }
 
     function invariant(uint amount) public {
-        require(amount > 0);
-        require(amount <= balance);
-        uint prev_balance = balance;
+        uint _prev_balance = balance;
         withdraw(amount);
-        assert(prev_balance > balance);
+        assert(_prev_balance > balance);
     }
 
 }
@@ -37,6 +36,6 @@ contract Bank {
 // ====
 // SMTEngine: CHC
 // Targets: assert
-// Time: 1.54s
+// Time: 0.99s
 // ----
 // Warning: CHC: Assertion violation happens here - line 34
