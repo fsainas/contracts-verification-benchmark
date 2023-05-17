@@ -1,17 +1,17 @@
 # Simple Transfer
 
 ## Specification
-Simple Transfer is created with an initial balance which is the balance at
-deployment time. Thus it is the sum of the balance of the address before the
-deployment and what it was paid to the constructor.
-
-The `deposited` variable keeps track of the total amount ever deposited to the
-contract, it should never be decremented. Instead, the `sent` variable keeps
-track of the total amount sent outside the contract and it should never be
-incremented.
+Simple Transfer is created with an initial balance, which consists of the
+amount paid to the constructor plus the balance of the address of the contract
+before deployment. There is a simple `withdraw()` function that transfers a
+specified amount to the caller.
 
 ## Versions
-- **v1**: conformant to specification;
+- **v1**: 
+    - `_deposited` variable keeps track of the total amount ever deposited, it
+      never decrements.
+    - `_sent` keeps track of the total amount sent by the contract, it never
+      decrements.
 - **v2**: instead of accessing `address(this).balance` directly, the `balance`
   variable is used to keep track of the balance. 
 
