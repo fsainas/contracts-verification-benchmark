@@ -3,22 +3,23 @@ pragma solidity >= 0.8.2;
 
 contract SimpleTransfer {
 
-    uint sent;
-    uint deposited;
+    // ghost variables
+    uint _sent;
+    uint _deposited;
 
     constructor () payable {
-        deposited = address(this).balance;
+        _deposited = address(this).balance;
     }
 
-    function withdraw(uint _amount) public {
-        require(_amount <= address(this).balance);
-        sent += _amount;
-        (bool succ,) = msg.sender.call{value: _amount}("");
+    function withdraw(uint amount) public {
+        require(amount <= address(this).balance);
+        _sent += amount;
+        (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
 
     function invariant() public view {
-        assert(sent <= deposited);
+        assert(_sent <= _deposited);
     }
 }
 // ====
