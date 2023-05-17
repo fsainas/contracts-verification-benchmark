@@ -7,20 +7,20 @@ before deployment. There is a simple `withdraw()` function that transfers a
 specified amount to the caller.
 
 ## Versions
-- **v1**: 
-    - `_deposited` variable keeps track of the total amount ever deposited, it
-      never decrements.
-    - `_sent` keeps track of the total amount sent by the contract, it never
-      decrements.
+- **v1**: conformant to specification
 - **v2**: instead of accessing `address(this).balance` directly, the `balance`
   variable is used to keep track of the balance. 
+- **v3**: contract is [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol)
+
 
 ## Invariants
 - **p1**: amount sent does not exceed deposit
+- **p2**: `address(this).balance` is decreased after `withdraw()`
 
 ## Experiments
 
-|      | p1                 |
-| ---- | ------------------ |
-|**v1**| :x:                |
-|**v2**| :heavy_check_mark: |
+|        | p1                 | p2                 |
+| ------ | ------------------ | ------------------ |
+| **v1** | :x:                | :x:                |
+| **v2** | :heavy_check_mark: |                    |
+| **v3** |                    | :heavy_check_mark: |
