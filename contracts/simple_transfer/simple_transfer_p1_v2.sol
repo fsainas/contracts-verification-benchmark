@@ -15,8 +15,10 @@ contract SimpleTransfer {
 
     function withdraw(uint amount) public {
         require(amount <= _balance);
+
         _sent += amount;
         _balance -= amount;
+
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
