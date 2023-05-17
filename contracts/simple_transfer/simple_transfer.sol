@@ -5,8 +5,8 @@ contract SimpleTransfer {
 
     constructor () payable { }
 
-    function withdraw(uint _amount) public {
-        (bool succ,) = msg.sender.call{value: _amount}("");
+    function withdraw(uint amount) public {
+        (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
 
