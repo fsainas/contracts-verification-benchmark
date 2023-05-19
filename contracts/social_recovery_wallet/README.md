@@ -26,3 +26,14 @@ which queues the guardian for removal after a 3-day delay. The owner then calls
 guardian's address to finalize the removal and add the new guardian.
 Alternatively, the owner can call `cancelGuardianRemoval()` to restore the
 guardian state.
+
+## Versions
+- **v1**: conformant to specification
+
+## Properties
+- **p1**: The first owner is always the owner, in other words: the owner cannot change (should fail)
+
+
+|        | p1                 |
+| ------ | ------------------ |
+| **v1** | :white_check_mark: |
