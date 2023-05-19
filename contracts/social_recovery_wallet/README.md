@@ -31,9 +31,10 @@ guardian state.
 - **v1**: conformant to specification
 
 ## Properties
-- **p1**: The first owner is always the owner, in other words: the owner cannot change (should fail)
+- **p1**: the first owner is always the owner, in other words: the owner cannot change (should fail)
+- **p2**: the recovery can never happen (should fail)
 
 
-|        | p1                 |
-| ------ | ------------------ |
-| **v1** | :white_check_mark: |
+|        | p1                 | p2                 |
+| ------ | ------------------ | ------------------ | 
+| **v1** | :white_check_mark: | :white_check_mark: |
