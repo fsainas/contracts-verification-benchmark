@@ -29,12 +29,17 @@ guardian state.
 
 ## Versions
 - **v1**: conformant to specification
+- **v2**: removed guardian management
 
 ## Properties
 - **p1**: the first owner is always the owner, in other words: the owner cannot change (should fail)
 - **p2**: the recovery can never happen (should fail)
+- **p3**: if `address(0x1)` has initiated or supported a recovery, then `address(0x1)` is a guardian (should fail in v1)
+
+## Experiments
 
 
-|        | p1                 | p2                 |
-| ------ | ------------------ | ------------------ | 
-| **v1** | :white_check_mark: | :white_check_mark: |
+|        | p1                 | p2                 | p3         |
+| ------ | ------------------ | ------------------ | ---------- |
+| **v1** | :white_check_mark: | :white_check_mark: | :question: |
+| **v2** |                    |                    | :question: |
