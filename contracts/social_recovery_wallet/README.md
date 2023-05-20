@@ -46,4 +46,4 @@ guardian state.
 |        | p1                 | p2                 | p3         | p4         |
 | ------ | ------------------ | ------------------ | ---------- | ---------- | 
 | **v1** | :white_check_mark: | :white_check_mark: | :question: | :question: |
-| **v2** |                    |                    | :question: | 
+| **v2** |                    |                    | :question: | :question: |
