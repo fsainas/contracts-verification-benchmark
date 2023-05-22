@@ -30,6 +30,6 @@ and the actual transfer is triggered as a separate step by calling the
 
 ## Experiments
 
-|        | **inv1**           | **inv2**   | **inv3**           |
-| ------ | ------------------ | ---------- | ------------------ |
-| **v1** | :heavy_check_mark: | :question: | :heavy_check_mark: |
+|        | **p1**     | **inv2**   | **inv3**           |
+| ------ | ---------- | ---------- | ------------------ |
+| **v1** | :question: | :question: | :heavy_check_mark: |

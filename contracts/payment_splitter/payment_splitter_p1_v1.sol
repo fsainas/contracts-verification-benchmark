@@ -16,7 +16,7 @@ contract PaymentSplitter {
         require(payees_.length == shares_.length, "PaymentSplitter: payees and shares length mismatch");
         require(payees_.length > 0, "PaymentSplitter: no payees");
 
-        for (uint256 i = 0; i < payees.length; i++) {
+        for (uint256 i = 0; i < payees_.length; i++) {
             addPayee(payees_[i], shares_[i]);
         }
     }
@@ -94,5 +94,5 @@ contract PaymentSplitter {
 // ====
 // SMTEngine: CHC
 // Targets: assert
-// Time: 1:46.57
+// Time: 
 // ----
