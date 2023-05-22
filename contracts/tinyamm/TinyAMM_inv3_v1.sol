@@ -89,7 +89,7 @@ contract HTLC {
 	
         t_in.transferFrom(msg.sender, address(this), x_in);
 	
-	uint x_out = x_in * r_out * (r_in + x_in);
+	uint x_out = x_in * r_out / (r_in + x_in);
 	
         t_out.transfer(msg.sender, x_out);
 	
