@@ -27,9 +27,12 @@ and the actual transfer is triggered as a separate step by calling the
   `shares[address(0x1)]` $\neq 0$ 
 - **p3**: if the first account in `payees` is `address(0x1)` then 
   `shares[address(0x1)]` $= 0$ (should fail)
+- **p4**: if the first account in `payees` is `address(0x1)` then
+  `releasable(address(0x1))` will always be less or equal to
+  `address(this).balance`
 
 ## Experiments
 
-|        | **p1**     | **p2**     | **p3**             |
-| ------ | ---------- | ---------- | ------------------ |
-| **v1** | :question: | :question: | :white_check_mark: |
+|        | **p1**     | **p2**     | **p3**             | **p4**     |
+| ------ | ---------- | ---------- | ------------------ | ---------- |
+| **v1** | :question: | :question: | :white_check_mark: | :question: |
