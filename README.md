@@ -12,6 +12,12 @@ We've built a series of smart contracts to test the capabilities of SMTChecker:
 
 - [Escrow](contracts/escrow/)
 
+## Test Legend
+- :heavy_check_mark: $\to$ passed/failed as expected
+- :white_check_mark: $\to$ failed as expected, but no counterexamples were given
+- :question: $\to$ does not seem to terminate
+- :x: $\to$ expected to pass, but failed
+
 ## More tests
 We've also created some tests similar to those in the 
 [soldity repo](https://github.com/ethereum/solidity/tree/develop/test/libsolidity/smtCheckerTests).
