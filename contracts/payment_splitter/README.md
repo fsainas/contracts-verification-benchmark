@@ -25,11 +25,11 @@ and the actual transfer is triggered as a separate step by calling the
 - **p1**: every account in `payees` is a non-zero address.
 - **p2**: if the first account in `payees` is `address(0x1)` then
   `shares[address(0x1)]` $\neq 0$ 
-- **inv3**: if the first account in `payees` is `address(0x1)` then 
+- **p3**: if the first account in `payees` is `address(0x1)` then 
   `shares[address(0x1)]` $= 0$ (should fail)
 
 ## Experiments
 
-|        | **p1**     | **p2**     | **inv3**           |
+|        | **p1**     | **p2**     | **p3**             |
 | ------ | ---------- | ---------- | ------------------ |
-| **v1** | :question: | :question: | :heavy_check_mark: |
+| **v1** | :question: | :question: | :white_check_mark: |
