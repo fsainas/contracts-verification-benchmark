@@ -5,8 +5,8 @@ pragma solidity ^0.8.0;
 
 contract PaymentSplitter {
 
-    uint256 totalShares;
-    uint256 totalReleased;
+    uint256 private totalShares;
+    uint256 private totalReleased;
 
     mapping(address => uint256) private shares;
     mapping(address => uint256) private released;
@@ -23,7 +23,7 @@ contract PaymentSplitter {
 
     receive() external payable virtual { }
 
-    function getTotalgetShares() public view returns (uint256) {
+    function getTotalShares() public view returns (uint256) {
         return totalShares;
     }
 
@@ -84,4 +84,13 @@ contract PaymentSplitter {
         totalShares = totalShares + shares_;
     }
 
+    function invariant() public view {
+        assert(!(payees[0] == address(0x1) && !(shares[address(0x1)] != 0)));
+    }
 }
+
+// ====
+// SMTEngine: CHC
+// Targets: assert
+// Time: 
+// ----
