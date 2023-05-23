@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-contract HTLC {
+contract TinyAMM {
     IERC20 public immutable t0;
     IERC20 public immutable t1;
 
@@ -32,6 +32,7 @@ contract HTLC {
 	uint toMint;
        
 	if (ever_deposited) {
+	    require(r0 > 0);	    
 	    require(r0 * x1 == r1 * x0, "Dep precondition");
 	    toMint = (x0 * supply) / r0;
 	}
@@ -53,7 +54,8 @@ contract HTLC {
 	_lastTx = Tx.Dep;
     }
 
-    function redeeem(uint x) public {
+    function redeem(uint x) public {
+	require (supply > 0);
 	require (minted[msg.sender] >= x);
 	require (x < supply);
 	
@@ -76,7 +78,7 @@ contract HTLC {
 	_lastTx = Tx.Rdm;	
     }
 
-    function swap(address t, uint x_in) public {
+    function swap(address t, uint x_in, uint x_out_min) public {
 	require(t == address(t0) || t == address(t1));
         require(x_in > 0);
 
@@ -89,7 +91,9 @@ contract HTLC {
 	
         t_in.transferFrom(msg.sender, address(this), x_in);
 	
-	uint x_out = x_in * r_out * (r_in + x_in);
+	uint x_out = x_in * r_out / (r_in + x_in);
+
+	require(x_out >= x_out_min);
 	
         t_out.transfer(msg.sender, x_out);
 	
@@ -108,7 +112,7 @@ contract HTLC {
 	// assert(_prevSupply == supply);
 
 	// should succeed
-	assert(_lastTx!=Swap || _prevSupply == supply);
+	assert(_lastTx!=Tx.Swap || _prevSupply == supply);
     }
 }
 
