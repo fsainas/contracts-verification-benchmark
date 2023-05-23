@@ -37,13 +37,15 @@ guardian state.
 - **p2**: the recovery can never happen (should fail)
 - **p3**: if `address(0x1)` has initiated or supported a recovery, then
   `address(0x1)` is a guardian (should fail in v1)
-- **p4**: if two guardians have selected the same new owner, the round is 1 and the threshold
-  is 2, then `executeRecovery()` will succeed
+- **p4**: if two guardians have selected the same new owner, the round is 1 and
+  the threshold is 2, then `executeRecovery()` will succeed
+- **p5**: `executeRecovery()` will fail if not enough guardians joined the
+  recovery process
 
 ## Experiments
 
 
-|        | p1                 | p2                 | p3         | p4         |
-| ------ | ------------------ | ------------------ | ---------- | ---------- | 
-| **v1** | :white_check_mark: | :white_check_mark: | :question: | :question: |
-| **v2** |                    |                    | :question: | :question: |
+|        | p1                 | p2                 | p3         | p4         | p5                 |
+| ------ | ------------------ | ------------------ | ---------- | ---------- | ------------------ |
+| **v1** | :white_check_mark: | :white_check_mark: | :question: | :question: | :heavy_check_mark: |
+| **v2** |                    |                    | :question: | :question: |                    |
