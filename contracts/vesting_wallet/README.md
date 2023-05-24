@@ -19,7 +19,7 @@ releasable.
 - **v5**: virtual block.number variable (`delay()` method)
 - **v6**: virtual block.number (`delay()` method), `_balance` & `_deposited` ghost variables.
 
-## Invariants
+## Properties
 - **p1**: the amount releasable is always less than or equal to the contract
   balance;
 - **p2**: balance plus released equals total ever deposited.
