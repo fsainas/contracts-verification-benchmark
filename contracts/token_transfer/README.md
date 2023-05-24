@@ -26,7 +26,7 @@ these tests.
   [`SafeERC20.sol`](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol)
   (OpenZeppelin)
 
-## Invariants
+## Properties
 - **p1**: amount sent does not exceed deposit
 
 ## Experiments
