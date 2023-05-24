@@ -13,7 +13,7 @@ specified amount to the caller.
 - **v3**: contract is [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol)
 
 
-## Invariants
+## Properties
 - **p1**: amount sent does not exceed deposit
 - **p2**: `address(this).balance` is decreased after `withdraw()`
 
