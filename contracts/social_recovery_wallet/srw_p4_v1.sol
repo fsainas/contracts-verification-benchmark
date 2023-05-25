@@ -100,7 +100,7 @@ contract Wallet is ReentrancyGuard {
         inRecovery = false;
     }
 
-    function executeRecovery(address newOwner, address[] memory guardianList) onlyGuardian onlyInRecovery public returns (bool) {
+    function executeRecovery(address newOwner, address[] calldata guardianList) onlyGuardian onlyInRecovery public returns (bool) {
         // Need enough guardians to agree on same newOwner
         require(guardianList.length >= threshold, "more guardians required to transfer ownership");
 
@@ -109,9 +109,9 @@ contract Wallet is ReentrancyGuard {
             // cache recovery struct in memory
             Recovery memory recovery = guardianToRecovery[guardianList[i]];
 
-            if (recovery.recoveryRound == currRecoveryRound) return false;
-            if (recovery.proposedOwner == newOwner) return false;
-            if (!recovery.usedInExecuteRecovery) return false;
+            if (recovery.recoveryRound != currRecoveryRound) return false;
+            if (recovery.proposedOwner != newOwner) return false;
+            if (recovery.usedInExecuteRecovery) return false;
 
             // set field to true in storage, not memory
             guardianToRecovery[guardianList[i]].usedInExecuteRecovery = true;
@@ -159,28 +159,17 @@ contract Wallet is ReentrancyGuard {
         guardianHashToRemovalTimestamp[guardianHash] = 0;
     }
 
-    function invariant() public {
-        bytes32 newOwnerHash = keccak256(abi.encodePacked(block.timestamp));
-        bytes32 guardHash1 = keccak256(abi.encodePacked(block.timestamp+1));
-        bytes32 guardHash2 = keccak256(abi.encodePacked(block.timestamp+2));
+    function invariant(address newOwner, address[] calldata guardianList) public {
 
-        address newOwner = address(uint160(uint(newOwnerHash)));
-        address guard1 = address(uint160(uint(guardHash1)));
-        address guard2 = address(uint160(uint(guardHash2)));
+        require(guardianList.length >= threshold);
+        require(inRecovery == true);
 
-        require(isGuardian[guardHash1] == true);
-        require(isGuardian[guardHash2] == true);
+        for (uint i = 0; i < guardianList.length; i++) {
+            require(isGuardian[keccak256(abi.encodePacked(guardianList[i]))] == true);
+            require(guardianToRecovery[guardianList[i]].proposedOwner == newOwner);
+            require(guardianToRecovery[guardianList[i]].recoveryRound == currRecoveryRound);
+        }
 
-        require(guardianToRecovery[guard1].proposedOwner == newOwner);
-        require(guardianToRecovery[guard2].proposedOwner == newOwner);
-
-        require(currRecoveryRound == 1);
-        require(threshold == 2);
-
-        address[] memory guardianList = new address[](2); 
-        guardianList[0] = guard1;
-        guardianList[1] = guard2;
-    
         bool recoverySuccess = executeRecovery(newOwner, guardianList);
 
         assert(recoverySuccess);
