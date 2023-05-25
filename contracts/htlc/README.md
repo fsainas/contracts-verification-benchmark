@@ -1,7 +1,6 @@
 # HTLC
 
 ## Specification
-
 The Hash Timed Locked Contract (HTLC) involves two users, and it
 allows one participant to commit to a secret and reveal it afterwards.
 The commit is the SHA256 digest of the secret (a bitstring).
@@ -17,11 +16,18 @@ and tranfers the whole contract balance to the committer;
 - `timeout`, which can be called only after the deadline, and
 and tranfers the whole contract balance to the receiver.
 
+## Versions
+- **v1**: conformant to specification
+- **v2**: removed check that `commit` must be called before `reveal` and
+  `timeout`  
 
-## Invariants
+## Properties
+- **p1**: amount sent does not exceed deposit
+- **p2**: `reveal` and `timeout` can only be called after `commit`
 
-- **inv1**: amount sent does not exceed deposit
-  - **p1**: conformant to the specification
-- **inv2**: `reveal` and `timeout` can only be called after `commit`
-  - **p1**: conformant to the specification
-  - **n2**: removed check that `commit` must be called before `reveal` and `timeout`  
+## Experiments
+
+|        | p1                 | p2                 |
+| ------ | ------------------ | ------------------ |
+| **v1** | :heavy_check_mark: | :heavy_check_mark: |
+| **v2** | :heavy_check_mark: | :heavy_check_mark: |
