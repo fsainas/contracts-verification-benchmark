@@ -105,9 +105,9 @@ contract Wallet is ReentrancyGuard {
             // cache recovery struct in memory
             Recovery memory recovery = guardianToRecovery[guardianList[i]];
 
-            if (recovery.recoveryRound == currRecoveryRound) return false;
-            if (recovery.proposedOwner == newOwner) return false;
-            if (!recovery.usedInExecuteRecovery) return false;
+            if (recovery.recoveryRound != currRecoveryRound) return false;
+            if (recovery.proposedOwner != newOwner) return false;
+            if (recovery.usedInExecuteRecovery) return false;
 
             // set field to true in storage, not memory
             guardianToRecovery[guardianList[i]].usedInExecuteRecovery = true;
