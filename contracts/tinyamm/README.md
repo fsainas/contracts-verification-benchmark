@@ -44,6 +44,6 @@ maintain the integrity of the exchange.
 
 ## Experiments
 
-|        | p1  | p2         | p3  |
-| ------ | --- | ---------- | --- |
-| **v1** | :x: | :question: |  
+|        | p1  | p2         | p3         |
+| ------ | --- | ---------- | ---------- |
+| **v1** | :x: | :question: | :question: | 
