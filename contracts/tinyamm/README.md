@@ -31,3 +31,19 @@ address. The token balances in the liquidity pool, represented by `r0` and
 `r1`, are updated based on the direction of the swap. Finally, it is ensured
 that the contract holds the correct balances of `t0` and `t1` tokens to
 maintain the integrity of the exchange.
+
+## Versions
+
+- **v1**: conformant to specification
+
+## Properties
+
+- **p1**: the reserves are more than zero if a deposit has been made
+- **p2**: the supply is more than zero if a deposit has been made
+- **p3**: if the last transaction was not a swap the supply has not changed
+
+## Experiments
+
+|        | p1  | p2  | p3  |
+| ------ | --- | --- | --- |
+| **v1** | :x: |   
