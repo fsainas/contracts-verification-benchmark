@@ -37,6 +37,6 @@ then initiates a transfer of the specified amount to the depositor's address.
 |        | **p1**             | **p2**     | **p3**     | **p4**             |
 | ------ | ------------------ | ---------- | ---------- | ------------------ |
 | **v1** | :question:         | :question: | :question: | :question:         |
-| **v2** | :heavy_check_mark: |            |            | :x:                |
+| **v2** | :heavy_check_mark: |            |            | :white_check_mark: |
 | **v3** |                    |            |            | :heavy_check_mark: |
 

@@ -12,7 +12,7 @@ contract Bank {
 
     receive() external payable {
         balance += msg.value;
-        assert(address(this).balance >= msg.value);
+        assert(address(this).balance >= balance);
     }
 
     function withdraw(uint amount) public {
@@ -22,8 +22,8 @@ contract Bank {
 
         balance -= amount;
 
-        (bool succ,) = msg.sender.call{value: amount}("");
-        require(succ);
+        (bool success,) = msg.sender.call{value: amount}("");
+        require(success);
     }
 
 }
