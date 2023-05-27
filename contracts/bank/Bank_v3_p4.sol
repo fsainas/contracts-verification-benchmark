@@ -8,6 +8,9 @@ contract Bank is ReentrancyGuard {
     uint private balance;
     address private owner;
 
+    // ghost variables
+    uint _prev_balance;
+
     constructor(address owner_) {
         owner = owner_;
     }
@@ -23,12 +26,12 @@ contract Bank is ReentrancyGuard {
 
         balance -= amount;
 
-        (bool succ,) = msg.sender.call{value: amount}("");
-        require(succ);
+        (bool success,) = msg.sender.call{value: amount}("");
+        require(success);
     }
 
     function invariant(uint amount) public {
-        uint _prev_balance = balance;
+        _prev_balance = balance;
         withdraw(amount);
         assert(_prev_balance > balance);
     }
