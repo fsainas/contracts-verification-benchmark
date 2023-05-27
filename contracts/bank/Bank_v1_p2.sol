@@ -3,33 +3,33 @@ pragma solidity >= 0.8.2;
 
 contract Bank {
 
-    mapping (address => uint256) accounts;
+    mapping (address => uint) balances;
 
     // ghost variables
     uint _total_balance;    // total balance of the contract
-    uint _prev_balance;     // balance of the contract minus accounts[msg.sender]
+    uint _prev_balance;     // balance of the contract minus balances[msg.sender]
     uint _post_balance;
 
-    receive() external payable { 
-        accounts[msg.sender] += msg.value;
+    receive() external payable {
+        balances[msg.sender] += msg.value;
         _total_balance += msg.value;
     }
 
     function withdraw(uint amount) public {
         require(amount > 0);
-        require(amount <= accounts[msg.sender]);
+        require(amount <= balances[msg.sender]);
 
-        accounts[msg.sender] -= amount;
+        balances[msg.sender] -= amount;
         _total_balance -= amount;
 
-        (bool succ,) = msg.sender.call{value: amount}("");
-        require(succ);
+        (bool success,) = msg.sender.call{value: amount}("");
+        require(success);
     }
 
     function invariant(uint amount) public {
-        _prev_balance = _total_balance - accounts[msg.sender];
+        _prev_balance = _total_balance - balances[msg.sender];
         withdraw(amount);
-        _post_balance = _total_balance - accounts[msg.sender];
+        _post_balance = _total_balance - balances[msg.sender];
         assert(_prev_balance == _post_balance);     
     }
 
