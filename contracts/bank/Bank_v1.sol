@@ -5,13 +5,13 @@ contract Bank {
 
     mapping (address => uint) balances;
 
-    receive() external payable { 
+    receive() external payable {
         balances[msg.sender] += msg.value;
     }
 
     function withdraw(uint amount) public {
-        require(amount <= balances[msg.sender]);
         require(amount > 0);
+        require(amount <= balances[msg.sender]);
 
         balances[msg.sender] -= amount;
 
