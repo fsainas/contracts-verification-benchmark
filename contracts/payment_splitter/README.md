@@ -28,6 +28,8 @@ and the actual transfer is triggered as a separate step by calling the
 - **p4**: if `payees[0] == address(0x1)` then `releasable(address(0x1)) <= address(this).balance`
 - **p5**: for all accounts `a` in `payees`, `shares[a] > 0`
 - **p6**: for all accounts `a` in `payees`, `releasable(a) <= address(this).balance`
+- **p7**: the sum of of the releasable funds for every accounts is equal to
+  `address(this).balance`
 
 ## Experiments
 
