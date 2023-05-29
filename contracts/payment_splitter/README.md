@@ -22,14 +22,12 @@ and the actual transfer is triggered as a separate step by calling the
 - **v1**: conformant to specification.
 
 ## Invariants
-- **p1**: every account in `payees` is a non-zero address.
-- **p2**: if the first account in `payees` is `address(0x1)` then
-  `shares[address(0x1)]` $\neq 0$ 
-- **p3**: if the first account in `payees` is `address(0x1)` then 
-  `shares[address(0x1)]` $= 0$ (should fail)
-- **p4**: if the first account in `payees` is `address(0x1)` then
-  `releasable(address(0x1))` will always be less or equal to
-  `address(this).balance`
+- **p1**: for all accounts `a` in `payees`, `a != address(0)`
+- **p2**: if `payees[0] == address(0x1)` then `shares[address(0x1)] != 0`
+- **p3**: if `payees[0] == address(0x1)` then `shares[address(0x1)] == 0` (should fail)
+- **p4**: if `payees[0] == address(0x1)` then `releasable(address(0x1)) <= address(this).balance`
+- **p5**: for all accounts `a` in `payees`, `shares[a] >= 0`
+- **p6**: for all accounts `a` in `payees`, `releasable(a) <= address(this).balance`
 
 ## Experiments
 
