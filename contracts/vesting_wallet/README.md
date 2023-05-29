@@ -28,4 +28,4 @@ started, any amount sent to this contract will be immediately releasable.
 
 |      | p1                 | p2                    | p3         |
 | ---- | ------------------ | --------------------- | ---------- | 
-|**v1**| :x:                | :question:            |
+|**v1**| :x:                | :question:            | :question: |
