@@ -35,8 +35,7 @@ guardian state.
 - **p1**: the first owner is always the owner, in other words: the owner cannot
   change (should fail)
 - **p2**: the recovery can never happen (should fail)
-- **p3**: if `address(0x1)` has initiated or supported a recovery, then
-  `address(0x1)` is a guardian (should fail in v1)
+- **p3**: if an address `a` has participated in a recovery, then `a` is a guardian (should fail in v1)
 - **p4**: if two guardians have selected the same new owner, the round is 1 and
   the threshold is 2, then `executeRecovery()` will succeed
 - **p5**: `executeRecovery()` will fail if not enough guardians joined the
