@@ -5,8 +5,8 @@ pragma solidity ^0.8.0;
 
 contract PaymentSplitter {
 
-    uint256 totalShares;
-    uint256 totalReleased;
+    uint256 private totalShares;
+    uint256 private totalReleased;
 
     mapping(address => uint256) private shares;
     mapping(address => uint256) private released;
