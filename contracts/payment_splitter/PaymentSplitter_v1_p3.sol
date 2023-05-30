@@ -23,29 +23,9 @@ contract PaymentSplitter {
 
     receive() external payable virtual { }
 
-    function getTotalShares() public view returns (uint256) {
-        return totalShares;
-    }
-
-    function getTotalReleased() public view returns (uint256) {
-        return totalReleased;
-    }
-
-    function getShares(address account) public view returns (uint256) {
-        return shares[account];
-    }
-
-    function getReleased(address account) public view returns (uint256) {
-        return released[account];
-    }
-
-    function getPayee(uint256 index) public view returns (address) {
-        return payees[index];
-    }
-
     function releasable(address account) public view returns (uint256) {
-        uint256 totalReceived = address(this).balance + getTotalReleased();
-        return pendingPayment(account, totalReceived, getReleased(account));
+        uint256 totalReceived = address(this).balance + totalReleased;
+        return pendingPayment(account, totalReceived, released[account]);
     }
 
     function release(address payable account) public virtual {
@@ -85,7 +65,7 @@ contract PaymentSplitter {
     }
 
     function invariant() public view {
-        assert(!(payees[0] == address(0x1) && !(shares[address(0x1)] == 0)));
+        assert(!(payees[0] == address(0x1)) || shares[address(0x1)] == 0);
     }
 }
 
