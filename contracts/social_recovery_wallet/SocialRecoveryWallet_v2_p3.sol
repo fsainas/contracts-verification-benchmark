@@ -120,11 +120,9 @@ contract Wallet is ReentrancyGuard {
         owner = newOwner;
     }
 
-    function invariant() public view {
-        require(guardianToRecovery[address(0x1)].proposedOwner != address(0));
-
-        assert(isGuardian[keccak256(abi.encodePacked(address(0x1)))] == true);
-        //assert(!(guardianToRecovery[address(0x1)].proposedOwner != address(0) && !(isGuardian[keccak256(abi.encodePacked(address(0x1)))] != true)));
+    function invariant(address a) public view {
+        require(guardianToRecovery[a].proposedOwner != address(0));
+        assert(isGuardian[keccak256(abi.encodePacked(a))] == true);
     }
 
 }
