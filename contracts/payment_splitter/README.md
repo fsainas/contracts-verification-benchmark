@@ -19,7 +19,8 @@ and the actual transfer is triggered as a separate step by calling the
 `release()` function. 
 
 ## Versions
-- **v1**: conformant to specification.
+- **v1**: conformant to specification
+- **v2**: the maximum length of `payees` is 3
 
 ## Invariants
 - **p1**: for all accounts `a` in `payees`, `a != address(0)`
@@ -33,6 +34,6 @@ and the actual transfer is triggered as a separate step by calling the
 
 ## Experiments
 
-|        | **p1**     | **p2**     | **p3**             | **p4**     | **p5**     | **p6**     |
-| ------ | ---------- | ---------- | ------------------ | ---------- | ---------- | ---------- |
-| **v1** | :question: | :question: | :white_check_mark: | :question: | :question: | :question: |
+|        | **p1**     | **p2**     | **p3**             | **p4**     | **p5**     | **p6** |
+| ------ | ---------- | ---------- | ------------------ | ---------- | ---------- | ------ |
+| **v1** | :question: | :question: | :white_check_mark: | :question: | :question: | :x:    |
