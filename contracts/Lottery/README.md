@@ -30,3 +30,8 @@ fails, the contract reverts the transaction and a new winner can be selected.
 - **v2**: each player can only buy one ticket
 - **v3**: *decentralized lottery*, there is no manager and the `pickWinner()`
   pays a fee to anyone how calls it
+
+## Properties
+
+- **p1**: if a player calls `enter()` and successfully sends 0.01 Ether, they
+  become eligible to receive the prize
