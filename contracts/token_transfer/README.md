@@ -1,6 +1,7 @@
 # Token Transfer
 
 ## Specification
+
 Token Transfer is similar to Simple Transfer, but operates with ERC20 tokens
 instead of ethers. It is initialized by passing the token address to the
 `constructor()`. In contrast to Simple Transfer, the deposit is made after the
@@ -17,6 +18,7 @@ with ethers, the behavior can be considered comparable for the purposes of
 these tests.
 
 ## Versions
+
 - **v1**: conformant to specification;
 - **v2**: instead of accessing `token.balanceOf(address(this))` directly, the `balance`
   variable is used to keep track of the balance. 
@@ -27,7 +29,9 @@ these tests.
   (OpenZeppelin)
 
 ## Properties
+
 - **p1**: amount sent does not exceed deposit
+- **p2**: `deposit()` can only be called once
 
 ## Experiments
 
