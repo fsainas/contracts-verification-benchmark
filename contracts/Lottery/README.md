@@ -42,8 +42,8 @@ fails, the contract reverts the transaction and a new winner can be selected.
 
 ## Experiments
 
-|        | p1         | p2 | p3 | p4 | p5 |
-| ------ | ---------- | -- | -- | -- | -- |
-| **v1** |||| :question: | 
-| **v2** |||| :question: |
-| **v3** |||| :question: |
+|        | p1                 | p2 | p3 | p4 | p5 |
+| ------ | ------------------ | -- | -- | -- | -- |
+| **v1** | :heavy_check_mark: ||| :question: | 
+| **v2** | :heavy_check_mark: ||| :question: |
+| **v3** | :heavy_check_mark: ||| :question: |
