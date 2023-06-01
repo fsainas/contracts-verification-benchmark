@@ -33,5 +33,9 @@ fails, the contract reverts the transaction and a new winner can be selected.
 
 ## Properties
 
-- **p1**: if a player calls `enter()` and successfully sends 0.01 Ether, they
-  become eligible to receive the prize
+- **p1**: participants can enter the lottery
+- **p2**: only the manager can pick the winner
+- **p3**: players can't be removed from the game until a winner is picked
+- **p4**: if a player calls `enter()` and successfully sends 0.01 Ether, they
+  can be selected as winner
+- **p5**: the selected winner is always one of the eligible players
