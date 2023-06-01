@@ -39,3 +39,11 @@ fails, the contract reverts the transaction and a new winner can be selected.
 - **p4**: if a player calls `enter()` and successfully sends 0.01 Ether, they
   can be selected as winner
 - **p5**: the selected winner is always one of the eligible players
+
+## Experiments
+
+|        | p1         | p2 | p3 | p4 | p5 |
+| ------ | ---------- | -- | -- | -- | -- |
+| **v1** |||| :question: | 
+| **v2** |||| :question: |
+| **v3** |||| :question: |
