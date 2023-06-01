@@ -26,6 +26,11 @@ contract Lottery {
         require(msg.sender == manager);
 
         address winner = players[random() % players.length];
+
+        for (uint i = 0; i < players.length; i++) {
+            hasEntered[players[i]] = false;
+        }
+
         players = new address[](0);
 
         (bool success,) = winner.call{value: address(this).balance}("");
