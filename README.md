@@ -13,6 +13,7 @@ We have built a series of smart contracts to test the capabilities of SMTChecker
 - [Simple Transfer](contracts/simple_transfer/)
 - [Token Transfer](contracts/token_transfer/)
 - [Bank](contracts/bank/)
+- [Lottery](contracts/Lottery/)
 - [Escrow](contracts/escrow/)
 - [Vesting Wallet](contracts/vesting_wallet/)
 - [Vault](contracts/vault/)
