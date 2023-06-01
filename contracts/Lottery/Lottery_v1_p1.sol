@@ -7,7 +7,6 @@ contract Lottery {
 
     // ghost variables
     address _winner;
-    address _player;
     mapping (address => bool) _isPlayer; 
 
     constructor() {
@@ -45,8 +44,6 @@ contract Lottery {
 
     function invariant() public payable {
         require(msg.value == .01 ether);
-
-        _player = msg.sender;
 
         enter();
 
