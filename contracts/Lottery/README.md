@@ -29,7 +29,7 @@ fails, the contract reverts the transaction and a new winner can be selected.
 - **v1**: conformant to specification
 - **v2**: each player can only buy one ticket
 - **v3**: *decentralized lottery*, there is no manager and the `pickWinner()`
-  pays a fee to anyone how calls it
+  pays a fee to anyone who calls it
 
 ## Properties
 
