@@ -3,10 +3,17 @@ pragma solidity >=0.8.18;
 
 contract Lottery {
     address[] private players;
+    uint private start;
+    uint private duration;
 
     // ghost variables
     address _winner;
     mapping (address => bool) _isPlayer; 
+
+    constructor(uint duration_) {
+        start = block.number;
+        duration = duration_;
+    }
 
     function enter() public payable {
         require(msg.value == .01 ether);
@@ -20,6 +27,8 @@ contract Lottery {
     }
 
     function pickWinner(address _player) public {
+        require(block.number >= start + duration);
+
         address winner = players[random() % players.length];
 
         // !_isPlayer[_player] => winner != _player
@@ -32,6 +41,8 @@ contract Lottery {
         players = new address[](0);
 
         uint fee = address(this).balance / 100;
+
+        start = block.number;
 
         (bool success,) = msg.sender.call{value: fee}("");
         require(success);

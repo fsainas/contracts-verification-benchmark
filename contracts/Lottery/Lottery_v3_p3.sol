@@ -3,12 +3,19 @@ pragma solidity >=0.8.18;
 
 contract Lottery {
     address[] private players;
+    uint private start;
+    uint private duration;
 
     // ghost variables
     enum Call {ENTER, PICK}
     uint _prevPlayersLength;
     uint _playersLength;
     Call _lastCall;
+
+    constructor(uint duration_) {
+        start = block.number;
+        duration = duration_;
+    }
 
     function enter() external payable {
         require(msg.value == .01 ether);
@@ -25,6 +32,8 @@ contract Lottery {
     }
 
     function pickWinner() public {
+        require(block.number >= start + duration);
+
         address winner = players[random() % players.length];
         players = new address[](0);
 
@@ -33,6 +42,8 @@ contract Lottery {
         _prevPlayersLength = _playersLength;
         _playersLength = players.length;
         _lastCall = Call.PICK;
+
+        start = block.number;
 
         (bool success,) = msg.sender.call{value: fee}("");
         require(success);
