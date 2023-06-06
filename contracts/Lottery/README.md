@@ -6,44 +6,39 @@ This contract represents a simple lottery system. It allows participants to
 enter the lottery by sending a specific amount of Ether and provides a function
 to pick a winner among the entered participants.
 
-The contract starts by defining the `manager`, which is the address of the
-account that deployed the contract and has the authority to pick the winner.
-Additionally, an array called `players[]` tracks the addresses of the
-participants who have entered the lottery.
+The contract starts by defining a duration which will define the how much time
+will pass between lottery rounds. 
 
-The `enter()` function is used by participants to enter the lottery. It is an
-external function that can be called by anyone. The cost of a ticket is 0.01
-Ether. 
+An array called `players[]` tracks the addresses of the participants who have
+entered the lottery.
 
-The `pickWinner()` function is a public function that can only be called by the
-manager. It then selects a winner by generating a pseudo-random index within
-the range of the players array length and retrieves the corresponding address.
+The `enter()` function is used by participants to enter the lottery for the cost
+of 0.01 Ether. It is an external function that can be called by anyone.
 
-Finally, the contract transfers the balance of the contract to the winner
-address using the call function. The contract assumes that the winner address
-is a regular Ethereum account capable of receiving funds. If the transfer
-fails, the contract reverts the transaction and a new winner can be selected.
-
-## Versions
-
-- **v1**: conformant to specification
-- **v2**: each player can only buy one ticket
-- **v3**: *decentralized lottery*, there is no manager and the `pickWinner()`
-  pays a fee to anyone who calls it after a deadline
+The `pickWinner()` function is also an external function that can be called by
+anyone after the end of the round. It selects a winner by generating a
+pseudo-random index within the range of the players array length and retrieves
+the corresponding address. Upon invocation, the contract compensates the caller
+with a fee and transfers the remaining balance to the winner. In the event of a
+transfer failure, the contract reverts the transaction, enabling the selection
+of a new winner. Ultimately, the players array is reset and new round begins.
 
 ## Properties
 
 - **p1**: participants can enter the lottery
-- **p2**: only the manager can pick the winner
-- **p3**: players can't be removed from the game until a winner is picked
-- **p4**: if a player calls `enter()` and successfully sends 0.01 Ether, they
+- **p2**: players can't be removed from the game until a winner is picked
+- **p3**: if a player calls `enter()` and successfully sends 0.01 Ether, they
   can be selected as winner
-- **p5**: the selected winner is always one of the eligible players
+- **p4**: the selected winner is always one of the eligible players
+
+## Versions
+
+- **v1**: conformant to specification
 
 ## Experiments
 
-|        | p1                 | p2 | p3                 | p4         | p5         |
-| ------ | ------------------ | -- | ------------------ | ---------- | ---------  |
-| **v1** | :heavy_check_mark: |    | :heavy_check_mark: | :question: | :question: | 
-| **v2** | :heavy_check_mark: |    | :heavy_check_mark: | :question: | :question: |
-| **v3** | :heavy_check_mark: |    | :heavy_check_mark: | :question: | :question: |
+### SolCMC
+
+|        | p1                 | p2                 | p3         | p4         |
+| ------ | ------------------ | ------------------ | ---------- | ---------  |
+| **v1** | :heavy_check_mark: | :heavy_check_mark: | :question: | :question: | 
