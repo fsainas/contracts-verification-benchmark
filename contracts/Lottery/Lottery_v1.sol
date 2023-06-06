@@ -2,11 +2,13 @@
 pragma solidity >=0.8.18;
 
 contract Lottery {
-    address immutable private manager;
     address[] private players;
+    uint private start;
+    uint private duration;
 
-    constructor() {
-        manager = msg.sender;
+    constructor(uint duration_) {
+        start = block.number;
+        duration = duration_;
     }
 
     function enter() external payable {
@@ -19,13 +21,21 @@ contract Lottery {
         return uint(keccak256(abi.encode(block.prevrandao)));
     }
 
-    function pickWinner() public {
-        require(msg.sender == manager);
+    function pickWinner() external {
+        require(block.number >= start + duration);
 
         address winner = players[random() % players.length];
+
         players = new address[](0);
 
-        (bool success,) = winner.call{value: address(this).balance}("");
+        uint fee = address(this).balance / 100;
+
+        start = block.number;
+
+        (bool success,) = msg.sender.call{value: fee}("");
+        require(success);
+
+        (success,) = winner.call{value: address(this).balance}("");
         require(success);
     }
 
