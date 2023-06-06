@@ -24,7 +24,11 @@ We have built a series of smart contracts to test the capabilities of SMTChecker
 - [Social Recovery Wallet](contracts/social_recovery_wallet/)
 
 ## Experiments Legend
-- :heavy_check_mark: $\to$ passed/failed as expected
-- :white_check_mark: $\to$ failed as expected, but no counterexamples were given
-- :question: $\to$ does not seem to terminate
-- :x: $\to$ expected to pass, but failed
+| Symbol | Meaning |
+| ------ | ------- |
+| TP | test passed as expected 
+| TN | test failed as expected
+| FP | test passed but should have failed (false positive)
+| FN | test failed but should have passed (false negative)
+| ? |  test does not seem to terminate
+| N/D | property not definable
