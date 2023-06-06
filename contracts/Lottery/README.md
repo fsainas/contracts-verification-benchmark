@@ -39,6 +39,6 @@ of a new winner. Ultimately, the players array is reset and new round begins.
 
 ### SolCMC
 
-|        | p1                 | p2                 | p3         | p4         |
-| ------ | ------------------ | ------------------ | ---------- | ---------  |
-| **v1** | :heavy_check_mark: | :heavy_check_mark: | :question: | :question: | 
+|        | p1 | p2 | p3 | p4
+| ------ | -- | -- | -- | --
+| **v1** | TP | TP | ?  | ? 
