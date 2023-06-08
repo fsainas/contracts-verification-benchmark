@@ -12,8 +12,8 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 ## Properties
 
-- **p1**: after a deposit, the contract balance is greater than the balance
-  of the account that made the deposit
+- **p1**: after a deposit, the contract balance is greater than or equal to the
+  balance of the account that made the deposit
 - **p2**: after a withdrawal, the balance of `msg.sender` is decreased
 - **p3**: after a withdrawal, the balance of `msg.sender` is decreased by `amount`
 - **p4**: after a withdrawal, the total balance of the contract, excluding the
