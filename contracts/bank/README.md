@@ -24,6 +24,8 @@ then initiates a transfer of the specified amount to the depositor's address.
 ## Versions
 
 - **v1**: conformant to specification
+- **v1**: the variable `_contractBalance` is used to keep track of the contract
+  balance instead of directly accessing `address(this).balance`
 
 ## Experiments
 
@@ -32,8 +34,10 @@ then initiates a transfer of the specified amount to the depositor's address.
 |        | p1 | p2 | p3 | p4 
 | ------ | -- | -- | -- | --
 | **v1** | TP |    |    |  
+| **v2** | TP |    |    |  
 
 ### Certora
 |        | p1 | p2 | p3 | p4 
 | ------ | -- | -- | -- | --
 | **v1** | TP |    |    |  
+| **v2** | TP |    |    |  

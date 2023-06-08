@@ -2,18 +2,20 @@
 pragma solidity >= 0.8.2;
 
 contract Bank {
-    mapping (address => uint) balances;
+    mapping (address => uint) private balances;
+    uint totalBalance;
 
-    receive() external payable {
-        /* pre-conditions */
-        require(address(this).balance - msg.value >= balances[msg.sender]);
+    function getBalance(address a) public view returns (uint) {
+        return balances[a];
+    }
 
-        /* body start */
+    function getContractBalance() public view returns (uint) {
+        return totalBalance;
+    }
+
+    function receiveEth() public payable {
+        totalBalance += msg.value;
         balances[msg.sender] += msg.value;
-        /* body end */
-
-        /* post-conditions */
-        assert(address(this).balance >= balances[msg.sender]);
     }
 
     function withdraw(uint amount) public {
@@ -21,15 +23,10 @@ contract Bank {
         require(amount <= balances[msg.sender]);
 
         balances[msg.sender] -= amount;
+        totalBalance -= amount;
 
         (bool success,) = msg.sender.call{value: amount}("");
         require(success);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Targets: assert
-// Time: 0.2s
-// ----

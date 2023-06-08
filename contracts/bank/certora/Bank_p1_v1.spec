@@ -5,8 +5,11 @@ methods {
     function withdraw(uint) external;
 }
 
-// Why !contractBalanceAfter >= contractBalanceBefore by default?
-rule contractBalanceGreaterOrEqualV0 {
+/* 
+ * contractBalanceAfter >= contractBalanceBefore after a payable function is
+ * called is not considered by default
+ */
+rule contractBalanceGreaterOrEqualV1 {
     env e;
     address owner = e.msg.sender;
     
@@ -26,7 +29,7 @@ rule contractBalanceGreaterOrEqualV0 {
     assert contractBalanceAfter >= addressBalanceAfter;
 }
 
-rule contractBalanceGreaterOrEqual {
+rule contractBalanceGreaterOrEqualV2 {
     env e;
     address owner = e.msg.sender;
     

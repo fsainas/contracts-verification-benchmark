@@ -26,10 +26,4 @@ contract Bank {
         require(success);
     }
 
-    function invariant() public payable {
-        require(getContractBalance() - msg.value <= getBalance(msg.sender));
-        receiveEth();
-        assert(getContractBalance() <= getBalance(msg.sender));
-    }
-
 }
