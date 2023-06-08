@@ -1,10 +1,12 @@
 methods {
     function getBalance(address) external returns(uint) envfree;
+    function getContractBalance() external returns (uint) envfree;
     function withdraw(uint) external;
 }
 
 rule SenderBalanceDecreasedByAmount {
     env e;
+
     address sender = e.msg.sender;
     uint amount;
     
@@ -20,6 +22,7 @@ rule SenderBalanceDecreasedByAmount {
 // should fail
 rule SenderBalanceNotDecreasedByAmount {
     env e;
+
     address sender = e.msg.sender;
     uint amount;
     
@@ -32,4 +35,4 @@ rule SenderBalanceNotDecreasedByAmount {
     assert senderBalanceBefore != senderBalanceAfterPlusAmount;
 }
 
-// proof: https://prover.certora.com/output/49230/0e9e154c78fd4b6b8a08ab6dcad31da4?anonymousKey=98f4c057538250a750c9638a84a70062f999669f
+// proof: https://prover.certora.com/output/49230/724461f104c6412490e6dafb00f1cd0c?anonymousKey=65fdc022b616f4fc7191349cf1efdc5c53cd2103

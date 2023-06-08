@@ -1,12 +1,14 @@
 methods {
     function getContractBalance() external returns (uint) envfree;
     function getBalance(address) external returns(uint) envfree;
-    function receiveEth() external;
     function withdraw(uint) external;
 }
 
 rule totalBalanceGreaterOrEqual {
     env e;
+    method receive;
+    calldataarg args;
+
     address sender = e.msg.sender;
     
     uint256 senderBalanceBefore = getBalance(sender);
@@ -14,7 +16,7 @@ rule totalBalanceGreaterOrEqual {
 
     require totalBalanceBefore >= senderBalanceBefore;
 
-    receiveEth(e);
+    receive(e, args);
 
     uint256 senderBalanceAfter = getBalance(sender);
     uint256 totalBalanceAfter = getContractBalance();
@@ -22,8 +24,11 @@ rule totalBalanceGreaterOrEqual {
     assert totalBalanceAfter >= senderBalanceAfter;
 }
 
-rule totalBalanceEqual {
+rule totalBalanceEqual { // should fail
     env e;
+    method receive;
+    calldataarg args;
+
     address sender = e.msg.sender;
     
     uint256 senderBalanceBefore = getBalance(sender);
@@ -31,7 +36,7 @@ rule totalBalanceEqual {
 
     require totalBalanceBefore >= senderBalanceBefore;
 
-    receiveEth(e);
+    receive(e, args);
 
     uint256 senderBalanceAfter = getBalance(sender);
     uint256 totalBalanceAfter = getContractBalance();
@@ -39,6 +44,4 @@ rule totalBalanceEqual {
     assert totalBalanceAfter == senderBalanceAfter;
 }
 
-// prover: https://prover.certora.com/output/49230/1b8a1e9ce6c9413e81dbb843017034bb?anonymousKey=dee48afa7b35740a3ba130c09d2da14fcd24d3ed
-
-
+// prover:https://prover.certora.com/output/49230/cee0fa9e72214701b86faee70025266f?anonymousKey=ad5a438a053b593047216ec8c320040fb6d5d2d8 

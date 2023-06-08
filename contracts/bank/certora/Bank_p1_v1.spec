@@ -1,67 +1,47 @@
 methods {
-    function getContractBalance() external returns (uint) envfree;
     function getBalance(address) external returns(uint) envfree;
-    function receiveEth() external;
+    function getContractBalance() external returns (uint) envfree;
     function withdraw(uint) external;
 }
 
-/* 
- * contractBalanceAfter >= contractBalanceBefore after a payable function is
- * called is not considered by default
- */
-rule contractBalanceGreaterOrEqualV1 {
+rule totalBalanceGreaterOrEqual {
     env e;
-    address owner = e.msg.sender;
+    method receive;
+    calldataarg args;
+
+    address sender = e.msg.sender;
     
-    uint256 addressBalanceBefore = getBalance(owner);
-    uint256 contractBalanceBefore = getContractBalance();
+    uint256 senderBalanceBefore = getBalance(sender);
+    uint256 totalBalanceBefore = getContractBalance();
 
-    require contractBalanceBefore >= addressBalanceBefore;
+    require totalBalanceBefore >= senderBalanceBefore;
 
-    receiveEth(e);
+    receive(e, args);
 
-    uint256 addressBalanceAfter = getBalance(owner);
-    uint256 contractBalanceAfter = getContractBalance();
+    uint256 senderBalanceAfter = getBalance(sender);
+    uint256 totalBalanceAfter = getContractBalance();
 
-    //Cannot safely cast contractBalanceBefore + e.msg.value (mathint) to uint256
-    require assert_uint256(contractBalanceBefore + e.msg.value) == contractBalanceAfter;
-
-    assert contractBalanceAfter >= addressBalanceAfter;
+    assert totalBalanceAfter >= senderBalanceAfter;
 }
 
-rule contractBalanceGreaterOrEqualV2 {
+rule totalBalanceEqual { // should fail
     env e;
-    address owner = e.msg.sender;
+    method receive;
+    calldataarg args;
+
+    address sender = e.msg.sender;
     
-    uint256 addressBalanceBefore = getBalance(owner);
+    uint256 senderBalanceBefore = getBalance(sender);
+    uint256 totalBalanceBefore = getContractBalance();
 
-    receiveEth(e);
+    require totalBalanceBefore >= senderBalanceBefore;
 
-    uint256 contractBalance = getContractBalance();
+    receive(e, args);
 
-    require assert_uint256(contractBalance - e.msg.value) >= addressBalanceBefore;
+    uint256 senderBalanceAfter = getBalance(sender);
+    uint256 totalBalanceAfter = getContractBalance();
 
-    uint256 addressBalanceAfter = getBalance(owner);
-
-    assert contractBalance >= addressBalanceAfter;
+    assert totalBalanceAfter == senderBalanceAfter;
 }
 
-rule contractBalanceEqual { // should fail
-    env e;
-    address owner = e.msg.sender;
-    
-    uint256 addressBalanceBefore = getBalance(owner);
-
-    receiveEth(e);
-
-    uint256 contractBalance = getContractBalance();
-
-    require assert_uint256(contractBalance - e.msg.value) >= addressBalanceBefore;
-
-    uint256 addressBalanceAfter = getBalance(owner);
-
-    assert contractBalance == addressBalanceAfter;
-}
-
-// prover: https://prover.certora.com/output/49230/85e67c5be60a4076bdbf022b133fff2c?anonymousKey=92b17453867dd847b73f4d14b2a9e3aab939c113
-
+// proofs: https://prover.certora.com/output/49230/9b05730d288a452abb7fda60e2d9af85?anonymousKey=5f1e42f7ed653e9f74a07a17bf1fc63d9766964e
