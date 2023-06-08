@@ -10,12 +10,6 @@ the withdraw function of the Bank contract with a specified amount. The
 contract verifies that the depositor has sufficient funds in their account and
 then initiates a transfer of the specified amount to the depositor's address.
 
-## Versions
-
-- **v1**: conformant to specification
-- **v2**: the bank has only one account, only `owner` can withdraw
-- **v3**: as *v2*, but Bank is [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol)
-
 ## Properties
 
 - **p1**: after a deposit, the contract balance is greater than the balance
@@ -27,11 +21,19 @@ then initiates a transfer of the specified amount to the depositor's address.
   or is increased.
 - **p4**: after a withdrawal the balance of the account is decreased
 
+## Versions
+
+- **v1**: conformant to specification
+
 ## Experiments
 
-|        | **p1**             | **p2**     | **p3**     | **p4**             |
-| ------ | ------------------ | ---------- | ---------- | ------------------ |
-| **v1** | :question:         | :question: | :question: | :question:         |
-| **v2** | :heavy_check_mark: |            |            | :white_check_mark: |
-| **v3** |                    |            |            | :heavy_check_mark: |
+### SolCMC
 
+|        | p1 | p2 | p3 | p4 
+| ------ | -- | -- | -- | --
+| **v1** | TP |    |    |  
+
+### Certora
+|        | p1 | p2 | p3 | p4 
+| ------ | -- | -- | -- | --
+| **v1** | TP |    |    |  

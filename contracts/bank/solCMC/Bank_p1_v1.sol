@@ -2,14 +2,16 @@
 pragma solidity >= 0.8.2;
 
 contract Bank {
-
     mapping (address => uint) balances;
 
-    // ghost variables
-    uint _prev_balance;     // balance of the contract minus balances[msg.sender]
-
     receive() external payable {
+        require(address(this).balance - msg.value >= balances[msg.sender]);
+
+        // Function start
         balances[msg.sender] += msg.value;
+        // Function end
+
+        assert(address(this).balance >= balances[msg.sender]);
     }
 
     function withdraw(uint amount) public {
@@ -22,16 +24,10 @@ contract Bank {
         require(success);
     }
 
-    function invariant(uint amount) public {
-        _prev_balance = balances[msg.sender];
-        withdraw(amount);
-        assert(_prev_balance > balances[msg.sender]);
-    }
-
 }
 
 // ====
 // SMTEngine: CHC
 // Targets: assert
-// Time: n/a
+// Time: 0.2s
 // ----

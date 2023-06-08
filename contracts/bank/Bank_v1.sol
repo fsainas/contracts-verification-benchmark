@@ -2,7 +2,6 @@
 pragma solidity >= 0.8.2;
 
 contract Bank {
-
     mapping (address => uint) balances;
 
     receive() external payable {
