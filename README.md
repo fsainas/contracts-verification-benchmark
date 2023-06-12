@@ -29,7 +29,7 @@ For each entry of the matrix, we summarize the output of the tool as follows:
 | FP     | False Positive (property does not hold, verification succeeds) |
 | FN     | False Negative (property holds, verification fails)            |
 | ?      | Timeout                                                        |
-| N/D    | property not definable with the tool                           |
+| N/D    | Property not definable with the tool                           |
 
 We test our benchmark with two mainstream verification tools:
 [SolCMC](https://verify.inf.usi.ch/publications/2022/solcmc-solidity-compiler%E2%80%99s-model-checker) and [Certora](https://www.certora.com/).
