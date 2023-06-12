@@ -18,6 +18,10 @@ contract Bank {
         return totalBalance;
     }
 
+    function getContractAddress() public view returns (address) {
+        return address(this);
+    }
+
     function withdraw(uint amount) public {
         require(amount > 0);
         require(amount <= balances[msg.sender]);
