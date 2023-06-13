@@ -1,15 +1,9 @@
-# Solidity SMTChecker Analysis
-This repository contains an analysis of the SMTChecker tool. SMTChecker is a
-software verification tool that uses Satisfiability Modulo Theories (SMT)
-solvers to check the correctness of Solidity smart contracts. It is integrated
-into the Solidity compiler, making it a convenient and efficient option for
-developers looking to ensure the reliability of their smart contracts. The
-analysis in this repository aims to provide an overview of what the tool can
-currently do and what it cannot. 
+# An open benchmark for evaluation of smart contracts verification tools
 
-## Contracts
-We have built a series of smart contracts to test the capabilities of SMTChecker:
+We introduce an open benchmark of smart contracts and relevant security properties
+to be used for the evaluation and comparison of verification tools.
 
+The benchmark currently comprises several versions (correct or bugged) of the following use cases:
 - [Simple Transfer](contracts/simple_transfer/)
 - [Token Transfer](contracts/token_transfer/)
 - [Bank](contracts/bank/)
@@ -23,12 +17,19 @@ We have built a series of smart contracts to test the capabilities of SMTChecker
 - [Payment Splitter](contracts/payment_splitter/)
 - [Social Recovery Wallet](contracts/social_recovery_wallet/)
 
-## Experiments Legend
-| Symbol | Meaning |
-| ------ | ------- |
-| TP | test passed as expected 
-| TN | test failed as expected
-| FP | test passed but should have failed (false positive)
-| FN | test failed but should have passed (false negative)
-| ? |  test does not seem to terminate
-| N/D | property not definable
+For each use case, we evaluate the performance of a verification tool
+as a matrix, where columns represent different contract properties, and
+rows represent different implementations of the use case.
+For each entry of the matrix, we summarize the output of the tool as follows:
+
+| Symbol | Meaning                                                        |
+| ------ | -------                                                        |
+| TP     | True Positive  (property holds, verification succeeds)         |
+| TN     | True Negative  (property does not hold, verification fails)    |
+| FP     | False Positive (property does not hold, verification succeeds) |
+| FN     | False Negative (property holds, verification fails)            |
+| ?      | Timeout                                                        |
+| N/D    | Property not definable with the tool                           |
+
+We test our benchmark with two mainstream verification tools:
+[SolCMC](https://verify.inf.usi.ch/publications/2022/solcmc-solidity-compiler%E2%80%99s-model-checker) and [Certora](https://www.certora.com/).
