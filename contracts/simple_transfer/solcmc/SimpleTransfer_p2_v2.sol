@@ -5,10 +5,8 @@ import "lib/ReentrancyGuard.sol";
 
 contract SimpleTransfer is ReentrancyGuard {
     
-    // ghost variables
-    uint _prev_balance;
-
-    constructor () payable { }
+    constructor () payable {
+    }
 
     function withdraw(uint amount) public nonReentrant {
         (bool succ,) = msg.sender.call{value: amount}("");
@@ -16,17 +14,8 @@ contract SimpleTransfer is ReentrancyGuard {
     }
 
     function invariant(uint amount) public {
-        _prev_balance = address(this).balance;
-
-        withdraw(amount);
-
+	uint _prev_balance = address(this).balance;	
+	withdraw(amount);
         assert(address(this).balance <= _prev_balance);
     }
-
 }
-
-// ====
-// SMTEngine: CHC
-// Targets: assert
-// Time: 0.57s
-// ----
