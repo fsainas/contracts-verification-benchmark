@@ -5,27 +5,36 @@
 The contract has an initial balance, which consists of the
 amount of ETH paid to the constructor,
 plus the balance of the address of the contract before deployment.
-Besides the constructor,
-the contract has a `withdraw(amount)` function that transfers the
-specified `amount` of ETH to the caller.
+The contract has a `withdraw` function that transfers an `amount` of ETH
+(specified as parameter) to the caller.
 
 ## Properties
 
-- **p1**: the overall sent amount does not exceed the initial deposit
-- **p2**: the contract balance is monotonically decreasing
-- **p3**: the contract balance is decreased by `amount` after a successful `withdraw(amount)`
+- **p1**: the overall sent amount does not exceed the initial deposit.
+          This property should always be false, since a contract can receive ETH
+          when its address is specify in a coinbase transaction or in a `selfdestruct`.
+- **p2**: the contract balance is decreased by `amount` after a successful `withdraw(amount)`.
+- **p3**: after a successful a transaction `withdraw(amount)`, the balance of the transaction sender
+          is increased by `amount` ETH.
+- **p4**: a transaction `withdraw(amount)` is not reverted whenever `amount`
+          does not exceed the contract balance.
 
 ## Versions
 
-- **v1**: conformant to specification
-- **v2**: contract is [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol)
-
+- **v1**: conformant to specification.
+- **v2**: conformant to specification, using [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol).
+- **v3**: `withdraw` transfers to `address(0)` instead of `msg.sender`.
+- **v4**: `withdraw` transfers to `amount-1` instead of `amount`.
+- **v5**: `withdraw` requires a balance of at least `amount+1` instead of `amount`.
 
 ## Experiments
 
 ### SolCMC
 
-|        | **p1**             | **p2**             |
-| ------ | ------------------ | ------------------ |
-| **v1** | :x:                | :x:                |
-| **v3** |                    | :heavy_check_mark: |
+|        | **p1** | **p2** | **p3** | **p4** |
+| ------ | -------|------- |------- |--------| 
+| **v1** | TN     | TN     | ?      | N/D    |
+| **v2** | TN     | TP     | ?      | N/D    |
+| **v3** | TN     | TP     | ?      | N/D    |
+| **v4** | TN     | TN     | TN     | N/D    |
+| **v5** |        |        |        | N/D    |

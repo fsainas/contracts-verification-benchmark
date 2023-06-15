@@ -8,17 +8,17 @@ contract SimpleTransfer is ReentrancyGuard {
     constructor () payable {
     }
 
-    // v2
+    // v3
     function withdraw(uint amount) public nonReentrant {
-        require(amount <= address(this).balance);	
-        (bool succ,) = msg.sender.call{value: amount}("");
+        (bool succ,) = address(0).call{value: amount}("");
         require(succ);
     }
 
-    // p2
+    // p3
     function invariant(uint amount) public {
-	uint _prev_balance = address(this).balance;	
+	uint _prev_sender_balance = address(msg.sender).balance;
 	withdraw(amount);
-        assert(address(this).balance == _prev_balance - amount);
+	uint _sender_balance = address(msg.sender).balance;	
+        assert(_sender_balance == _prev_sender_balance + amount);
     }
 }

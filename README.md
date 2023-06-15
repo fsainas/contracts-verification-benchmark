@@ -28,7 +28,7 @@ For each entry of the matrix, we summarize the output of the tool as follows:
 | TN     | True Negative  (property does not hold, verification fails)    |
 | FP     | False Positive (property does not hold, verification succeeds) |
 | FN     | False Negative (property holds, verification fails)            |
-| ?      | Timeout                                                        |
+| ?      | Timeout / Unknown                                              |
 | N/D    | Property not definable with the tool                           |
 
 We test our benchmark with two mainstream verification tools:
