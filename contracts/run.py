@@ -38,7 +38,7 @@ solcmc_timeout = args.timeout if args.timeout is not None else default_solcmc_ti
 
 # Check for assertion warnings in solcmc
 def has_assertion_warning(stderr):
-    pattern = r".*Warning: CHC: Assertion happens here.*"
+    pattern = r".*Warning: CHC: Assertion violation happens here.*"
     return re.search(pattern, stderr, re.DOTALL)
 
 
@@ -56,7 +56,7 @@ def solcmc_test(filename, sat):
     if (is_timeout_or_unknown(result.stderr)):
         return timeout_or_unknown
     else:
-        return calc_result(has_assertion_warning(result.stderr), sat)
+        return calc_result(not has_assertion_warning(result.stderr), sat)
 
 
 # Runs the default certora test.
@@ -67,9 +67,9 @@ def certora_test(filename):
 
 def calc_result(obtained, expected):
     if obtained:
-        return true_positive if expected == "1" else false_positive
+        return true_positive if str(expected) == "1" else false_positive
     else:
-        return false_negative if expected == "1" else true_negative
+        return false_negative if str(expected) == "1" else true_negative
 
 
 def write_header_row(file_path, header):
