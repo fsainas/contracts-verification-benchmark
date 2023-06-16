@@ -21,10 +21,10 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
 
 ## Versions
 
-- **v1**: conformant to specification.
-- **v2**: conformant to specification, using [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol).
+- **v1**: reentrant `withdraw`.
+- **v2**: non-reentrant `withdraw`, using [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol).
 - **v3**: `withdraw` transfers to `address(0)` instead of `msg.sender`.
-- **v4**: `withdraw` transfers to `amount-1` instead of `amount`.
+- **v4**: `withdraw` transfers `amount-1` instead of `amount`.
 - **v5**: `withdraw` requires a balance of at least `amount+1` instead of `amount`.
 
 ## Experiments
@@ -37,4 +37,4 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
 | **v2** | TN     | TP     | ?      | N/D    |
 | **v3** | TN     | TP     | ?      | N/D    |
 | **v4** | TN     | TN     | TN     | N/D    |
-| **v5** |        |        |        | N/D    |
+| **v5** | TN     | TP     | ?      | N/D    |
