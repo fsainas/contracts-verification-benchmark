@@ -5,6 +5,7 @@ contract HTLC {
    address payable public owner;  
    address payable public verifier;
    bytes32 public hash;
+   bool public isCommitted;
    uint start;
 
    // ghost variables
@@ -16,40 +17,44 @@ contract HTLC {
        owner = payable(msg.sender);
        verifier = v;
        start = block.number;
+       isCommitted = false;
    }
 
    function commit(bytes32 h) public payable {
        require (msg.sender==owner);
        require (msg.value >= 1 ether);
+       require (!isCommitted);
+
        hash = h;
+       isCommitted = true;
+
        _commit_called = true;
    }
 
    function reveal(string memory s) public {
        require (msg.sender==owner);
        require(keccak256(abi.encodePacked(s))==hash);
-       _reveal_called = true;       
+       require (isCommitted);
+
        (bool success,) = owner.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
+       
+       _reveal_called = true;            
    }
 
    function timeout() public {
        require (block.number > start + 1000);
-       _timeout_called = true;
+       require (isCommitted);       
+
        (bool success,) = verifier.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
+       
+       _timeout_called = true;      
    }
 
+   // p2: if timeout or reveal are called, then commit must have been called
    function invariant() public view {
        assert(!((_timeout_called || _reveal_called) && !_commit_called));
    }
    
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 1.61s
-// Targets: "all"
-// ----
-// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 37
-// Warning: CHC: Assertion violation happens here - line 44

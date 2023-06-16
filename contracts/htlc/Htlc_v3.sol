@@ -7,25 +7,18 @@ contract HTLC {
    bytes32 public hash;
    bool public isCommitted;
    uint start;
-
-   // ghost variables
-   uint _balance;
-   uint _sent;
-   uint _deposited;
-   
+  
    constructor(address payable v) {
        owner = payable(msg.sender);
        verifier = v;
        start = block.number;
        isCommitted = false;
-       _balance = address(this).balance;
    }
 
    function commit(bytes32 h) public payable {
        require (msg.sender==owner);
        require (msg.value >= 1 ether);
        require (!isCommitted);
-       _deposited = msg.value + _balance;      
        hash = h;
        isCommitted = true;
    }
@@ -34,35 +27,15 @@ contract HTLC {
        require (msg.sender==owner);
        require(keccak256(abi.encodePacked(s))==hash);
        require (isCommitted);       
-       _sent += _balance;
-       _balance -= _sent;
-       (bool success,) = owner.call{value: _sent}("");
+       (bool success,) = owner.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
    }
 
+   // v3
    function timeout() public {
-       require (block.number > start + 1000);
+       require (block.number >= start + 1000);
        require (isCommitted);       
-       _sent += _balance;
-       _balance -= _sent;
-       (bool success,) = verifier.call{value: _sent}("");
+       (bool success,) = verifier.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
    }
-
-   function invariant() public view {
-       assert(_sent <= _deposited);
-   }   
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 2.41s
-// Targets: "assert"
-// ====
-// SMTEngine: CHC
-// Time: 15.88s
-// Targets: "all"
-// ----
-// Warning: CHC: Underflow (resulting value less than 0) happens here - line 38
-// Warning: CHC: Overflow (resulting value larger than 2**256 - 1) happens here - line 44
-// Warning: CHC: Underflow (resulting value less than 0) happens here - line 47
