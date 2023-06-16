@@ -11,16 +11,16 @@ contract SimpleTransfer {
         _deposited = address(this).balance;
     }
 
-    // v1
+    // v4
     function withdraw(uint amount) public {
-        require(amount <= address(this).balance);
+        require(amount <= address(this).balance - 1);
 
-        _sent += amount;
-
-        (bool succ,) = msg.sender.call{value: amount}("");
+        _sent += amount-1;
+	
+	(bool succ,) = msg.sender.call{value: amount-1}("");
         require(succ);
     }
-
+    
     // p1
     function invariant() public view {
         assert(_sent <= _deposited);
