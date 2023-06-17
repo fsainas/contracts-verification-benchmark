@@ -19,6 +19,7 @@ contract HTLC {
        require (msg.sender==owner);
        require (msg.value >= 1 ether);
        require (!isCommitted);
+
        hash = h;
        isCommitted = true;
    }
@@ -27,6 +28,7 @@ contract HTLC {
        require (msg.sender==owner);
        require(keccak256(abi.encodePacked(s))==hash);
        require (isCommitted);       
+
        (bool success,) = owner.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
    }
@@ -35,6 +37,7 @@ contract HTLC {
    function timeout() public {
        require (block.number >= start + 1000);
        require (isCommitted);       
+
        (bool success,) = verifier.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
    }

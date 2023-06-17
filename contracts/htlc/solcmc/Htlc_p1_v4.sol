@@ -5,39 +5,56 @@ contract HTLC {
    address payable public owner;  
    address payable public verifier;
    bytes32 public hash;
-   // bool public isCommitted;
+   bool public isCommitted;
    uint start;
-  
+
+   // ghost variables
+   uint _sent;
+   uint _deposited;
+
    constructor(address payable v) {
        owner = payable(msg.sender);
        verifier = v;
        start = block.number;
-       // isCommitted = false;
+       isCommitted = false;
    }
 
    function commit(bytes32 h) public payable {
        require (msg.sender==owner);
        require (msg.value >= 1 ether);
-       // require (!isCommitted);
-       
+       require (!isCommitted);
        hash = h;
-       // isCommitted = true;
+       isCommitted = true;
+
+       _deposited = address(this).balance;       
    }
 
    function reveal(string memory s) public {
        require (msg.sender==owner);
        require(keccak256(abi.encodePacked(s))==hash);
-       // require (isCommitted);
+       require (isCommitted);
        
-       (bool success,) = owner.call{value: address(this).balance }("");
+       uint _to_send = address(this).balance;       
+       (bool success,) = owner.call{value: _to_send}("");
        require (success, "Transfer failed.");
+
+       _sent += _to_send;
    }
 
+   // v4
    function timeout() public {
        require (block.number > start + 1000);
-       // require (isCommitted);
-       
-       (bool success,) = verifier.call{value: address(this).balance }("");
+       require (isCommitted);
+
+       uint _to_send = address(this).balance;
+       (bool success,) = msg.sender.call{value: _to_send}("");
        require (success, "Transfer failed.");
+
+       _sent += _to_send;       
    }
+
+   // p1
+   function invariant() public view {
+       assert(_sent <= _deposited);
+   }   
 }
