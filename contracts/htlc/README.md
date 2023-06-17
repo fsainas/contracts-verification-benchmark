@@ -23,16 +23,19 @@ and records the commit;
 
 - **p1**: the overall sent amount does not exceed the initial deposit.
   This property should always be false, since a contract can receive ETH
-  when its address is specify in a coinbase transaction or in a `selfdestruct`.
+  when its address is specified in a coinbase transaction or in a `selfdestruct`.
 - **p2**: `reveal` and `timeout` can only be called after `commit`.
 - **p3**: if `timeout` is called, then at least 1000 blocks have passed since the contract was deployed.
 - **p4**: if `commit` is called, then the sender must be the committer.
+
 
 ## Versions
 
 - **v1**: conformant to specification.
 - **v2**: removed check that `commit` must be called before `reveal` and `timeout`.
 - **v3**: `timeout` can be called since block N+1000 (included).
+- **v4**: `timeout` transfers balance to `msg.sender` instead of verifier.
+
 
 ## Experiments
 
@@ -40,6 +43,7 @@ and records the commit;
 
 |        | **p1** | **p2** | **p3** | **p4** |
 | ------ | ------ | ------ |--------|--------|
-| **v1** | TN     |   TP   | TP     | TN     |
-| **v2** | TN     |   TN   | TP     |        |
+| **v1** | TN     | TP     | TP     | TN     |
+| **v2** | TN     | TN     | TP     |        |
 | **v3** |        |        | TN     |        |
+| **v4** | TN     | TP     | TP     | TN     |

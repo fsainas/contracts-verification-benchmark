@@ -12,7 +12,7 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
 
 - **p1**: the overall sent amount does not exceed the initial deposit.
           This property should always be false, since a contract can receive ETH
-          when its address is specify in a coinbase transaction or in a `selfdestruct`.
+          when its address is specified in a coinbase transaction or in a `selfdestruct`.
 - **p2**: the contract balance is decreased by `amount` after a successful `withdraw(amount)`.
 - **p3**: after a successful a transaction `withdraw(amount)`, the balance of the transaction sender
           is increased by `amount` ETH.
