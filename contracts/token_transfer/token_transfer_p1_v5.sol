@@ -2,10 +2,10 @@
 pragma solidity >= 0.8.2;
 
 import "./lib/IERC20.sol";
-import "./lib/SafeERC20.sol";
+// import "./lib/SafeERC20.sol";
 
 contract TokenTransfer {
-    using SafeERC20 for IERC20;
+    // using SafeERC20 for IERC20;
 
     IERC20 token;
 
@@ -26,7 +26,8 @@ contract TokenTransfer {
         require(!ever_deposited);
         ever_deposited = true;
         uint allowance = token.allowance(msg.sender, address(this));
-        token.safeTransferFrom(msg.sender, address(this), allowance);
+        // token.safeTransferFrom(msg.sender, address(this), allowance);
+	token.transferFrom(msg.sender, address(this), allowance);	
         balance += allowance;
         _deposited = balance;
     }
@@ -35,7 +36,8 @@ contract TokenTransfer {
         require (amount <= balance);
         _sent += amount;
         balance -= amount;
-        token.safeTransfer(msg.sender, amount);
+        // token.safeTransfer(msg.sender, amount);
+	token.transfer(msg.sender, amount);	
     }
 
     function invariant() public view {
