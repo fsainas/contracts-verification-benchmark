@@ -7,6 +7,7 @@ import argparse
 
 # Default params
 default_solcmc_timeout = 1000
+default_tool = "all"
 
 # Symbols
 timeout_or_unknown = "?"
@@ -18,7 +19,8 @@ false_negative = "FN"
 # Parsing args
 parser = argparse.ArgumentParser()
 parser.add_argument('--directory', '-d', help='Directory of the contract')
-parser.add_argument('--timeout', '-t', help='Timeout time', default=default_solcmc_timeout)
+parser.add_argument('--timeout', '-t', help='Timeout time')
+parser.add_argument('--tool', '-T', choices=['solcmc', 'certora', 'all'], help='Verification tool to use', default="all")
 args = parser.parse_args()
 
 if args.directory is None:
@@ -34,6 +36,7 @@ input_file = str(args.directory) + "/in.csv"
 
 # Params
 solcmc_timeout = args.timeout if args.timeout is not None else default_solcmc_timeout
+tool = args.tool if args.tool is not None else default_tool
 
 
 # Check for assertion warnings in solcmc
@@ -82,23 +85,26 @@ def append_row(file_path, row):
         csv.writer(output).writerow(row)
 
 
-def run_all_tests():
+def run_all_tests(tool):
     with open(input_file, 'r') as input:
         csv_reader = csv.reader(input)
 
         first_line = next(csv_reader)
 
-        write_header_row(solcmc_path + "out.csv", first_line + ["result"])
-        write_header_row(certora_path + "out.csv", first_line + ["result"])
+        if tool == "all" or tool == "solcmc":
+            write_header_row(solcmc_path + "out.csv", first_line + ["result"])
+        if tool == "all" or tool == "certora":
+            write_header_row(certora_path + "out.csv", first_line + ["result"])
 
         for row in csv_reader:
             p, v, sat = row[0], row[1], row[2]
             pattern = rf".*{re.escape(p)}_{re.escape(v)}.*"
 
-            for filename in os.listdir(solcmc_path):
-                if re.match(pattern, filename):
-                    solcmc_result = solcmc_test(filename, sat)
-                    append_row(solcmc_path + "out.csv", [p, v, sat, solcmc_result])
+            if tool == "all" or tool == "solcmc":
+                for filename in os.listdir(solcmc_path):
+                    if re.match(pattern, filename):
+                        solcmc_result = solcmc_test(filename, sat)
+                        append_row(solcmc_path + "out.csv", [p, v, sat, solcmc_result])
 
 
-run_all_tests()
+run_all_tests(tool)
