@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >= 0.8.2;
 
-import "./lib/IERC20.sol";
+import "./lib/SafeERC20.sol";
 
 contract TokenTransfer {
 

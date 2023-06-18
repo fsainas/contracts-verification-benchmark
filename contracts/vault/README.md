@@ -4,32 +4,40 @@
 
 Vaults are a security mechanism to prevent cryptocurrency from being
 immediately withdrawn by an adversary who has stolen the owner's private key.
-To create the vault, the owner specifies a recovery key, which can be used to
-cancel a withdraw request, and a wait time that has to elapse between a
-withdraw request and the actual currency transfer. Once the vault contract have
-been created, anyone can deposit native cryptocurrency.
+To create the vault, the owner specifies a recovery key (distinct from the primary owner key),
+which can be used to cancel a withdraw request, and a wait time that has to elapse between a
+withdraw request and the actual currency transfer to the chosen recipient.
+Once the contract has been created, anyone can deposit native cryptocurrency in the vault
+through an external transaction.
 
-When users want to withdraw from a vault, they must first issue a request. The
-withdrawal is finalized only after the wait time has passed since the request.
-During the wait time, the request can be cancelled by using a recovery key.
+The contract can be in one of two states:
+- IDLE: the vault is waiting for a `withdraw` request;
+- REQ: the owner has issued a withdraw request that has not been finalized yet.
+  In this state, the owner can choose to `finalize` the request or to `cancel` it.
+  Finalization can only happen after the wait time has passed since the request.
+  During the wait time, the request can be cancelled by using the recovery key.
 
-The contract operates in two states: 'idle' and 'request' $\{I, R\}$.
-
-## Versions
-
-- **v1**: conformant to specification
-- **v2**: adds two new states: 'paid' and 'cancel' $\{P, C\}$
 
 ## Properties
 
-- **p1**: $p_0$ is the previous state, $p_1$ is the current one:
-    - $p_0 = R \implies p_1 = P \lor p_1 = C$, if the previous state was 'request', the current one is either 'paid' or 'cancel'
-    - $p_0 = P \lor p_0 = C \implies p_1 = R$, if the previous state was 'paid' or 'cancel', the current one is 'request'
-    - $p_0 = p_1 \implies p_0 = I$, if the previous state is equal to the current one, the previous state is 'idle'
+- **p1**: `withdraw` and `finalize` can only be done with the owner key;
+          `cancel` can only be done with the recovery key.
+- **p2**: the current state and the previous state alternate between IDLE and REQ;
+- **p3**: if there is a withdraw request then the amount is positive and fully covered by the contract balance.
 
-## Experimens
 
-|        | p1                 |
-| ------ | ------------------ |
-| **v1** | 
-| **v2** | :heavy_check_mark: |
+## Versions
+
+- **v1**: conformant to specification.
+- **v2**: require in constructor wrongly uses state variable instead of parameter.
+
+
+## Experiments
+
+### SolCMC
+
+|        | **p1** | **p2** | **p3** |
+| ------ | ------ |--------|--------|
+| **v1** | TP     | TP     |        |
+| **v2** | TN     |        |        |
+

@@ -13,7 +13,9 @@ contract Vault {
     uint amount;
     States state;
 
+    // v1
     constructor (address payable recovery_, uint wait_time_) payable {
+	require(msg.sender != recovery_);
         owner = msg.sender;
         recovery = recovery_;
         wait_time = wait_time_;
@@ -22,31 +24,50 @@ contract Vault {
 
     receive() external payable { }
 
-    //  IDLE -> REQ
     function withdraw(address receiver_, uint amount_) public {
         require(state == States.IDLE);
         require(amount <= address(this).balance);
         require(msg.sender == owner);
+
         request_time = block.number;
         amount = amount_;
         receiver = receiver_;
         state = States.REQ;
     }
 
-    // REQ -> IDLE
     function finalize() public { 
         require(state == States.REQ);
         require (block.number >= request_time + wait_time);
         require (msg.sender == owner);
+
         state = States.IDLE;	
         (bool succ,) = receiver.call{value: amount}("");
         require(succ);
     }
 
-    // REQ -> IDLE
     function cancel() public {
         require(state == States.REQ);
         require (msg.sender == recovery);
+
         state = States.IDLE;
     }
+
+    function invariant() public view {
+	assert(owner != recovery);
+    }
+
+    function invariant_withdraw(address receiver_, uint amount_) public {
+	withdraw(receiver_, amount_);
+	assert(msg.sender == owner);
+    }
+
+    function invariant_finalize() public {
+	finalize();
+	assert(msg.sender == owner);
+    }
+
+    function invariant_cancel() public {
+	cancel();
+	assert(msg.sender == recovery);
+    }    
 }
