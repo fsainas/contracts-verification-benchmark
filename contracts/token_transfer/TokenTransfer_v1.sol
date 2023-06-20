@@ -4,7 +4,8 @@ pragma solidity >= 0.8.2;
 import "./lib/IERC20.sol";
 
 contract TokenTransfer {
-
+    using SafeERC20 for IERC20;
+    
     IERC20 token;
     bool ever_deposited;
 
