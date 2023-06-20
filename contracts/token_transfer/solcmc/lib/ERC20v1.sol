@@ -100,7 +100,7 @@ contract ERC20 is IERC20, IERC20Errors {
     function _approve(address owner, address spender, uint256 amount) internal pure {
         require (owner != address(0));
 	require (spender != address(0));
-	require (amount > 0);
+	require (amount >= 0);
     }
 
     /**
