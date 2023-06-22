@@ -12,10 +12,10 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 ## Properties
 
-- **p1**: after a deposit, the total balance of the contract is greater than or
-  equal to the balance of the account that made the deposit
+- **p1**: after a deposit, the total balance of the contract is still greater
+  than or equal to the balance of the account that made the deposit.
 - **p2**: after a deposit, if the amount deposited is greater than 0, the
-  balance of the address who made the deposit is increased
+  balance of the address who made the deposit is increased.
 - **p3**: the only way to decrease the balance of the contract is by calling `withdraw()`
 - **p4**: after a withdrawal, the balance of `msg.sender` is decreased by `amount`
 - **p5**: after a withdrawal, the total balance is decreased
@@ -36,8 +36,8 @@ then initiates a transfer of the specified amount to the depositor's address.
 |        | p1 | p2 | p3 | p4 | p5 | p6 | p7
 | ------ | -- | -- | -- | -- | -- | -- | --
 | **v1** | TP | TP |    | ?  | ?   
-| **v2** | TP |    |    |
-| **v3** |    |    |    |
+| **v2** | TP | TP |    |
+| **v3** | TP | TP |    |
 
 ### Certora
 |        | p1 | p2 | p3 | p4 | p5 | p6 | p7
