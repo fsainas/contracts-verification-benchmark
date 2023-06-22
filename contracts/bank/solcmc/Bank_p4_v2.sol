@@ -8,9 +8,9 @@ contract Bank {
         balances[msg.sender] += msg.value;
     }
 
-    // v1
+    // v2
     function withdraw(uint amount) public {
-        require(amount > 0);
+        //require(amount > 0);
         require(amount <= balances[msg.sender]);
 
         balances[msg.sender] -= amount;

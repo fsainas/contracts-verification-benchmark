@@ -4,10 +4,18 @@ pragma solidity >= 0.8.2;
 contract Bank {
     mapping (address => uint) balances;
 
+    // p2
     receive() external payable {
+        uint _balanceBefore = balances[msg.sender];
+
         balances[msg.sender] += msg.value;
+
+        uint _balanceAfter = balances[msg.sender];
+
+        assert(!(msg.value > 0) || _balanceBefore < _balanceAfter);
     }
 
+    // v1
     function withdraw(uint amount) public {
         require(amount > 0);
         require(amount <= balances[msg.sender]);
@@ -18,17 +26,4 @@ contract Bank {
         require(success);
     }
 
-    function invariant(uint amount) public {
-        uint _senderBalanceBefore = balances[msg.sender];
-        withdraw(amount);
-        uint _senderBalanceAfter = balances[msg.sender];
-        assert(_senderBalanceBefore > _senderBalanceAfter);
-    }
-
 }
-
-// ====
-// SMTEngine: CHC
-// Targets: assert
-// Time: n/a
-// ----

@@ -8,10 +8,10 @@ contract Bank {
         balances[msg.sender] += msg.value;
     }
 
-    // v1
+    // v3
     function withdraw(uint amount) public {
         require(amount > 0);
-        require(amount <= balances[msg.sender]);
+        //require(amount <= balances[msg.sender]);
 
         balances[msg.sender] -= amount;
 
@@ -19,12 +19,11 @@ contract Bank {
         require(success);
     }
 
-    // p4
+    // p6
     function invariant(uint amount) public {
         uint _senderBalanceBefore = balances[msg.sender];
         withdraw(amount);
-        uint _senderBalanceAfter = balances[msg.sender];
-        assert(_senderBalanceBefore == _senderBalanceAfter + amount);
+        assert(amount <= _senderBalanceBefore);
     }
 
 }
