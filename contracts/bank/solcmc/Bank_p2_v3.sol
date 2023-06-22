@@ -4,17 +4,15 @@ pragma solidity >= 0.8.2;
 contract Bank {
     mapping (address => uint) balances;
 
-    // p1
+    // p2
     receive() external payable {
-        /* pre-conditions */
-        require(address(this).balance - msg.value >= balances[msg.sender]);
+        uint _balanceBefore = balances[msg.sender];
 
-        /* body start */
         balances[msg.sender] += msg.value;
-        /* body end */
 
-        /* post-conditions */
-        assert(address(this).balance >= balances[msg.sender]);
+        uint _balanceAfter = balances[msg.sender];
+
+        assert(!(msg.value > 0) || _balanceBefore < _balanceAfter);
     }
 
     // v3
