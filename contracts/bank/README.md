@@ -43,8 +43,8 @@ then initiates a transfer of the specified amount to the depositor's address.
 |        | p1 | p2 | p3 | p4 | p5 | p6 | p7
 | ------ | -- | -- | -- | -- | -- | -- | --
 | **v1** | TP | TP |    | TP | FP |
-| **v2** |    |    |    |
-| **v3** |    |    |    |
+| **v2** | TP |    |    |
+| **v3** | TP |    |    |
 
 #### Notes
 - Not sure about p5/v1.

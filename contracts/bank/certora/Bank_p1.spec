@@ -24,7 +24,7 @@ rule P1 {
     assert totalBalanceAfter >= senderBalanceAfter;
 }
 
-rule totalBalanceEqual { // should fail
+rule NotP1 { // should fail
     env e;
     method receive;
     calldataarg args;
@@ -41,8 +41,9 @@ rule totalBalanceEqual { // should fail
     uint256 senderBalanceAfter = getBalance(sender);
     uint256 totalBalanceAfter = getContractBalance();
 
-    assert totalBalanceAfter == senderBalanceAfter;
+    assert totalBalanceAfter < senderBalanceAfter;
 }
 
-// V1 proof: https://prover.certora.com/output/49230/9b05730d288a452abb7fda60e2d9af85?anonymousKey=5f1e42f7ed653e9f74a07a17bf1fc63d9766964e
-// V2 proof: https://prover.certora.com/output/49230/1431ec42ca8a4c06b5b326a7efd7e864?anonymousKey=580d84d47f90b966ccd35dcfecef8c75f1aec908
+// V1 proof: https://prover.certora.com/output/49230/6a7ac915d2b24750925af49a22f2d652?anonymousKey=05ebfc45c45ad77a17e16214a5ce015165c7d43c
+// V2 proof: https://prover.certora.com/output/49230/9739154ee47446149eecfc5326593d70?anonymousKey=17e746b647a4d6a7312d38d836591e334eeaf9af
+// v3 proof: https://prover.certora.com/output/49230/a3770501293f42dba4da0bbfd9ffc320?anonymousKey=adc7bf94e0a2d0f8911b9f9158cfd751c2bead10
