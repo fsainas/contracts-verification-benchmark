@@ -35,9 +35,9 @@ then initiates a transfer of the specified amount to the depositor's address.
 
 |        | p1 | p2 | p3 | p4 | p5 | p6 | p7
 | ------ | -- | -- | -- | -- | -- | -- | --
-| **v1** | TP | TP |    | ?  | ?  | TP
-| **v2** | TP | TP |    | ?  |    | TP
-| **v3** | TP | TP |    | ?  |    | TP 
+| **v1** | TP | TP |N/D | ?  | ?  | TP | N/D
+| **v2** | TP | TP |N/D | ?  |    | TP | N/D
+| **v3** | TP | TP |N/D | ?  |    | TP | N/D
 
 ### Certora
 |        | p1 | p2 | p3 | p4 | p5 | p6 | p7
