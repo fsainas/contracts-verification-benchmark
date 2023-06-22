@@ -3,10 +3,8 @@ pragma solidity >= 0.8.2;
 
 contract Bank {
     mapping (address => uint) private balances;
-    uint totalBalance;
 
     receive() external payable {
-        totalBalance += msg.value;
         balances[msg.sender] += msg.value;
     }
 
@@ -15,7 +13,7 @@ contract Bank {
     }
 
     function getContractBalance() public view returns (uint) {
-        return totalBalance;
+        return address(this).balance;
     }
 
     function getContractAddress() public view returns (address) {
@@ -23,11 +21,10 @@ contract Bank {
     }
 
     function withdraw(uint amount) public {
-        require(amount > 0);
+        //require(amount > 0);
         require(amount <= balances[msg.sender]);
 
         balances[msg.sender] -= amount;
-        totalBalance -= amount;
 
         (bool success,) = msg.sender.call{value: amount}("");
         require(success);
