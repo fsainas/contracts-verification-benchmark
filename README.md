@@ -1,4 +1,4 @@
-# An open benchmark for the evaluation of smart contracts verification tools
+# An open benchmark for evaluating smart contracts verification tools
 
 We introduce an open benchmark of smart contracts and relevant security properties
 to be used for the evaluation and comparison of verification tools.
