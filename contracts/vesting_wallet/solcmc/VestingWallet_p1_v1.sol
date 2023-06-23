@@ -10,7 +10,9 @@ contract VestingWallet {
     uint64 private immutable duration;
 
     constructor(address beneficiaryAddress, uint64 startTimestamp, uint64 durationSeconds) payable {
-        require(beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
+        require (beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
+	require (durationSeconds > 0); // require not present in OpenZeppelin
+	
         beneficiary = beneficiaryAddress;
         start = startTimestamp;
         duration = durationSeconds;
@@ -27,7 +29,7 @@ contract VestingWallet {
         released += amount;
 
         (bool success, ) = beneficiary.call{value: amount}("");
-        require(success);
+        require (success);
     }
 
     function vestedAmount(uint64 timestamp) public view virtual returns (uint256) {

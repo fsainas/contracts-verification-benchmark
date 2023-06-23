@@ -19,11 +19,10 @@ deposited from the beginning.
 
 ## Properties
 
-- **p1**: the amount of releasable ETH is always less than or equal to
-  the contract balance.
-- **p2**: if the vesting scheme has expired, that the whole contract balance is releasable.
-- **p3**: before the expiration of the scheme, 
-  the releasable amount is strictly increasing
+- **p1**: the amount of releasable ETH is always less than or equal to the contract balance.
+- **p2**: if the vesting scheme has expired, then the whole contract balance is releasable.
+- **p3**: if the vesting scheme has not started yet, then no balance is releasable.
+- **p4**: before the expiration of the scheme, the releasable amount is strictly increasing
   whenever the contract balance is constant.
 
 
@@ -36,6 +35,6 @@ deposited from the beginning.
 
 ### SolCMC
 
-|      | **p1** | **p2** | **p3** |
-| ---- | ------ | ------ | ------ | 
-|**v1**| FP     | ?      | ?      |
+|      | **p1** | **p2** | **p3** | **p4** |
+| ---- | ------ | ------ | ------ | -------|
+|**v1**| FP     | FP     | TP     | ?      |

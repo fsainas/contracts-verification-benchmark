@@ -9,6 +9,13 @@ contract VestingWallet {
     uint64 private immutable start;
     uint64 private immutable duration;
 
+    // ghost variables
+    uint releasable1;
+    uint releasable2;
+    bool isReleasable1Recorded;
+    uint timestamp1;
+    uint balance1;
+
     constructor(address beneficiaryAddress, uint64 startTimestamp, uint64 durationSeconds) payable {
         require (beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
 	require (durationSeconds > 0); // require not present in OpenZeppelin
@@ -20,7 +27,21 @@ contract VestingWallet {
 
     receive() external payable virtual {}
 
-    function releasable() public view virtual returns (uint256) {
+    function releasable() public virtual returns (uint256) {
+        if (!isReleasable1Recorded) {
+            releasable1 = vestedAmount(uint64(block.timestamp)) - released;
+            timestamp1 = block.timestamp;
+            isReleasable1Recorded = true;
+            balance1 = address(this).balance;
+        } else {
+            require (timestamp1 != block.timestamp);
+            require (balance1 == address(this).balance);
+            releasable2 = vestedAmount(uint64(block.timestamp)) - released;
+
+	    // p3: before the expiration of the scheme, the releasable amount is strictly increasing
+	    // whenever the contract balance is constant	    
+            assert(releasable1 < releasable2);
+        }
         return vestedAmount(uint64(block.timestamp)) - released;
     }
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (finance/VestingWallet.sol)
-pragma solidity ^0.8.0;
+pragma solidity >= 0.8.2;
 
 contract VestingWallet {
 
@@ -9,15 +9,10 @@ contract VestingWallet {
     uint64 private immutable start;
     uint64 private immutable duration;
 
-    // ghost variables
-    uint releasable1;
-    uint releasable2;
-    bool isReleasable1Recorded;
-    uint timestamp1;
-    uint balance1;
-
     constructor(address beneficiaryAddress, uint64 startTimestamp, uint64 durationSeconds) payable {
-        require(beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
+        require (beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
+	require (durationSeconds > 0); // require not present in OpenZeppelin
+	
         beneficiary = beneficiaryAddress;
         start = startTimestamp;
         duration = durationSeconds;
@@ -25,21 +20,7 @@ contract VestingWallet {
 
     receive() external payable virtual {}
 
-    function releasable() public virtual returns (uint256) {
-        if (!isReleasable1Recorded) {
-            releasable1 = vestedAmount(uint64(block.timestamp)) - released;
-            timestamp1 = block.timestamp;
-            isReleasable1Recorded = true;
-            balance1 = address(this).balance;
-        } else {
-            require(timestamp1 != block.timestamp);
-            require(balance1 == address(this).balance);
-            releasable2 = vestedAmount(uint64(block.timestamp)) - released;
-
-	    // p3: before the expiration of the scheme, the releasable amount is strictly increasing
-	    // whenever the contract balance is constant	    
-            assert(releasable1 < releasable2);
-        }
+    function releasable() public view virtual returns (uint256) {
         return vestedAmount(uint64(block.timestamp)) - released;
     }
 
@@ -48,7 +29,7 @@ contract VestingWallet {
         released += amount;
 
         (bool success, ) = beneficiary.call{value: amount}("");
-        require(success);
+        require (success);
     }
 
     function vestedAmount(uint64 timestamp) public view virtual returns (uint256) {
@@ -63,6 +44,12 @@ contract VestingWallet {
         } else {
             return (totalAllocation * (timestamp - start)) / duration;
         }
+    }
+
+    // p3: if the vesting scheme has not started yet, then no balance is releasable
+    function invariant() public view {
+        // block.timestamp < start => releasable() == 0
+        assert(!(block.timestamp < start) || releasable() == 0);
     }
 
 }
