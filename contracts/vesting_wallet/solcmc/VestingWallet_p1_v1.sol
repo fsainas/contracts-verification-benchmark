@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.8.0) (finance/VestingWallet.sol)
-pragma solidity ^0.8.0;
+pragma solidity >= 0.8.2;
 
 contract VestingWallet {
 
@@ -44,6 +44,7 @@ contract VestingWallet {
         }
     }
 
+    // p1: the amount of releasable ETH is always <= the contract balance
     function invariant() public view {
         assert(releasable() <= address(this).balance);
     }

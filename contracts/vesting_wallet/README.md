@@ -1,31 +1,41 @@
 # Vesting Wallet
 
-Original contract by [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol)
-
 ## Specification
 
-Vesting Wallet handles the vesting of ethers for a given beneficiary. The
-vesting follows a given vesting schedule, the default is a linear curve. Every
-ether transferred to this contract will follow the vesting schedule as if it
-was locked from the beginning. Consequently, if the vesting has already
-started, any amount sent to this contract will be immediately releasable.
+The VestingWallet contract handles the maturation (vesting) of native
+cryptocurrency for a given beneficiary.
+The constructor specifies the address of the `beneficiary`,
+the first block height (`start`) where the beneficiary can withdraw funds,
+and the overall `duration` of the vesting scheme.
+Once the scheme is expired, the beneficiary can withdraw
+all the funds from the contract.
+At any moment between the start and the expiration of the vesting scheme,
+the beneficiary can withdraw an amount of ETH proportional to the time
+passed since the start of the scheme.
+The contract can receive ETH at any time through external transactions:
+these funds will follow the vesting schedule as if they were
+deposited from the beginning.
 
-## Versions
-
-- **v1**: conformant to specification;
 
 ## Properties
 
-- **p1**: the amount releasable is always less than or equal to the contract
-  balance
-- **p2**: if `block.timestamp > duration + start` then `releasable() ==
-  address(this).balance`
-- **p3**: if `releasable()` is called at two different timestamps before the
-  end of the vesting and the balance of the contract has not changed, then the
-  the value returned by the first call is less than the second.
+- **p1**: the amount of releasable ETH is always less than or equal to
+  the contract balance.
+- **p2**: if the vesting scheme has expired, that the whole contract balance is releasable.
+- **p3**: before the expiration of the scheme, 
+  the releasable amount is strictly increasing
+  whenever the contract balance is constant.
+
+
+## Versions
+
+- **v1**: from [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol);
+
 
 ## Experiments
 
-|      | p1                 | p2                    | p3         |
-| ---- | ------------------ | --------------------- | ---------- | 
-|**v1**| :x:                | :question:            | :question: |
+### SolCMC
+
+|      | **p1** | **p2** | **p3** |
+| ---- | ------ | ------ | ------ | 
+|**v1**| FP     | ?      | ?      |
