@@ -17,9 +17,10 @@ contract SimpleTransfer is ReentrancyGuard {
 
     // p4: a transaction `withdraw(amount)` is not reverted whenever `amount` does not exceed the contract balance
     function invariant(uint amount) public {
-	// require(msg.sender == tx.origin);
 	require(amount <= address(this).balance && amount >= 0);
 
+	// ensures that the sender is a EOA
+	require(msg.sender == tx.origin);	
         try this.withdraw(amount)  {
         } catch {
 	    // verification always fails	    

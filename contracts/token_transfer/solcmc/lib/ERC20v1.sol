@@ -34,10 +34,10 @@ contract ERC20 is IERC20, IERC20Errors {
         return true;
     }
 
-    function allowance(address owner, address spender) public pure returns (uint256) {
+    function allowance(address owner, address spender) public view returns (uint256) {
         require (owner != address(0));
 	require (spender != address(0));
-	return type(uint256).max;
+	return _balances[owner];
     }
 
     /**
@@ -110,9 +110,9 @@ contract ERC20 is IERC20, IERC20Errors {
      * Revert if not enough allowance is available.
      *
      */
-    function _spendAllowance(address owner, address spender, uint256 amount) internal pure {
+    function _spendAllowance(address owner, address spender, uint256 amount) internal view {
         uint256 currentAllowance = allowance(owner, spender);
         require (currentAllowance >= amount);
-	_approve(owner, spender, currentAllowance - amount);
+	_approve(owner, spender, currentAllowance);
     }
 }
