@@ -11,7 +11,7 @@ contract Crowdfund {
     constructor (address payable receiver_, uint end_donate_, uint256 goal_) {
         receiver = receiver_;
         end_donate = end_donate_;
-	goal = goal_;	
+	    goal = goal_;	
     }
     
     function donate() public payable {
@@ -22,6 +22,7 @@ contract Crowdfund {
     function withdraw() public {
         require (block.number > end_donate);
         require (address(this).balance >= goal);
+
         (bool succ,) = receiver.call{value: address(this).balance}("");
         require(succ);
     }
@@ -30,8 +31,10 @@ contract Crowdfund {
         require (block.number > end_donate);
         require (address(this).balance < goal);
         require (donors[msg.sender] > 0);
+
         uint amount = donors[msg.sender];
         donors[msg.sender] = 0;
+
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
