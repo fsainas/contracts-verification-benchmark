@@ -15,33 +15,21 @@ contract SimpleTransfer is ReentrancyGuard {
         require(succ);
     }
 
-    function foo(uint amount) public pure returns (uint) {
-        // require(amount >= 0);
-	return 100;
-    }    
-
-    // p2
+    // p4: a transaction `withdraw(amount)` is not reverted whenever `amount` does not exceed the contract balance
     function invariant(uint amount) public {
 	require(amount <= address(this).balance && amount >= 0);
-        (bool success, ) = address(this).call(abi.encodeWithSignature("foo(uint)", 1));
-	// verification always fails
-	// assert(success);
-    }
-}
 
-contract Test {
-    SimpleTransfer private _c;
-
-    constructor(SimpleTransfer c) {
-        _c = c;
-    }
-
-    function invariant(uint amount) public {
-        try _c.foo(amount) returns (uint result) {
-	    assert(result == 100);
+	// ensures that the sender is a EOA
+	require(msg.sender == tx.origin);	
+        try this.withdraw(amount)  {
         } catch {
 	    // verification always fails	    
             assert(false);
         }
+	
+	// alternative encoding of p4 (verification always fails)
+        // (bool success, ) = address(this).call(abi.encodeWithSignature("withdraw(uint)", 1));
+	// assert(success);
     }
 }
+

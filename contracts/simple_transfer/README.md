@@ -27,14 +27,15 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
 - **v4**: `withdraw` transfers `amount-1` instead of `amount`.
 - **v5**: `withdraw` requires a balance of at least `amount+1` instead of `amount`.
 
+
 ## Experiments
 
 ### SolCMC
 
 |        | **p1** | **p2** | **p3** | **p4** |
 | ------ | -------|------- |------- |--------| 
-| **v1** | TN     | TN     | ?      | N/D    |
-| **v2** | TN     | TP     | ?      | N/D    |
-| **v3** | TN     | TP     | ?      | N/D    |
-| **v4** | TN     | TN     | TN     | N/D    |
-| **v5** | TN     | TP     | ?      | N/D    |
+| **v1** | TN     | TN     | ?      |        |
+| **v2** | TN     | TP     | ?      | FP     |
+| **v3** | TN     | TP     | ?      |        |
+| **v4** | TN     | TN     | TN     |        |
+| **v5** | TN     | TP     | ?      |        |
