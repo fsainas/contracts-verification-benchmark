@@ -16,7 +16,7 @@ The benchmark currently comprises several versions (correct or bugged) of the fo
 - [Simple Transfer](contracts/simple_transfer/)
 - [Token Transfer](contracts/token_transfer/)
 - [Bank](contracts/bank/)
-- [Lottery](contracts/Lottery/)
+- [Lottery](contracts/lottery/)
 - [Escrow](contracts/escrow/)
 - [Vesting Wallet](contracts/vesting_wallet/)
 - [Vault](contracts/vault/)
