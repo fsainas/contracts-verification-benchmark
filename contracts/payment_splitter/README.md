@@ -20,20 +20,25 @@ and the actual transfer is triggered as a separate step by calling the
 
 ## Versions
 - **v1**: conformant to specification
-- **v2**: the maximum length of `payees` is 3
 
 ## Invariants
 - **p1**: for all accounts `a` in `payees`, `a != address(0)`
-- **p2**: if `payees[0] == address(0x1)` then `shares[address(0x1)] != 0`
-- **p3**: if `payees[0] == address(0x1)` then `shares[address(0x1)] == 0` (should fail)
-- **p4**: if `payees[0] == address(0x1)` then `releasable(address(0x1)) <= address(this).balance`
-- **p5**: for all accounts `a` in `payees`, `shares[a] > 0`
-- **p6**: for all accounts `a` in `payees`, `releasable(a) <= address(this).balance`
-- **p7**: the sum of the releasable funds for every accounts is equal to
+- **p2**: if `payees[0] == addr` then `shares[addr] == 0` (should fail)
+- **p3**: for all addresses `addr` in `payees`, `shares[a] > 0`
+- **p4**: for all addresses `addr` in `payees`, `releasable(a) <= address(this).balance`
+- **p5**: the sum of the releasable funds for every accounts is equal to
   `address(this).balance`
 
 ## Experiments
 
-|        | p1         | p2         | p3                 | p4         | p5         | p6     | p7  |
-| ------ | ---------- | ---------- | ------------------ | ---------- | ---------- | ------ | --- |
-| **v1** | :question: | :question: | :white_check_mark: | :question: | :question: | :x:    | :x: |
+### SolCMC
+
+|        | p1  | p2  | p3  | p4  | p5  |
+| ------ | --- | --- | --- | --- | --- |
+| **v1** | ?   | TN  | ?   | FN  | FN  |
+
+### Certora
+
+|        | p1  | p2  | p3  | p4  | p5  |
+| ------ | --- | --- | --- | --- | --- |
+| **v1** | FN  | FN  | TN  | FN  |

@@ -21,10 +21,23 @@ contract PaymentSplitter {
         }
     }
 
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+
+    function getPayee(uint index) public view returns (address) {
+        require(index < payees.length);
+        return payees[index];
+    }
+
+    function getShares(address addr) public view returns (uint) {
+        return shares[addr];
+    }
+
     receive() external payable virtual { }
 
     function releasable(address account) public view returns (uint256) {
-        uint256 totalReceived = address(this).balance + totalReleased; 
+        uint256 totalReceived = address(this).balance + totalReleased;
         return pendingPayment(account, totalReceived, released[account]);
     }
 
@@ -64,13 +77,4 @@ contract PaymentSplitter {
         totalShares = totalShares + shares_;
     }
 
-    function invariant() public view {
-        assert(!(payees[0] == address(0x1)) || shares[address(0x1)] != 0);
-    }
 }
-
-// ====
-// SMTEngine: CHC
-// Targets: assert
-// Time: 
-// ----

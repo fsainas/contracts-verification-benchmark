@@ -64,9 +64,7 @@ contract PaymentSplitter {
         totalShares = totalShares + shares_;
     }
 
-    function invariant(uint index) public view {
-        require(index < payees.length);
-        assert(shares[payees[index]] > 0);
+    function invariant(address addr) public view {
+        assert(!(payees[0] == addr) || shares[addr] == 0);
     }
-
 }
