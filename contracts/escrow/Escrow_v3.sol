@@ -20,9 +20,6 @@ contract Escrow is ReentrancyGuard {
     address seller_choice;      // recipient of the deposit
     address escrow_choice;      // choice of the escrow
 
-    // ghost variable
-    address _msg_sender;
-
     constructor (
         address escrow_, 
         uint fee_rate_) {
@@ -58,7 +55,7 @@ contract Escrow is ReentrancyGuard {
     /*****************
           Join Phase
         *****************/
-    function join(address seller_) public payable phaseJoin nonReentrant {
+    function join(address seller_) public payable phaseJoin {
 
         require(msg.sender != seller_);
 
@@ -67,25 +64,21 @@ contract Escrow is ReentrancyGuard {
         deposit = msg.value;
 
         phase = Phase.CHOOSE;
-
-        _msg_sender = msg.sender;
     }
 
     /*****************
          Choice Phase
         *****************/
-    function choose(address choice) public phaseChoice nonReentrant {
+    function choose(address choice) public phaseChoice {
 
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
             if (buyer_choice != address(0)) 
                 phase = Phase.REDEEM;
-            _msg_sender = msg.sender;
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
             if (seller_choice != address(0)) 
                 phase = Phase.REDEEM;
-            _msg_sender = msg.sender;
         }
     }
 
@@ -97,8 +90,6 @@ contract Escrow is ReentrancyGuard {
         phase = Phase.END;
 
         deposit = 0;
-
-        _msg_sender = msg.sender;
 
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
@@ -117,8 +108,6 @@ contract Escrow is ReentrancyGuard {
 
         deposit = 0;
 
-        _msg_sender = msg.sender;
-
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
     }
@@ -131,8 +120,6 @@ contract Escrow is ReentrancyGuard {
         escrow_choice = escrow_choice_;
 
         phase = Phase.ARBITR;
-
-        _msg_sender = msg.sender;
 
         uint fee = deposit * (fee_rate / 10000);
         deposit -= fee;
@@ -157,18 +144,4 @@ contract Escrow is ReentrancyGuard {
         require(success);
     }
 
-    function invariant() public view {
-        require(seller_choice != escrow && buyer_choice != escrow);
-
-        assert(_msg_sender == escrow || 
-               _msg_sender == buyer || 
-               _msg_sender == seller);
-    }
-
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 37.24s
-// Target: assert
-// ----

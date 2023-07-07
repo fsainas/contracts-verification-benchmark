@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-import "lib/ReentrancyGuard.sol";
-
-contract Escrow is ReentrancyGuard {
+contract Escrow {
     enum Phase {JOIN, CHOOSE, REDEEM, ARBITR, END}
 
     Phase phase;
@@ -20,8 +18,9 @@ contract Escrow is ReentrancyGuard {
     address seller_choice;      // recipient of the deposit
     address escrow_choice;      // choice of the escrow
 
-    // ghost variable
-    address _recipient;
+    // ghost variables
+    uint _balance;
+    uint _init_deposit;
 
     constructor (
         address escrow_, 
@@ -58,7 +57,7 @@ contract Escrow is ReentrancyGuard {
     /*****************
           Join Phase
         *****************/
-    function join(address seller_) public payable phaseJoin nonReentrant {
+    function join(address seller_) public payable phaseJoin {
 
         require(msg.sender != seller_);
 
@@ -67,13 +66,12 @@ contract Escrow is ReentrancyGuard {
         deposit = msg.value;
 
         phase = Phase.CHOOSE;
-
     }
 
     /*****************
          Choice Phase
         *****************/
-    function choose(address choice) public phaseChoice nonReentrant {
+    function choose(address choice) public phaseChoice {
 
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
@@ -86,7 +84,7 @@ contract Escrow is ReentrancyGuard {
         }
     }
 
-    function refund() public phaseChoice nonReentrant {
+    function refund() public phaseChoice {
 
         require(msg.sender == buyer);
         require(seller_choice == address(0));
@@ -94,8 +92,6 @@ contract Escrow is ReentrancyGuard {
         phase = Phase.END;
 
         deposit = 0;
-
-        _recipient = buyer;
 
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
@@ -105,7 +101,7 @@ contract Escrow is ReentrancyGuard {
          Redeem Phase 
         *****************/
     
-    function redeem() public phaseRedeem nonReentrant {
+    function redeem() public phaseRedeem {
 
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
@@ -114,13 +110,11 @@ contract Escrow is ReentrancyGuard {
 
         deposit = 0;
 
-        _recipient = seller_choice;
-
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
     }
 
-    function arbitrate(address escrow_choice_) public phaseRedeem nonReentrant {
+    function arbitrate(address escrow_choice_) public phaseRedeem {
 
         require(msg.sender == escrow);
         require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
@@ -128,8 +122,6 @@ contract Escrow is ReentrancyGuard {
         escrow_choice = escrow_choice_;
 
         phase = Phase.ARBITR;
-
-        _recipient = escrow;
 
         uint fee = deposit * (fee_rate / 10000);
         deposit -= fee;
@@ -142,7 +134,7 @@ contract Escrow is ReentrancyGuard {
          Arbitrate Phase
         *****************/
 
-    function redeem_arbitrated() public phaseArbitrate nonReentrant {
+    function redeem_arbitrated() public phaseArbitrate {
 
         require(escrow_choice != address(0));
 
@@ -150,28 +142,16 @@ contract Escrow is ReentrancyGuard {
 
         deposit = 0;
 
-        _recipient = escrow_choice;
-
         (bool success,) = escrow_choice.call{value: deposit}("");
         require(success);
     }
 
     function invariant() public view {
-        require(_recipient != address(0));
-        assert(_recipient == escrow || 
-               _recipient == buyer_choice || 
-               _recipient == seller_choice || 
-               _recipient == buyer);
-
-        assert(!(_recipient == seller_choice && 
-                 !(buyer_choice == seller_choice || escrow_choice == seller_choice)));
+        require(_init_deposit > 0);
+        require(fee_rate < 10000);
+        require(buyer_choice != seller_choice);
+        require(phase == Phase.END && escrow_choice != address(0));
+        assert(_balance != deposit);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 1:51.03
-// Target: assert
-// ----
-// Uncaught exception: Dynamic exception type: std::out_of_range std::exception::what: map::at

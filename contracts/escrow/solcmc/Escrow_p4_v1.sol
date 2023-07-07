@@ -26,7 +26,7 @@ contract Escrow {
         address escrow_, 
         uint fee_rate_) {
 
-        //require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
+        require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
 
         escrow = escrow_;
         fee_rate = fee_rate_;
@@ -161,15 +161,7 @@ contract Escrow {
     }
 
     function invariant() public view {
-        assert(!(_current_phase == Phase.REDEEM && !(_prev_phase == Phase.CHOOSE)));
-        assert(!(_current_phase == Phase.ARBITR && !(_prev_phase == Phase.REDEEM)));
         assert(!(_current_phase == Phase.END) || _prev_phase == Phase.ARBITR || _prev_phase == Phase.REDEEM || _prev_phase == Phase.CHOOSE);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 29.47s
-// Targets: assert
-// ----

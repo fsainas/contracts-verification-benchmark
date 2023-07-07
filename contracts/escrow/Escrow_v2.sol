@@ -18,10 +18,6 @@ contract Escrow {
     address seller_choice;      // recipient of the deposit
     address escrow_choice;      // choice of the escrow
 
-    // ghost variables
-    uint _fee;
-    uint _init_deposit;
-
     constructor (
         address escrow_, 
         uint fee_rate_) {
@@ -64,7 +60,6 @@ contract Escrow {
         buyer = msg.sender;
         seller = seller_;
         deposit = msg.value;
-        _init_deposit = deposit;
 
         phase = Phase.CHOOSE;
     }
@@ -119,12 +114,12 @@ contract Escrow {
 
         require(msg.sender == escrow);
         require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
+        
         escrow_choice = escrow_choice_;
 
         phase = Phase.ARBITR;
 
         uint fee = deposit * (fee_rate / 10000);
-        _fee = fee;
         deposit -= fee;
 
         (bool success,) = escrow.call{value: fee}("");
@@ -147,15 +142,4 @@ contract Escrow {
         require(success);
     }
 
-    function invariant() public view {
-        assert(_fee <= _init_deposit);
-    }
-
 }
-
-// ====
-// SMTEngine: CHC
-// Time: +5h
-// Targets: assert
-// ----
-// Does not seem to terminate

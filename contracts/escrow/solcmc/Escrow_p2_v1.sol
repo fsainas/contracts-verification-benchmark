@@ -19,19 +19,21 @@ contract Escrow {
     address escrow_choice;      // choice of the escrow
 
     // ghost variables
-    uint _sent;
-    uint _init_deposit;
+    Phase _prev_phase;
+    Phase _current_phase;
 
     constructor (
         address escrow_, 
         uint fee_rate_) {
 
-        //require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
+        require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
 
         escrow = escrow_;
         fee_rate = fee_rate_;
 
         phase = Phase.JOIN;
+        _prev_phase = phase;
+        _current_phase = phase;
     }
 
     modifier phaseJoin() {
@@ -64,9 +66,10 @@ contract Escrow {
         buyer = msg.sender;
         seller = seller_;
         deposit = msg.value;
-        _init_deposit = deposit;
 
         phase = Phase.CHOOSE;
+        _prev_phase = _current_phase;
+        _current_phase = phase;
     }
 
     /*****************
@@ -76,12 +79,18 @@ contract Escrow {
 
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
-            if (buyer_choice != address(0)) 
+            if (buyer_choice != address(0)) { 
                 phase = Phase.REDEEM;
+                _prev_phase = _current_phase;
+                _current_phase = phase;
+            }
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
-            if (seller_choice != address(0)) 
-                phase = Phase.REDEEM;
+            if (seller_choice != address(0)) { 
+                phase = Phase.REDEEM; 
+                _prev_phase = _current_phase;
+                _current_phase = phase;
+            }
         }
     }
 
@@ -91,8 +100,9 @@ contract Escrow {
         require(seller_choice == address(0));
 
         phase = Phase.END;
+        _prev_phase = _current_phase;
+        _current_phase = phase;
 
-        _sent += deposit;
         deposit = 0;
 
         (bool success,) = buyer.call{value: deposit}("");      
@@ -109,8 +119,9 @@ contract Escrow {
         require(buyer_choice == seller_choice);
 
         phase = Phase.END;
+        _prev_phase = _current_phase;
+        _current_phase = phase;
 
-        _sent += deposit;
         deposit = 0;
 
         (bool success,) = seller_choice.call{value: deposit}("");
@@ -125,26 +136,24 @@ contract Escrow {
         escrow_choice = escrow_choice_;
 
         phase = Phase.ARBITR;
+        _prev_phase = _current_phase;
+        _current_phase = phase;
 
         uint fee = deposit * (fee_rate / 10000);
-        _sent += fee;
         deposit -= fee;
 
         (bool success,) = escrow.call{value: fee}("");
         require(success);
     }
 
-    /*****************
-         Arbitrate Phase
-        *****************/
-
     function redeem_arbitrated() public phaseArbitrate {
 
         require(escrow_choice != address(0));
 
         phase = Phase.END;
+        _prev_phase = _current_phase;
+        _current_phase = phase;
 
-        _sent += deposit;
         deposit = 0;
 
         (bool success,) = escrow_choice.call{value: deposit}("");
@@ -152,13 +161,7 @@ contract Escrow {
     }
 
     function invariant() public view {
-        assert(_sent <= _init_deposit);
+        assert(!(_current_phase == Phase.REDEEM) || _prev_phase == Phase.CHOOSE);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 11.24s
-// Targets: assert
-// ----

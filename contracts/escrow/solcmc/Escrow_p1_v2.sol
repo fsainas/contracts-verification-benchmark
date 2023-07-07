@@ -18,15 +18,15 @@ contract Escrow {
     address seller_choice;      // recipient of the deposit
     address escrow_choice;      // choice of the escrow
 
-    // ghost variable
-    uint _balance;
+    // ghost variables
+    uint _fee;
     uint _init_deposit;
 
     constructor (
         address escrow_, 
         uint fee_rate_) {
 
-        require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
+        //require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
 
         escrow = escrow_;
         fee_rate = fee_rate_;
@@ -64,9 +64,7 @@ contract Escrow {
         buyer = msg.sender;
         seller = seller_;
         deposit = msg.value;
-
         _init_deposit = deposit;
-        _balance = deposit;
 
         phase = Phase.CHOOSE;
     }
@@ -78,12 +76,11 @@ contract Escrow {
 
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
-            if (buyer_choice != address(0))
+            if (buyer_choice != address(0)) 
                 phase = Phase.REDEEM;
-            }
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
-            if (seller_choice != address(0))
+            if (seller_choice != address(0)) 
                 phase = Phase.REDEEM;
         }
     }
@@ -96,7 +93,6 @@ contract Escrow {
         phase = Phase.END;
 
         deposit = 0;
-        _balance = deposit;
 
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
@@ -114,7 +110,6 @@ contract Escrow {
         phase = Phase.END;
 
         deposit = 0;
-        _balance = deposit;
 
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
@@ -130,8 +125,8 @@ contract Escrow {
         phase = Phase.ARBITR;
 
         uint fee = deposit * (fee_rate / 10000);
+        _fee = fee;
         deposit -= fee;
-        _balance = deposit;
 
         (bool success,) = escrow.call{value: fee}("");
         require(success);
@@ -152,20 +147,9 @@ contract Escrow {
         (bool success,) = escrow_choice.call{value: deposit}("");
         require(success);
     }
-    
+
     function invariant() public view {
-        require(_init_deposit > 0);
-        require(fee_rate < 10000);
-        require(buyer_choice != seller_choice);
-        require(phase == Phase.END && escrow_choice != address(0));
-        assert(_balance != deposit);
+        assert(_fee <= _init_deposit);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 18:24.82
-// Target: assert
-// ----
-// Warning: CHC: Assertion violation can happen here - line 171

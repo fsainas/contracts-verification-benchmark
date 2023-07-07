@@ -153,9 +153,3 @@ contract Escrow {
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 8.35s
-// Targets: assert
-// ----

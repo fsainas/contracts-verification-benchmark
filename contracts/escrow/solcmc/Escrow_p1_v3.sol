@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
-contract Escrow {
+import "lib/ReentrancyGuard.sol";
+
+contract Escrow is ReentrancyGuard {
     enum Phase {JOIN, CHOOSE, REDEEM, ARBITR, END}
 
     Phase phase;
@@ -18,8 +20,9 @@ contract Escrow {
     address seller_choice;      // recipient of the deposit
     address escrow_choice;      // choice of the escrow
 
-    // ghost variable
-    address _msg_sender;
+    // ghost variables
+    uint _fee;
+    uint _init_deposit;
 
     constructor (
         address escrow_, 
@@ -65,8 +68,6 @@ contract Escrow {
         deposit = msg.value;
 
         phase = Phase.CHOOSE;
-
-        _msg_sender = msg.sender;
     }
 
     /*****************
@@ -78,16 +79,14 @@ contract Escrow {
             seller_choice = choice;
             if (buyer_choice != address(0)) 
                 phase = Phase.REDEEM;
-            _msg_sender = msg.sender;
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
             if (seller_choice != address(0)) 
                 phase = Phase.REDEEM;
-            _msg_sender = msg.sender;
         }
     }
 
-    function refund() public phaseChoice {
+    function refund() public phaseChoice nonReentrant {
 
         require(msg.sender == buyer);
         require(seller_choice == address(0));
@@ -95,8 +94,6 @@ contract Escrow {
         phase = Phase.END;
 
         deposit = 0;
-
-        _msg_sender = msg.sender;
 
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
@@ -106,7 +103,7 @@ contract Escrow {
          Redeem Phase 
         *****************/
     
-    function redeem() public phaseRedeem {
+    function redeem() public phaseRedeem nonReentrant {
 
         require(msg.sender == seller);
         require(buyer_choice == seller_choice);
@@ -115,13 +112,11 @@ contract Escrow {
 
         deposit = 0;
 
-        _msg_sender = msg.sender;
-
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
     }
 
-    function arbitrate(address escrow_choice_) public phaseRedeem {
+    function arbitrate(address escrow_choice_) public phaseRedeem nonReentrant {
 
         require(msg.sender == escrow);
         require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
@@ -129,8 +124,6 @@ contract Escrow {
         escrow_choice = escrow_choice_;
 
         phase = Phase.ARBITR;
-
-        _msg_sender = msg.sender;
 
         uint fee = deposit * (fee_rate / 10000);
         deposit -= fee;
@@ -143,7 +136,7 @@ contract Escrow {
          Arbitrate Phase
         *****************/
 
-    function redeem_arbitrated() public phaseArbitrate {
+    function redeem_arbitrated() public phaseArbitrate nonReentrant {
 
         require(escrow_choice != address(0));
 
@@ -156,17 +149,7 @@ contract Escrow {
     }
 
     function invariant() public view {
-        require(seller_choice != escrow && buyer_choice != escrow);
-
-        assert(_msg_sender == escrow || 
-               _msg_sender == buyer || 
-               _msg_sender == seller);
+        assert(_fee <= _init_deposit);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 22.25s
-// Target: assert
-// ----

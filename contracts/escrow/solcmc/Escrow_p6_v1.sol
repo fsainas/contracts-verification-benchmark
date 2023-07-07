@@ -19,7 +19,7 @@ contract Escrow {
     address escrow_choice;      // choice of the escrow
 
     // ghost variable
-    address _recipient;
+    address _msg_sender;
 
     constructor (
         address escrow_, 
@@ -66,6 +66,7 @@ contract Escrow {
 
         phase = Phase.CHOOSE;
 
+        _msg_sender = msg.sender;
     }
 
     /*****************
@@ -77,10 +78,12 @@ contract Escrow {
             seller_choice = choice;
             if (buyer_choice != address(0)) 
                 phase = Phase.REDEEM;
+            _msg_sender = msg.sender;
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
             if (seller_choice != address(0)) 
                 phase = Phase.REDEEM;
+            _msg_sender = msg.sender;
         }
     }
 
@@ -93,7 +96,7 @@ contract Escrow {
 
         deposit = 0;
 
-        _recipient = buyer;
+        _msg_sender = msg.sender;
 
         (bool success,) = buyer.call{value: deposit}("");      
         require(success);
@@ -112,7 +115,7 @@ contract Escrow {
 
         deposit = 0;
 
-        _recipient = seller_choice;
+        _msg_sender = msg.sender;
 
         (bool success,) = seller_choice.call{value: deposit}("");
         require(success);
@@ -127,7 +130,7 @@ contract Escrow {
 
         phase = Phase.ARBITR;
 
-        _recipient = escrow;
+        _msg_sender = msg.sender;
 
         uint fee = deposit * (fee_rate / 10000);
         deposit -= fee;
@@ -148,28 +151,16 @@ contract Escrow {
 
         deposit = 0;
 
-        _recipient = escrow_choice;
-
         (bool success,) = escrow_choice.call{value: deposit}("");
         require(success);
     }
 
     function invariant() public view {
-        require(_recipient != address(0));
-        assert(_recipient == escrow || 
-               _recipient == buyer_choice || 
-               _recipient == seller_choice || 
-               _recipient == buyer);
+        require(seller_choice != escrow && buyer_choice != escrow);
 
-        assert(!(_recipient == seller_choice && 
-                 !(buyer_choice == seller_choice || escrow_choice == seller_choice)));
+        assert(_msg_sender == escrow || 
+               _msg_sender == buyer || 
+               _msg_sender == seller);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Time: 1:13.58
-// Target: assert
-// ----
-// Uncaught exception: Dynamic exception type: std::out_of_range std::exception::what: map::at
