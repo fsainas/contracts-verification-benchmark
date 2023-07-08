@@ -25,7 +25,7 @@ contract Wallet is ReentrancyGuard {
     mapping(address => Recovery) public guardianToRecovery;
 
     // ghost variables
-    address _first_owner;
+    bool _recovered;
 
     /************************************************
      *  MODIFIERS 
@@ -61,7 +61,6 @@ contract Wallet is ReentrancyGuard {
         
         threshold = threshold_;
         owner = msg.sender;
-        _first_owner = owner;
     }
 
     function executeExternalTx(address callee, 
@@ -117,6 +116,8 @@ contract Wallet is ReentrancyGuard {
             guardianToRecovery[guardianList[i]].usedInExecuteRecovery = true;
         }
 
+        _recovered = true;
+
         inRecovery = false;
         owner = newOwner;
     }
@@ -148,14 +149,8 @@ contract Wallet is ReentrancyGuard {
         guardianHashToRemovalTimestamp[guardianHash] = 0;
     }
 
-    function invariant(address a) public view {
-        require(guardianToRecovery[a].proposedOwner != address(0));
-        assert(isGuardian[keccak256(abi.encodePacked(a))] == true);
+    function invariant() public view {
+        assert(_recovered == false);
     }
 
 }
-// ====
-// SMTEngine: CHC
-// Targets: assert
-// Time: +25m
-// ----

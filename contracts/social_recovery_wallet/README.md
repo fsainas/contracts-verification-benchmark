@@ -1,4 +1,5 @@
 # Social Recovery Wallet
+
 This is a simplified version of
 [this](https://github.com/verumlotus/social-recovery-wallet/blob/main/src/Wallet.sol)
 contract by [@verumlotus](https://github.com/verumlotus). 
@@ -8,6 +9,7 @@ The concept was popularized by
 Buterin.
 
 ## Specification
+
 This wallet can be used by the owner to make transactions by calling the
 `executeExternalTx()` function, by provinding the desired recipient
 contract/externally owned account (EOA), an ether value, and arbitrary data.
@@ -27,11 +29,8 @@ guardian's address to finalize the removal and add the new guardian.
 Alternatively, the owner can call `cancelGuardianRemoval()` to restore the
 guardian state.
 
-## Versions
-- **v1**: conformant to specification
-- **v2**: removed guardian management
-
 ## Properties
+
 - **p1**: the first owner is always the owner, in other words: the owner cannot
   change (should fail)
 - **p2**: the recovery can never happen (should fail)
@@ -40,13 +39,21 @@ guardian state.
 - **p4**: if number of guardian greater than or equal to the threshold has
   participated in the same recovery round, and selected the same new owner,
   then `executeRecovery()` will succeed and `owner == newOwner`
-- **p5**: `executeRecovery()` will fail if not enough guardians joined the
+- **p5**: `executeRecovery()` will fail if not enough guardians have joined the
   recovery process
+
+## Versions
+
+- **v1**: conformant to specification
+- **v2**: removed guardian management
+
 
 ## Experiments
 
+### SolCMC
 
-|        | p1                 | p2                 | p3         | p4         | p5                 |
-| ------ | ------------------ | ------------------ | ---------- | ---------- | ------------------ |
-| **v1** | :white_check_mark: | :white_check_mark: | :question: | :question: | :question:         |
-| **v2** |                    |                    | :question: | :question: |                    |
+
+|        | p1  | p2  | p3  | p4  | p5  |
+| ------ | --- | --- | --- | --- | --- |
+| **v1** | TN  | TN  | ?   | ?   | ?   |
+| **v2** |     |     | ?   |     | ? 

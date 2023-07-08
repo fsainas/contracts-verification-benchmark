@@ -100,7 +100,7 @@ contract Wallet is ReentrancyGuard {
         inRecovery = false;
     }
 
-    function executeRecovery(address newOwner, address[] calldata guardianList) onlyGuardian onlyInRecovery public returns (bool) {
+    function executeRecovery(address newOwner, address[] calldata guardianList) onlyGuardian onlyInRecovery external {
         // Need enough guardians to agree on same newOwner
         require(guardianList.length >= threshold, "more guardians required to transfer ownership");
 
@@ -109,9 +109,9 @@ contract Wallet is ReentrancyGuard {
             // cache recovery struct in memory
             Recovery memory recovery = guardianToRecovery[guardianList[i]];
 
-            if (recovery.recoveryRound != currRecoveryRound) return false;
-            if (recovery.proposedOwner != newOwner) return false;
-            if (recovery.usedInExecuteRecovery) return false;
+            require(recovery.recoveryRound == currRecoveryRound, "round mismatch");
+            require(recovery.proposedOwner == newOwner, "disagreement on new owner");
+            require(!recovery.usedInExecuteRecovery, "duplicate guardian used in recovery");
 
             // set field to true in storage, not memory
             guardianToRecovery[guardianList[i]].usedInExecuteRecovery = true;
@@ -119,22 +119,11 @@ contract Wallet is ReentrancyGuard {
 
         inRecovery = false;
         owner = newOwner;
-        return true;
     }
 
     /************************************************
      *  Guardian Management
     ***********************************************/
-
-    function transferGuardianship(bytes32 newGuardianHash) onlyGuardian notInRecovery external {
-        // Don't let guardian queued for removal transfer their guardianship
-        require(
-            guardianHashToRemovalTimestamp[keccak256(abi.encodePacked(msg.sender))] == 0, 
-            "guardian queueud for removal, cannot transfer guardianship"
-        );
-        isGuardian[keccak256(abi.encodePacked(msg.sender))] = false;
-        isGuardian[newGuardianHash] = true;
-    }
 
     function initiateGuardianRemoval(bytes32 guardianHash) external onlyOwner {
         // verify that the hash actually corresponds to a guardian
@@ -159,27 +148,8 @@ contract Wallet is ReentrancyGuard {
         guardianHashToRemovalTimestamp[guardianHash] = 0;
     }
 
-    function invariant(address newOwner, address[] calldata guardianList) public {
-
-        require(guardianList.length >= threshold);
-        require(inRecovery == true);
-
-        for (uint i = 0; i < guardianList.length; i++) {
-            require(isGuardian[keccak256(abi.encodePacked(guardianList[i]))] == true);
-            require(guardianToRecovery[guardianList[i]].proposedOwner == newOwner);
-            require(guardianToRecovery[guardianList[i]].recoveryRound == currRecoveryRound);
-        }
-
-        bool recoverySuccess = executeRecovery(newOwner, guardianList);
-
-        assert(recoverySuccess);
-        assert(owner == newOwner);
+    function invariant() public view {
+        assert(owner == _first_owner);
     }
 
 }
-
-// ====
-// SMTEngine: CHC
-// Targets: assert
-// Time: +3h
-// ----
