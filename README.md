@@ -28,20 +28,49 @@ The benchmark currently comprises several versions (correct or bugged) of the fo
 
 ## Using the benchmark
 
-Each use case folder includes a file `in.csv` that defines the ground truth for that use case.
-Lines of the csv have the form:
+Each use case folder includes a file `in.csv` that defines the ground truth for
+that use case. Lines of the csv have the form:
 ```
 property,version,sat
 ```
-where `sat` is 1 when the property holds on the given version, and 0 when it does not hold.
-The ground truth is constructed manually, and (in some cases) confirmed by the verification tools.
+where `sat` is 1 when the property holds on the given version, and 0 when it
+does not hold. The ground truth is constructed manually, and (in some cases)
+confirmed by the verification tools.
 
-The `contracts` folder contains a Python script to automatize the execution of verification tools.
-For instance, to run SolCMC on the `simple_transfer` use case, execute the command:
+The `contracts` folder contains a Python script to automatize the execution of
+verification tools. For instance, to run SolCMC on the `simple_transfer` use
+case, execute the command:
 ```
 python run.py -d simple_transfer -t solcmc
 ```
 The output is written in the file `simple_transfer/solcmc/out.csv`.
+
+### Run single tests
+
+To conduct a targeted test for a particular property of a specific contract,
+you can utilize the `run.sh` script available in the `solcmc/` and `certora/`
+directories. The script functions differently depending on the testing tool you
+are using:
+
+SolCMC:
+```
+sh run.sh <contract file>
+```
+In this case, you need to provide the path to the contract file as an argument.
+
+Certora:
+```
+sh run.sh <contract file> <contract name> <spec file>
+```
+When utilizing Certora, you need to provide three arguments:
+- `<contract file>`: Path to the contract file that contains the contract you
+  wish to test.
+- `<contract name>`: The name of the contract within the contract file. Ensure
+  it matches the actual contract name.
+- `<spec file>`: Path to the specification file that defines the specific
+  property you want to test for.
+
+Please ensure the accuracy of the provided arguments to ensure the intended test is performed correctly.
 
 ## Verification tools
 
