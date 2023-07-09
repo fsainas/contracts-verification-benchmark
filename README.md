@@ -41,7 +41,7 @@ The `contracts` folder contains a Python script to automatize the execution of
 verification tools. For instance, to run SolCMC on the `simple_transfer` use
 case, execute the command:
 ```
-python run.py -d simple_transfer -t solcmc
+$ python run.py -d simple_transfer -t solcmc
 ```
 The output is written in the file `simple_transfer/solcmc/out.csv`.
 
@@ -54,13 +54,13 @@ are using:
 
 SolCMC:
 ```
-sh run.sh <contract file>
+$ sh run.sh <contract file>
 ```
 In this case, you need to provide the path to the contract file as an argument.
 
 Certora:
 ```
-sh run.sh <contract file> <contract name> <spec file>
+$ sh run.sh <contract file> <contract name> <spec file>
 ```
 When utilizing Certora, you need to provide three arguments:
 - `<contract file>`: Path to the contract file that contains the contract you
