@@ -32,10 +32,20 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
 
 ### SolCMC
 
-|        | **p1** | **p2** | **p3** | **p4** |
-| ------ | -------|------- |------- |--------| 
-| **v1** | TN     | TN     | ?      |        |
-| **v2** | TN     | TP     | ?      | FP     |
-| **v3** | TN     | TP     | ?      |        |
-| **v4** | TN     | TN     | TN     |        |
-| **v5** | TN     | TP     | ?      |        |
+|        | p1  | p2  | p3  | p4  |
+| ------ | --- | --- | --- | --- |
+| **v1** | TN  | TN  | ?   |     |
+| **v2** | TN  | TP  | ?   | FP  |
+| **v3** | TN  | TP  | ?   |     |
+| **v4** | TN  | TN  | TN  |     |
+| **v5** | TN  | TP  | ?   |     |
+
+### Certora
+
+|        | p1  | p2  | p3  | p4  |
+| ------ | --- | --- | --- | --- |
+| **v1** |     | TN  | FN  |
+| **v2** |     | FN  | 
+| **v3** |     | 
+| **v4** |     | 
+| **v5** |
