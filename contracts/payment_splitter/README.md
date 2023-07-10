@@ -1,7 +1,9 @@
 # Payment Splitter
+
 [Original contract](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/PaymentSplitter.sol) by OpenZeppelin.
 
 ## Specification
+
 This contract allows to split Ether payments among a group of accounts. The
 sender does not need to be aware that the Ether will be split in this way,
 since it is handled transparently by the contract.
@@ -18,16 +20,18 @@ are not automatically forwarded to the accounts but kept in this contract,
 and the actual transfer is triggered as a separate step by calling the
 `release()` function. 
 
-## Versions
-- **v1**: conformant to specification
+## Properties
 
-## Invariants
 - **p1**: for all accounts `a` in `payees`, `a != address(0)`
 - **p2**: if `payees[0] == addr` then `shares[addr] == 0` (should fail)
 - **p3**: for all addresses `addr` in `payees`, `shares[a] > 0`
 - **p4**: for all addresses `addr` in `payees`, `releasable(a) <= address(this).balance`
 - **p5**: the sum of the releasable funds for every accounts is equal to
   `address(this).balance`
+
+## Versions
+
+- **v1**: conformant to specification
 
 ## Experiments
 
