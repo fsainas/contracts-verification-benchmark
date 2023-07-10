@@ -54,20 +54,24 @@ are using:
 
 SolCMC:
 ```
-$ sh run.sh <contract file>
+$ sh run.sh <contract_file> [<timeout>]
 ```
-In this case, you need to provide the path to the contract file as an argument.
+To use SolCMC, provide the path to the contract file as an argument when
+running the run.sh script. Replace `<contract_file>` with the actual path to
+your contract file. Optionally, you can specify a `<timeout>` to set a time
+limit for execution. If no `<timeout>` is provided or if it is set to 0, there
+will be no timeout for the execution.
 
 Certora:
 ```
-$ sh run.sh <contract file> <contract name> <spec file>
+$ sh run.sh <contract_file> <contract_name> <spec_file>
 ```
 When utilizing Certora, you need to provide three arguments:
-- `<contract file>`: Path to the contract file that contains the contract you
+- `<contract_file>`: Path to the contract file that contains the contract you
   wish to test.
-- `<contract name>`: The name of the contract within the contract file. Ensure
+- `<contract_name>`: The name of the contract within the contract file. Ensure
   it matches the actual contract name.
-- `<spec file>`: Path to the specification file that defines the specific
+- `<spec_file>`: Path to the specification file that defines the specific
   property you want to test for.
 
 Please ensure the accuracy of the provided arguments to ensure the intended test is performed correctly.
