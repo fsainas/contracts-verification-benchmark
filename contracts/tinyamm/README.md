@@ -32,18 +32,20 @@ address. The token balances in the liquidity pool, represented by `r0` and
 that the contract holds the correct balances of `t0` and `t1` tokens to
 maintain the integrity of the exchange.
 
-## Versions
-
-- **v1**: conformant to specification
-
 ## Properties
 
 - **p1**: the reserves are more than zero if a deposit has been made
 - **p2**: the supply is more than zero if a deposit has been made
 - **p3**: if the last transaction was not a swap the supply has not changed
 
+## Versions
+
+- **v1**: conformant to specification
+
 ## Experiments
 
-|        | p1  | p2         | p3         |
-| ------ | --- | ---------- | ---------- |
-| **v1** | :x: | :question: | :question: | 
+### SolCMC
+
+|        | p1  | p2  | p3  |
+| ------ | --- | --- | --- |
+| **v1** | ?   | ?   | ?   | 
