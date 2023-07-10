@@ -19,9 +19,8 @@ donations after the donation period has ended.
 - **p4**: the only way to decrease the contract balance is by calling
   `withdraw()` or `reclaim()`.
 - **p5**: if the goal amount is not reached and the deposit phase has ended, a donor can make a reclaim.
-- **p6**: only a donor can make a reclaim.
-- **p7**: if the goal amount is reached after the deposit period, only the receiver can withdraw from the contract
-- **p8**: if the deposit period has ended, only `withdraw()` or `reclaim()` can be called.
+- **p6**: if the goal amount is reached after the deposit period, only the receiver can withdraw from the contract
+- **p7**: if the deposit period has ended, only `withdraw()` or `reclaim()` can be called.
 
 ## Versions
 
@@ -31,6 +30,13 @@ donations after the donation period has ended.
 
 ### SolCMC
 
-|        | p1  | p2  | p3  | p4  | p5  |
-| ------ | --- | --- | --- | --- | --- |
-| **v1** | TP  | N/D | TF  | N/D |
+|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  
+| ------ | --- | --- | --- | --- | --- | --- | --- 
+| **v1** | TP  | N/D | TF  | N/D | N/D |     | N/D
+
+
+### Certora
+
+|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  
+| ------ | --- | --- | --- | --- | --- | --- | --- 
+| **v1** | TP  |     | 
