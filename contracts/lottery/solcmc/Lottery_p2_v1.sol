@@ -7,10 +7,8 @@ contract Lottery {
     uint private duration;
 
     // ghost variables
-    enum Call {ENTER, PICK}
-    uint _prevPlayersLength;
-    uint _playersLength;
-    Call _lastCall;
+    mapping(address => bool) _has_called_enter;
+
 
     constructor(uint duration_) {
         start = block.number;
@@ -20,28 +18,22 @@ contract Lottery {
     function enter() external payable {
         require(msg.value == .01 ether);
         
+        _has_called_enter[msg.sender] = true;
         players.push(msg.sender);
-
-        _prevPlayersLength = _playersLength;
-        _playersLength = players.length;
-        _lastCall = Call.ENTER;
     }
 
     function random() private view returns (uint) {
         return uint(keccak256(abi.encode(block.prevrandao)));
     }
 
-    function pickWinner() public {
+    function pickWinner() external {
         require(block.number >= start + duration);
 
         address winner = players[random() % players.length];
+
         players = new address[](0);
 
         uint fee = address(this).balance / 100;
-
-        _prevPlayersLength = _playersLength;
-        _playersLength = players.length;
-        _lastCall = Call.PICK;
 
         start = block.number;
 
@@ -52,9 +44,10 @@ contract Lottery {
         require(success);
     }
 
-    function invariant() public view {
-        // _lastCall != Call.PICK => _prevPlayersLength <= _playersLength
-        assert(_lastCall == Call.PICK || _prevPlayersLength <= _playersLength);
+    function invariant(uint index) public view {
+        require(msg.sender != address(0));
+        require(players[index] == msg.sender);
+        assert(_has_called_enter[msg.sender]);
     }
 
 }

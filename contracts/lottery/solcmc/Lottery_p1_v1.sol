@@ -6,15 +6,19 @@ contract Lottery {
     uint private start;
     uint private duration;
 
+    // ghost variables
+    bool _picked;
+    uint _prev_length;
+
     constructor(uint duration_) {
         start = block.number;
         duration = duration_;
     }
 
-    function enter() internal {
-        //require(msg.value == .01 ether);
-        assert(msg.value == .01 ether);
-        
+    function enter() external payable {
+        require(msg.value == .01 ether);
+
+        _prev_length = players.length;
         players.push(msg.sender);
     }
 
@@ -22,15 +26,19 @@ contract Lottery {
         return uint(keccak256(abi.encode(block.prevrandao)));
     }
 
-    function pickWinner() public {
+    function pickWinner() external {
         require(block.number >= start + duration);
 
         address winner = players[random() % players.length];
+
+        _prev_length = players.length;
         players = new address[](0);
 
         uint fee = address(this).balance / 100;
 
         start = block.number;
+
+        _picked = true;
 
         (bool success,) = msg.sender.call{value: fee}("");
         require(success);
@@ -39,12 +47,9 @@ contract Lottery {
         require(success);
     }
 
-    function invariant() public payable {
-        require(msg.value == .01 ether);
-
-        enter();
-
-        assert(players[players.length-1] == msg.sender);
+    function invariant() public view {
+        require(!_picked);
+        assert(players.length >= _prev_length);
     }
 
 }

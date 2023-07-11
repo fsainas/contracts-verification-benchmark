@@ -25,20 +25,25 @@ of a new winner. Ultimately, the players array is reset and new round begins.
 
 ## Properties
 
-- **p1**: participants can enter the lottery
-- **p2**: players can't be removed from the game until a winner is picked
-- **p3**: if a player calls `enter()` and successfully sends 0.01 Ether, they
-  can be selected as winner
-- **p4**: the selected winner is always one of the eligible players
+- **p1**: players can't be removed from the game until a winner is picked;
+- **p2**: the only way to be a member of the `players[]` array is to call `enter()`;
+- **p3**: if a player calls `enter()` and successfully sends 0.01 Ether, the
+  player is added to `players[]`.
 
 ## Versions
 
-- **v1**: conformant to specification
+- **v1**: conforming to specification.
 
 ## Experiments
 
 ### SolCMC
 
-|        | **p1** | **p2** | **p3** | **p4** |
-| ------ |--------|--------|--------|--------|
-| **v1** | TP     | TP     | ?      | ?      | 
+|        | p1  | p2  | p3  |
+| ------ | --- | --- | --- |
+| **v1** | TP  | FN  | N/D |
+
+### Certora
+
+|        | p1  | p2  | p3  |
+| ------ | --- | --- | --- |
+| **v1** | 
