@@ -13,9 +13,9 @@ contract Vault {
     uint amount;
     States state;
 
-    // v1
+    // v3
     constructor (address payable recovery_, uint wait_time_) payable {
-	    require(msg.sender != recovery_);
+	    require(msg.sender != recovery); // ERROR: uses state variable instead of parameter
         owner = msg.sender;
         recovery = recovery_;
         wait_time = wait_time_;
@@ -26,7 +26,7 @@ contract Vault {
 
     function withdraw(address receiver_, uint amount_) public {
         require(state == States.IDLE);
-        require(amount_ <= address(this).balance);
+        require(amount <= address(this).balance);   // ERROR: uses state variable instead of parameter
         require(msg.sender == owner);
 
         request_time = block.number;
@@ -35,7 +35,7 @@ contract Vault {
         state = States.REQ;
     }
 
-    function finalize() public { 
+    function finalize() public {
         require(state == States.REQ);
         require(block.number >= request_time + wait_time);
         require(msg.sender == owner);
@@ -52,8 +52,9 @@ contract Vault {
         state = States.IDLE;
     }
 
-    // p5
-    function invariant() public view {
-        assert(owner != recovery);
+    // p4
+    function invariant(address receiver_, uint amount_) public {
+        withdraw(receiver_, amount_);
+        assert(address(this).balance >= amount_);
     }
 }

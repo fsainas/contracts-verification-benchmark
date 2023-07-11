@@ -43,5 +43,5 @@ The contract can be in one of two states:
 | ------ | --- | --- | --- | --- | --- |
 | **v1** | TP  | TP  | TP  | TP  | TP  |
 | **v2** | TP  | TP  | TP  | TP  | TN  |
-| **v2** |
+| **v3** | TP  | TP  | TP  | TN  | TP  |
 

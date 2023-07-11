@@ -13,7 +13,7 @@ contract Vault {
     uint amount;
     States state;
 
-    // v2
+    // v3
     constructor (address payable recovery_, uint wait_time_) payable {
 	    require(msg.sender != recovery_); 
         owner = msg.sender;
@@ -37,8 +37,8 @@ contract Vault {
 
     function finalize() public { 
         require(state == States.REQ);
-        require (block.number >= request_time + wait_time);
-        require (msg.sender == owner);
+        require(block.number >= request_time + wait_time);
+        require(msg.sender == owner);
 
         state = States.IDLE;	
         (bool succ,) = receiver.call{value: amount}("");
@@ -47,7 +47,7 @@ contract Vault {
 
     function cancel() public {
         require(state == States.REQ);
-        require (msg.sender == recovery);
+        require(msg.sender == recovery);
 
         state = States.IDLE;
     }

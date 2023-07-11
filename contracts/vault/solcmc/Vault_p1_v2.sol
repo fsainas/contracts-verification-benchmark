@@ -13,7 +13,7 @@ contract Vault {
     uint amount;
     States state;
 
-    // v1
+    // v2
     constructor (address payable recovery_, uint wait_time_) payable {
 	    require(msg.sender != recovery); // ERROR: uses state variable instead of parameter
         owner = msg.sender;
@@ -52,11 +52,13 @@ contract Vault {
         state = States.IDLE;
     }
 
+    // p1
     function invariant_withdraw(address receiver_, uint amount_) public {
         withdraw(receiver_, amount_);
         assert(msg.sender == owner);
     }
 
+    // p1
     function invariant_finalize() public {
         finalize();
         assert(msg.sender == owner);

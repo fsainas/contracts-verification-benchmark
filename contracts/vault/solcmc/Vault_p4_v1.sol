@@ -52,6 +52,7 @@ contract Vault {
         state = States.IDLE;
     }
 
+    // p4
     function invariant(address receiver_, uint amount_) public {
         withdraw(receiver_, amount_);
         assert(address(this).balance >= amount_);

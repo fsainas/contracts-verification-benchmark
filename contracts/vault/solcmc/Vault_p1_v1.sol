@@ -26,7 +26,7 @@ contract Vault {
 
     function withdraw(address receiver_, uint amount_) public {
         require(state == States.IDLE);
-        require(amount <= address(this).balance);
+        require(amount_ <= address(this).balance);
         require(msg.sender == owner);
 
         request_time = block.number;
@@ -52,11 +52,13 @@ contract Vault {
         state = States.IDLE;
     }
 
+    // p1
     function invariant_withdraw(address receiver_, uint amount_) public {
         withdraw(receiver_, amount_);
         assert(msg.sender == owner);
     }
 
+    // p1
     function invariant_finalize() public {
         finalize();
         assert(msg.sender == owner);

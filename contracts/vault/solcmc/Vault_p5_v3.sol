@@ -13,7 +13,7 @@ contract Vault {
     uint amount;
     States state;
 
-    // v1
+    // v3
     constructor (address payable recovery_, uint wait_time_) payable {
 	    require(msg.sender != recovery_);
         owner = msg.sender;
@@ -26,7 +26,7 @@ contract Vault {
 
     function withdraw(address receiver_, uint amount_) public {
         require(state == States.IDLE);
-        require(amount_ <= address(this).balance);
+        require(amount <= address(this).balance);   // ERROR: uses state variable instead of parameter
         require(msg.sender == owner);
 
         request_time = block.number;
