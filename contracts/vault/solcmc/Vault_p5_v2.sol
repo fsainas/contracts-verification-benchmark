@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-only
-
 pragma solidity >= 0.8.2;
 
 contract Vault {
@@ -14,9 +13,9 @@ contract Vault {
     uint amount;
     States state;
 
-    // v1
+    // v2
     constructor (address payable recovery_, uint wait_time_) payable {
-	    require(msg.sender != recovery_);
+	    require(msg.sender != recovery); // ERROR: uses state variable instead of parameter
         owner = msg.sender;
         recovery = recovery_;
         wait_time = wait_time_;
@@ -53,9 +52,8 @@ contract Vault {
         state = States.IDLE;
     }
 
-    function invariant() public {
-        cancel();
-        assert(msg.sender == recovery);
+    // p5
+    function invariant() public view {
+        assert(owner != recovery);
     }
-
 }

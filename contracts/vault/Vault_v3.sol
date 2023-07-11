@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-only
-
 pragma solidity >= 0.8.2;
 
 contract Vault {
@@ -14,9 +13,9 @@ contract Vault {
     uint amount;
     States state;
 
-    // v1
+    // v2
     constructor (address payable recovery_, uint wait_time_) payable {
-	    require(msg.sender != recovery_);
+	    require(msg.sender != recovery_); 
         owner = msg.sender;
         recovery = recovery_;
         wait_time = wait_time_;
@@ -27,7 +26,7 @@ contract Vault {
 
     function withdraw(address receiver_, uint amount_) public {
         require(state == States.IDLE);
-        require(amount_ <= address(this).balance);
+        require(amount <= address(this).balance);   // ERROR: uses state variable instead of parameter
         require(msg.sender == owner);
 
         request_time = block.number;
@@ -38,8 +37,8 @@ contract Vault {
 
     function finalize() public { 
         require(state == States.REQ);
-        require(block.number >= request_time + wait_time);
-        require(msg.sender == owner);
+        require (block.number >= request_time + wait_time);
+        require (msg.sender == owner);
 
         state = States.IDLE;	
         (bool succ,) = receiver.call{value: amount}("");
@@ -48,14 +47,8 @@ contract Vault {
 
     function cancel() public {
         require(state == States.REQ);
-        require(msg.sender == recovery);
+        require (msg.sender == recovery);
 
         state = States.IDLE;
     }
-
-    function invariant() public {
-        cancel();
-        assert(msg.sender == recovery);
-    }
-
 }

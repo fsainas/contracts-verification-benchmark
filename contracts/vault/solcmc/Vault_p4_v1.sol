@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-only
-
 pragma solidity >= 0.8.2;
 
 contract Vault {
@@ -16,7 +15,7 @@ contract Vault {
 
     // v1
     constructor (address payable recovery_, uint wait_time_) payable {
-	    require(msg.sender != recovery_);
+    	require(msg.sender != recovery_);
         owner = msg.sender;
         recovery = recovery_;
         wait_time = wait_time_;
@@ -36,7 +35,7 @@ contract Vault {
         state = States.REQ;
     }
 
-    function finalize() public { 
+    function finalize() public {
         require(state == States.REQ);
         require(block.number >= request_time + wait_time);
         require(msg.sender == owner);
@@ -53,9 +52,8 @@ contract Vault {
         state = States.IDLE;
     }
 
-    function invariant() public {
-        cancel();
-        assert(msg.sender == recovery);
+    function invariant(address receiver_, uint amount_) public {
+        withdraw(receiver_, amount_);
+        assert(address(this).balance >= amount_);
     }
-
 }
