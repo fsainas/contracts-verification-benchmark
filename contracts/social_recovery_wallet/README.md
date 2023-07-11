@@ -34,8 +34,8 @@ guardian state.
 - **p1**: the first owner is always the owner, in other words: the owner cannot
   change (should fail)
 - **p2**: the recovery can never happen (should fail)
-- **p3**: if an address `a` has participated in a recovery, then `a` is a
-  guardian (should fail in v1)
+- **p3**: if an address `addr` has participated in a recovery, then `addr` is a
+  guardian. Should fail in v1 because guardians can be removed
 - **p4**: if number of guardian greater than or equal to the threshold has
   participated in the same recovery round, and selected the same new owner,
   then `executeRecovery()` will succeed and `owner == newOwner`
@@ -47,11 +47,9 @@ guardian state.
 - **v1**: conformant to specification
 - **v2**: removed guardian management
 
-
 ## Experiments
 
 ### SolCMC
-
 
 |        | p1  | p2  | p3  | p4  | p5  |
 | ------ | --- | --- | --- | --- | --- |
