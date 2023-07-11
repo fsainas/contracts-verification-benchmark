@@ -25,9 +25,10 @@ and the actual transfer is triggered as a separate step by calling the
 - **p1**: for all accounts `a` in `payees`, `a != address(0)`
 - **p2**: if `payees[0] == addr` then `shares[addr] == 0` (should fail)
 - **p3**: for all addresses `addr` in `payees`, `shares[a] > 0`
-- **p4**: for all addresses `addr` in `payees`, `releasable(a) <= address(this).balance`
-- **p5**: the sum of the releasable funds for every accounts is equal to
-  `address(this).balance`
+- **p4**: for all addresses `addr` in `payees`, `releasable(a)` is less than or
+  equal to the balance of the contract
+- **p5**: the sum of the releasable funds for every accounts is equal to the
+  balance of the contract
 
 ## Versions
 
