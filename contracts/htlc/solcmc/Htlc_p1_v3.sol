@@ -9,10 +9,10 @@ contract HTLC {
    uint start;
 
    // ghost variables
-   bool _commit_called = false;   
-   bool _reveal_called = false;
-   bool _timeout_called = false;
-   
+   uint _sent;
+   uint _deposited;
+
+   // v1
    constructor(address payable v) {
        owner = payable(msg.sender);
        verifier = v;
@@ -20,41 +20,44 @@ contract HTLC {
        isCommitted = false;
    }
 
+   // v1
    function commit(bytes32 h) public payable {
        require(msg.sender == owner);
        require(msg.value >= 1 ether);
        require(!isCommitted);
-
        hash = h;
        isCommitted = true;
 
-       _commit_called = true;
+       _deposited = address(this).balance;       
    }
 
+   // v1
    function reveal(string memory s) public {
        require(msg.sender == owner);
        require(keccak256(abi.encodePacked(s)) == hash);
        require(isCommitted);
-
-       (bool success,) = owner.call{value: address(this).balance }("");
-       require(success, "Transfer failed.");
        
-       _reveal_called = true;            
+       uint _to_send = address(this).balance;       
+       (bool success,) = owner.call{value: _to_send}("");
+       require(success, "Transfer failed.");
+
+       _sent += _to_send;
    }
 
+   // v3
    function timeout() public {
-       require(block.number > start + 1000);
-       require(isCommitted);       
+       require(block.number >= start + 1000);
+       require(isCommitted);
 
-       (bool success,) = verifier.call{value: address(this).balance }("");
+       uint _to_send = address(this).balance;
+       (bool success,) = verifier.call{value: _to_send}("");
        require(success, "Transfer failed.");
-       
-       _timeout_called = true;      
+
+       _sent += _to_send;       
    }
 
-   // p2: if timeout or reveal are called, then commit must have been called
+   // p1
    function invariant() public view {
-       assert(!((_timeout_called || _reveal_called) && !_commit_called));
-   }
-   
+       assert(_sent <= _deposited);
+   }   
 }

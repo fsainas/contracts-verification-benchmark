@@ -16,18 +16,18 @@ contract HTLC {
    }
 
    function commit(bytes32 h) public payable {
-       require (msg.sender==owner);
-       require (msg.value >= 1 ether);
-       require (!isCommitted);
+       require(msg.sender == owner);
+       require(msg.value >= 1 ether);
+       require(!isCommitted);
 
        hash = h;
        isCommitted = true;
    }
 
    function reveal(string memory s) public {
-       require (msg.sender==owner);
-       require(keccak256(abi.encodePacked(s))==hash);
-       require (isCommitted);       
+       require(msg.sender == owner);
+       require(keccak256(abi.encodePacked(s)) == hash);
+       require(isCommitted);       
 
        (bool success,) = owner.call{value: address(this).balance }("");
        require (success, "Transfer failed.");
@@ -35,10 +35,10 @@ contract HTLC {
 
    // v4
    function timeout() public {
-       require (block.number > start + 1000);
-       require (isCommitted);       
+       require(block.number > start + 1000);
+       require(isCommitted);       
 
        (bool success,) = msg.sender.call{value: address(this).balance }("");
-       require (success, "Transfer failed.");
+       require(success, "Transfer failed.");
    }
 }

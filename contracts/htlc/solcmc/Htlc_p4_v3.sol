@@ -9,9 +9,7 @@ contract HTLC {
    uint start;
 
    // ghost variables
-   bool _commit_called = false;   
-   bool _reveal_called = false;
-   bool _timeout_called = false;
+   address _commit_sender;
    
    constructor(address payable v) {
        owner = payable(msg.sender);
@@ -21,40 +19,31 @@ contract HTLC {
    }
 
    function commit(bytes32 h) public payable {
-       require(msg.sender == owner);
        require(msg.value >= 1 ether);
        require(!isCommitted);
-
        hash = h;
        isCommitted = true;
-
-       _commit_called = true;
+       _commit_sender = msg.sender;
    }
 
    function reveal(string memory s) public {
        require(msg.sender == owner);
        require(keccak256(abi.encodePacked(s)) == hash);
-       require(isCommitted);
-
+       require(isCommitted);       
        (bool success,) = owner.call{value: address(this).balance }("");
        require(success, "Transfer failed.");
-       
-       _reveal_called = true;            
    }
 
    function timeout() public {
-       require(block.number > start + 1000);
-       require(isCommitted);       
-
+       require(block.number >= start + 1000);
+       require(isCommitted);
        (bool success,) = verifier.call{value: address(this).balance }("");
        require(success, "Transfer failed.");
-       
-       _timeout_called = true;      
    }
 
-   // p2: if timeout or reveal are called, then commit must have been called
+   // p4: if commit is called, then the sender must be the owner
    function invariant() public view {
-       assert(!((_timeout_called || _reveal_called) && !_commit_called));
+       assert(!isCommitted || _commit_sender==owner);
    }
    
 }

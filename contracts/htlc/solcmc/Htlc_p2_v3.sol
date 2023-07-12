@@ -43,7 +43,7 @@ contract HTLC {
    }
 
    function timeout() public {
-       require(block.number > start + 1000);
+       require(block.number >= start + 1000);
        require(isCommitted);       
 
        (bool success,) = verifier.call{value: address(this).balance }("");

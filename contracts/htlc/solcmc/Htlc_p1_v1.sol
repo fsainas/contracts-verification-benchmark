@@ -22,9 +22,9 @@ contract HTLC {
 
    // v1
    function commit(bytes32 h) public payable {
-       require (msg.sender==owner);
-       require (msg.value >= 1 ether);
-       require (!isCommitted);
+       require(msg.sender == owner);
+       require(msg.value >= 1 ether);
+       require(!isCommitted);
        hash = h;
        isCommitted = true;
 
@@ -33,25 +33,25 @@ contract HTLC {
 
    // v1
    function reveal(string memory s) public {
-       require (msg.sender==owner);
-       require(keccak256(abi.encodePacked(s))==hash);
-       require (isCommitted);
+       require(msg.sender == owner);
+       require(keccak256(abi.encodePacked(s)) == hash);
+       require(isCommitted);
        
        uint _to_send = address(this).balance;       
        (bool success,) = owner.call{value: _to_send}("");
-       require (success, "Transfer failed.");
+       require(success, "Transfer failed.");
 
        _sent += _to_send;
    }
 
    // v1
    function timeout() public {
-       require (block.number > start + 1000);
-       require (isCommitted);
+       require(block.number > start + 1000);
+       require(isCommitted);
 
        uint _to_send = address(this).balance;
        (bool success,) = verifier.call{value: _to_send}("");
-       require (success, "Transfer failed.");
+       require(success, "Transfer failed.");
 
        _sent += _to_send;       
    }
