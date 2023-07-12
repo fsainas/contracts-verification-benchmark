@@ -2,27 +2,27 @@
 pragma solidity >= 0.8.2;
 
 import "./lib/IERC20.sol";
+import "./lib/SafeERC20.sol";
 
 contract TokenTransfer {
+    using SafeERC20 for IERC20;
+
     IERC20 token;
     bool ever_deposited;
 
-    // v1
     constructor(IERC20 token_) {
         token = token_;
     }
 
-    // v1
     function deposit() external {
         require(!ever_deposited);
 
         ever_deposited = true;
         uint allowance = token.allowance(msg.sender, address(this));
-        token.transferFrom(msg.sender, address(this), allowance);
+        token.safeTransferFrom(msg.sender, address(this), allowance);
     }
 
-    // v1
     function withdraw(uint amount) external {
-        token.transfer(msg.sender, amount);
+        token.safeTransfer(msg.sender, amount);
     }
 }
