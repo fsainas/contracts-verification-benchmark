@@ -48,7 +48,7 @@ The `contracts` folder contains a Python script to automatize the execution of
 verification tools. For instance, to run SolCMC on the `simple_transfer` use
 case, execute the command:
 ```
-$ python run.py -d simple_transfer -t solcmc
+$ python run.py -d simple_transfer -T solcmc
 ```
 The output is written in the file `simple_transfer/solcmc/out.csv`.
 
