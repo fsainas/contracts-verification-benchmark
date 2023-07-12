@@ -7,7 +7,7 @@ import argparse
 import datetime
 
 # Default params
-default_solcmc_timeout = 1000
+default_solcmc_timeout = 0
 default_tool = "all"
 
 # Symbols
