@@ -26,6 +26,9 @@ The contract can be in one of two states:
 - **p4**: if there is a withdraw request then the amount is positive and fully
   covered by the contract balance;
 - **p5**: the owner key is never equal to the recovery key.
+- **p6**: anyone can always send funds to the contract.
+- **p7**: a holder of both the owner and recovery key is able to eventually withdraw all their funds with probability 1 (for every fair trace).
+- **p8**: a holder of the recovery key always has a window of at least `wait_time` blocks to stop any withdrawal.
 
 
 ## Versions
