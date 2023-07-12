@@ -11,7 +11,7 @@ contract VestingWallet {
 
     constructor(address beneficiaryAddress, uint64 startTimestamp, uint64 durationSeconds) payable {
         require (beneficiaryAddress != address(0), "VestingWallet: beneficiary is zero address");
-	require (durationSeconds > 0); // require not present in OpenZeppelin
+	    require (durationSeconds > 0); // require not present in OpenZeppelin
 	
         beneficiary = beneficiaryAddress;
         start = startTimestamp;
