@@ -18,6 +18,7 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
           is increased by `amount` ETH.
 - **p4**: a transaction `withdraw(amount)` is not reverted whenever `amount`
           does not exceed the contract balance.
+- **p5**: any user at any time can obtain the full balance of the contract.
 
 ## Versions
 
