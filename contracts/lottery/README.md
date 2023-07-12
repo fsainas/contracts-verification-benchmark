@@ -33,8 +33,8 @@ of a new winner. Ultimately, the players array is reset and new round begins.
 - **p5**: after the `start+duration` block, no user can join the lottery.
 - **p6**: after the `start+duration` block, any user can choose to become the picker. If any does, a winner will eventually be picked.
 - **p7**: among the users that have joined the lottery, the probability of any of them being selected as a winner is equal.
-- **p8**: the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` ETH.
-- **p9**: the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` ETH.
+- **p8**: the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` Ether.
+- **p9**: the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` Ether.
 
 ## Versions
 
