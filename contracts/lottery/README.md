@@ -29,6 +29,12 @@ of a new winner. Ultimately, the players array is reset and new round begins.
 - **p2**: the only way to be a member of the `players[]` array is to call `enter()`;
 - **p3**: if a player calls `enter()` and successfully sends 0.01 Ether, the
   player is added to `players[]`.
+- **p4**: between the `start` and `start+duration` blocks, any user can join the lottery.
+- **p5**: after the `start+duration` block, no user can join the lottery.
+- **p6**: any user can choose to become the picker. If any does, a winner will eventually be picked.
+- **p7**: among the users that have joined the lottery, the probability of any of them being selected as a winner is equal.
+- **p8**: the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` ETH.
+- **p9**: the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` ETH.
 
 ## Versions
 
