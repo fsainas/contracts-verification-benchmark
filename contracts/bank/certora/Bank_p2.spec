@@ -20,21 +20,6 @@ rule P2 {
     assert e.msg.value > 0 <=> senderBalanceBefore < senderBalanceAfter;
 }
 
-rule NotP2 { // should fail
-    env e;
-    method receive;
-    calldataarg args;
-
-    address sender = e.msg.sender;
-    
-    uint256 senderBalanceBefore = getBalance(sender);
-
-    receive(e, args);
-
-    uint256 senderBalanceAfter = getBalance(sender);
-
-    assert e.msg.value == 0 <=> senderBalanceBefore < senderBalanceAfter;
-}
-
-// V1 proof: https://prover.certora.com/output/49230/f6a245fe2aaa4600ba71b4500f41717f?anonymousKey=fd893c109cc4b23e34426066cf17f05bd770f267
-// V2 proof: https://prover.certora.com/output/49230/21f16acd4e8a4aa9b91f86a27a11a684?anonymousKey=e647f43c40d296b3b3957f6e328fe42ff392caf8
+// V1 proof: https://prover.certora.com/output/49230/7328b497ed51422ab5813b1240eec3c5?anonymousKey=6617191fc7515f0ecdb47f268a89da3a98330270
+// V2 proof: https://prover.certora.com/output/49230/584ef6b3727a4acf92b68d97b29315d6?anonymousKey=e9726050ef9612b0aafafa6c66c849b46c9f80dd
+// V3 proof: https://prover.certora.com/output/49230/d449ac12cb2047e0812b6efa1e33cb08?anonymousKey=800772959ac2b236deb4032e6225c02e827c1931

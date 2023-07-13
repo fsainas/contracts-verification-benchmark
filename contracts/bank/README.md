@@ -18,33 +18,30 @@ then initiates a transfer of the specified amount to the depositor's address.
   balance of the address who made the deposit is increased.
 - **p3**: the only way to decrease the balance of the contract is by calling `withdraw()`
 - **p4**: after a withdrawal, the balance of `msg.sender` is decreased by `amount`
-- **p5**: after a withdrawal, the total balance is decreased
-- **p6**: a user cannot withdraw more than what is currently in their bank balance
-- **p7**: `withdraw()` does not revert if the sender calls it with an `amount`
+- **p5**: `withdraw()` does not revert if the sender calls it with an `amount`
   value less than or equal to their balance in the bank contract.
+- **p6**: a user cannot withdraw more than what is currently in their bank balance
 
 ## Versions
 
 - **v1**: conformant to specification
 - **v2**: no `amount > 0` check in `withdraw()`
-- **v3**: no `amount <= balances[msg.sender]` check in `withdraw()`
+- **v3**: no `amount <= balances[msg.sender]` check and `balances[msg.sender]` is decremented by `amount - 1` in `withdraw()`
 
 ## Experiments
 
 ### SolCMC
 
-|        | p1 | p2 | p3 | p4 | p5 | p6 | p7
-| ------ | -- | -- | -- | -- | -- | -- | --
-| **v1** | TP | TP |N/D | ?  | ?  | TP | N/D
-| **v2** | TP | TP |N/D | ?  |    | TP | N/D
-| **v3** | TP | TP |N/D | ?  |    | TP | N/D
+|        | p1  | p2  | p3  | p4  | p5  | p6  |
+| ------ | --- | --- | --- | --- | --- | --- |
+| **v1** | TP  | TP  | N/D | ?   | N/D | TP  |
+| **v2** | TP  | TP  | N/D | ?   | N/D | TP  |
+| **v3** | TP  | TP  | N/D | TN  | N/D | TN  |
 
 ### Certora
-|        | p1 | p2 | p3 | p4 | p5 | p6 | p7
-| ------ | -- | -- | -- | -- | -- | -- | --
-| **v1** | TP | TP |    | TP | FP |
-| **v2** | TP |    |    |
-| **v3** | TP |    |    |
 
-#### Notes
-- Not sure about p5/v1.
+|        | p1  | p2  | p3  | p4  | p5  | p6  |
+| ------ | --- | --- | --- | --- | --- | --- |
+| **v1** | TP  | TP  | TP  | TP  | N/D | TP  |
+| **v2** | TP  | TP  | TP  | TP  | N/D | TP  |
+| **v3** | TP  | TP  | TP  | TN  | N/D | TN  |

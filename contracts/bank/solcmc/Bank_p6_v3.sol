@@ -13,7 +13,7 @@ contract Bank {
         require(amount > 0);
         //require(amount <= balances[msg.sender]);
 
-        balances[msg.sender] -= amount;
+        balances[msg.sender] -= amount - 1;
 
         (bool success,) = msg.sender.call{value: amount}("");
         require(success);
