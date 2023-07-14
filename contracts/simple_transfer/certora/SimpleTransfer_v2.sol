@@ -13,6 +13,10 @@ contract SimpleTransfer is ReentrancyGuard {
         return address(this).balance;
     }
 
+    function getAddressBalance(address addr) public view returns (uint) {
+        return addr.balance;
+    }
+
     function withdraw(uint amount) public nonReentrant {
         require(amount <= address(this).balance);
 

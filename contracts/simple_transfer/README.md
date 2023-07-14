@@ -45,8 +45,8 @@ The contract has a `withdraw` function that transfers an `amount` of ETH
 
 |        | p1  | p2  | p3  | p4  |
 | ------ | --- | --- | --- | --- |
-| **v1** |     | TN  | FN  |
-| **v2** |     | FN  | 
-| **v3** |     | 
-| **v4** |     | 
-| **v5** |
+| **v1** | FP  | TN  | TN  | N/D |
+| **v2** | FP  | FN  | TN  | N/D |
+| **v3** | FP  | FN  | TN  | N/D |
+| **v4** | FP  | TN  | TN  | N/D |
+| **v5** | FP  | FN  | TN  | N/D |
