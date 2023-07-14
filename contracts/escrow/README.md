@@ -39,3 +39,9 @@ phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a s
 | **v3**  | TP  |
 
 ### Certora
+
+|         | p1  | p2  | p3  | p4  | p5  | p6  |
+| ------- | --- | --- | --- | --- | --- | --- |
+| **v1**  |     | TP  | TP  | TP  | FN  | TP  |
+| **v2**  | 
+| **v3**  | 
