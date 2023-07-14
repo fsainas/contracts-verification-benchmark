@@ -4,20 +4,15 @@ methods {
 }
 
 rule P3 {
-    address addr;
-    
-    require getPayee(0) == addr;
-    
-    assert getShares(addr) == 0;
+    uint index;
+    address payee = getPayee(index);
+    assert getShares(payee) > 0;
 }
 
 rule NotP3 {
-    address addr;
-    
-    require getPayee(0) == addr;
-    
-    assert getShares(addr) != 0;
+    uint index;
+    address payee = getPayee(index);
+    assert getShares(payee) == 0;
 }
 
-// proof V1: 
-!
+// proof V1: https://prover.certora.com/output/49230/989a1be40bdc41caa1921e791f00c2a9?anonymousKey=9bddb8d8136c81961402aa8f5002f16bde806bc6

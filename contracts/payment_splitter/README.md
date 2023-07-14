@@ -44,6 +44,8 @@ and the actual transfer is triggered as a separate step by calling the
 
 ### Certora
 
-|        | p1  | p2  | p3  | p4  | p5  |
-| ------ | --- | --- | --- | --- | --- |
-| **v1** | FN  | FN  | TN  | FN  |
+|        | p1  | p2    | p3  | p4  | p5  |
+| ------ | --- | ---   | --- | --- | --- |
+| **v1** | FN  | FN[^1]| FN  | FN  | FN  |
+
+[^1]: Fails with havoc and does not provide a counterexample.
