@@ -53,8 +53,7 @@ contract Vault {
     }
 
     // p4
-    function invariant(address receiver_, uint amount_) public {
-        withdraw(receiver_, amount_);
-        assert(address(this).balance >= amount_);
+    function invariant() public view {
+        assert(state != States.REQ || address(this).balance >= amount);
     }
 }

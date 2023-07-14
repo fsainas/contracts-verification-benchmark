@@ -24,6 +24,26 @@ contract Vault {
 
     receive() external payable { }
 
+    function getOwner() public view returns (address) {
+        return owner;
+    }
+
+    function getRecovery() public view returns (address) {
+        return recovery;
+    }
+
+    function getState() public view returns (States) {
+        return state;
+    }
+
+    function getAmount() public view returns (uint) {
+        return amount;
+    }
+
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+
     function withdraw(address receiver_, uint amount_) public {
         require(state == States.IDLE);
         require(amount_ <= address(this).balance);
@@ -35,7 +55,7 @@ contract Vault {
         state = States.REQ;
     }
 
-    function finalize() public {
+    function finalize() public { 
         require(state == States.REQ);
         require(block.number >= request_time + wait_time);
         require(msg.sender == owner);
@@ -50,10 +70,5 @@ contract Vault {
         require(msg.sender == recovery);
 
         state = States.IDLE;
-    }
-
-    // p4
-    function invariant() public view {
-        assert(state != States.REQ || address(this).balance >= amount);
     }
 }

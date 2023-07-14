@@ -48,3 +48,10 @@ The contract can be in one of two states:
 | **v2** | TP  | TP  | TP  | TP  | TN  |
 | **v3** | TP  | TP  | TP  | TN  | TP  |
 
+### Certora
+
+|        | p1  | p2  | p3  | p4  | p5  |
+| ------ | --- | --- | --- | --- | --- |
+| **v1** | TP  | TP  | TP  | FN  | FN  |
+| **v2** | TP  | TP  | TP  | FN  | TN  |
+| **v3** | TP  | TP  | TP  | FN  | FN  |
