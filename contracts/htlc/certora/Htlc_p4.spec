@@ -1,5 +1,6 @@
 methods {
        function getStart() external returns (uint) envfree;
+       function getOwner() external returns (address) envfree;
        function getIsCommitted() external returns (bool) envfree;
        function getBalance() external returns (uint);
        function commit(bytes32) external;
@@ -7,28 +8,23 @@ methods {
        function timeout() external;
 }
 
-rule P3 {
-    env e1;
-    require e1.block.number == getStart();
-
-    env e2;
-    timeout(e2);
-    mathint block_number = e2.block.number;
+rule P4 {
+    env e;
+    bytes32 b;
+    commit(e, b);
     
-    assert block_number > e1.block.number + 1000;
+    assert e.msg.sender == getOwner();
 }
 
-rule NotP3 {
-    env e1;
-    require e1.block.number == getStart();
-
-    env e2;
-    timeout(e2);
-    mathint block_number = e2.block.number;
-
-    assert block_number <= e1.block.number + 1000;
+rule NotP4 {
+    env e;
+    bytes32 b;
+    commit(e, b);
+    
+    assert e.msg.sender != getOwner();
 }
 
-// V1 proof: https://prover.certora.com/output/49230/5de91047560e48868e26c72186ace14c?anonymousKey=3a0a8a3f8e8b4aa3e531501e848bc215904903d9
-// V2 proof: 
-// V3 proof: https://prover.certora.com/output/49230/86a779beae9f45e38c51923b72c641d1?anonymousKey=3c92120deed1f3cb84e902f0d71d8cf554d1671a
+// V1 proof: https://prover.certora.com/output/49230/89924abbcbb0413889015a33e2580975?anonymousKey=12a054681e4a6a3fcd46725079e7f81a97e3c58e
+// V2 proof: https://prover.certora.com/output/49230/f7ef05f226ad4d7aa8d8624d53c5a197?anonymousKey=dcdfbadee5918a2889d6e00a0c283683b3d6a82c
+// V3 proof: https://prover.certora.com/output/49230/317dae1c25f24457876e1b079cca6cd0?anonymousKey=2ab01c887629fee4292e95c4ad6dc9382d46c11b
+// V4 proof: https://prover.certora.com/output/49230/57f8e53fbad44901ba0e8b51decdee62?anonymousKey=0cda976671145b9915f77ebbfc35103df0dfcdc3

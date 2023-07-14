@@ -53,6 +53,6 @@ and records the commit;
 |        | p1  | p2  | p3  | p4  |
 | ------ | --- | --- | --- | --- |
 | **v1** | FP  | FN  | TP  | TP  |
-| **v2** | FP  |
-| **v3** | FP  |     | TN
-| **v4** | FP  |
+| **v2** | FP  | TN  | TP  | TP  |
+| **v3** | FP  | FN  | TN  | TP  |
+| **v4** | FP  | FN  | TP  | TP  |

@@ -5,7 +5,7 @@ contract HTLC {
    address payable public owner;  
    address payable public verifier;
    bytes32 public hash;
-   // bool public isCommitted;
+   bool public isCommitted;
    uint start;
   
    constructor(address payable v) {
