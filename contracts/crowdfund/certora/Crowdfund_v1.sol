@@ -25,6 +25,10 @@ contract Crowdfund {
     function getBalance() public view returns (uint) {
         return address(this).balance;
     }
+
+    function getReceiver() public view returns (address) {
+        return receiver;
+    }
     
     function donate() public payable {
         require (block.number <= end_donate);

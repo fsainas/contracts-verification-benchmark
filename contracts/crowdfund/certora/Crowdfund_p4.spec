@@ -20,9 +20,11 @@ rule P4 {
     mathint after = getBalance();
     
     assert before > after => (
-        f.selector == withdraw().selector ||
-        f.selector == reclaim().selector
+        f.selector == sig:withdraw().selector ||
+        f.selector == sig:reclaim().selector
     );
 
     
 }
+
+// v1 proof: https://prover.certora.com/output/49230/d5485cfcbe434476ab40b1086045f25f?anonymousKey=ce1f140c23643660acd597f6f8b00634542e6154

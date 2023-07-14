@@ -18,25 +18,28 @@ donations after the donation period has ended.
   when its address is specified in a coinbase transaction or in a `selfdestruct`.
 - **p4**: the only way to decrease the contract balance is by calling
   `withdraw()` or `reclaim()`.
-- **p5**: if the goal amount is not reached and the deposit phase has ended, a donor can make a reclaim.
-- **p6**: if the goal amount is reached after the deposit period, only the receiver can withdraw from the contract
-- **p7**: if the deposit period has ended, only `withdraw()` or `reclaim()` can be called.
+- **p5**: if the goal amount is not reached and the deposit phase has ended, a
+  donor can make a reclaim.
+- **p6**: if the goal amount is reached after the deposit period, only the
+  receiver can withdraw from the contract
+- **p7**: if the deposit period has ended, only `withdraw()` or `reclaim()` can
+  be called.
 
 ## Versions
 
-- **v1**: conformant to specification
+- **v1**: conforming to specification.
 
 ## Experiments
 
 ### SolCMC
 
-|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  
-| ------ | --- | --- | --- | --- | --- | --- | --- 
-| **v1** | TP  | N/D | TF  | N/D | N/D |     | N/D
+|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  |
+| ------ | --- | --- | --- | --- | --- | --- | --- |
+| **v1** | TP  | N/D | TN  | N/D | N/D |     | N/D |
 
 
 ### Certora
 
-|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  
-| ------ | --- | --- | --- | --- | --- | --- | --- 
-| **v1** | TP  |     | 
+|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  |
+| ------ | --- | --- | --- | --- | --- | --- | --- |
+| **v1** | TP  | N/D | FP  | TP  |     |     | TP  |

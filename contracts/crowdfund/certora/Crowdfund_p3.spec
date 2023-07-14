@@ -1,30 +1,34 @@
 methods {
     function getEndDonate() external returns (uint) envfree;
-    function getBalance() external returns (uint) envfree;
-    function getGoal() external returns (uint) envfree;
-    function withdraw() external;
+    function getBalance() external returns (uint);
 }
 
 rule P3 {
-    env e;
+    env e1;
+    env e2;
+
+    require e1.block.number > getEndDonate();
+    require e2.block.number > getEndDonate();
+    require e1.block.number < e2.block.number;
     
-    require(e.block.number > getEndDonate());
+    mathint balance1 = getBalance(e1);
+    mathint balance2 = getBalance(e2);
     
-    mathint before = getBalance();
-    mathint after = getBalance();
-    
-    assert before >= after;
-    
+    assert balance1 == balance2;
 }
 
 rule NotP3 {
-    env e;
+    env e1;
+    env e2;
+
+    require e1.block.number > getEndDonate();
+    require e2.block.number > getEndDonate();
+    require e1.block.number < e2.block.number;
     
-    require(e.block.number > getEndDonate());
+    mathint balance1 = getBalance(e1);
+    mathint balance2 = getBalance(e2);
     
-    mathint before = getBalance();
-    mathint after = getBalance();
-    
-    assert before == after;
-    
+    assert balance1 != balance2;
 }
+
+// V1 proof: https://prover.certora.com/output/49230/272516faa43541b38264186b338ee5ed?anonymousKey=6a659efbca8e3798b7a96ec1790a7b6f073b6200
