@@ -43,7 +43,16 @@ and records the commit;
 
 |        | p1  | p2  | p3  | p4  |
 | ------ | --- | --- | --- | --- |
-| **v1** | TN  | TP  | TP  | TN  |
-| **v2** | TN  | TN  | TP  | TN  |
-| **v3** | TN  | TP  | TN  | TN  |
-| **v4** | TN  | TP  | TP  | TN  |
+| **v1** | TN  | TP  | TP  | TP  |
+| **v2** | TN  | TN  | TP  | TP  |
+| **v3** | TN  | TP  | TN  | TP  |
+| **v4** | TN  | TP  | TP  | TP  |
+
+### Certora
+
+|        | p1  | p2  | p3  | p4  |
+| ------ | --- | --- | --- | --- |
+| **v1** | FP  | FN  | TP  | TP  |
+| **v2** | FP  |
+| **v3** | FP  |     | TN
+| **v4** | FP  |

@@ -7,10 +7,7 @@ contract HTLC {
    bytes32 public hash;
    bool public isCommitted;
    uint start;
-
-   // ghost variables
-   address _commit_sender;
-   
+  
    constructor(address payable v) {
        owner = payable(msg.sender);
        verifier = v;
@@ -18,33 +15,46 @@ contract HTLC {
        isCommitted = false;
    }
 
+   function getBalance() public view returns (uint) {
+       return address(this).balance;
+   }
+
+   function getOwner() public view returns (address) {
+       return owner;
+   }
+
+   function getStart() public view returns (uint) {
+       return start;
+   }
+
+   function getIsCommitted() public view returns (bool) {
+       return isCommitted;
+   }
+
    function commit(bytes32 h) public payable {
        require(msg.sender == owner);
        require(msg.value >= 1 ether);
        require(!isCommitted);
+
        hash = h;
        isCommitted = true;
-       _commit_sender = msg.sender;
    }
 
    function reveal(string memory s) public {
        require(msg.sender == owner);
        require(keccak256(abi.encodePacked(s)) == hash);
        require(isCommitted);       
+
        (bool success,) = owner.call{value: address(this).balance }("");
        require(success, "Transfer failed.");
    }
 
+   // v3
    function timeout() public {
        require(block.number >= start + 1000);
-       require(isCommitted);
+       require(isCommitted);       
+
        (bool success,) = verifier.call{value: address(this).balance }("");
        require(success, "Transfer failed.");
    }
-
-   // p4: if commit is called, then the sender must be the owner
-   function invariant() public view {
-       assert(!isCommitted || _commit_sender==owner);
-   }
-   
 }
