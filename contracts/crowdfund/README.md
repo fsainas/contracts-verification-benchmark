@@ -35,11 +35,11 @@ donations after the donation period has ended.
 
 |        | p1  | p2  | p3  | p4  | p5  | p6  | p7  |
 | ------ | --- | --- | --- | --- | --- | --- | --- |
-| **v1** | TP  | N/D | TN  | N/D | N/D |     | N/D |
+| **v1** | TP  | N/D | TN  | N/D | N/D | N/D | N/D |
 
 
 ### Certora
 
 |        | p1  | p2  | p3  | p4  | p5  | p6  | p7  |
 | ------ | --- | --- | --- | --- | --- | --- | --- |
-| **v1** | TP  | N/D | FP  | TP  |     |     | TP  |
+| **v1** | TP  | N/D | FP  | TP  | N/D | FN  | TP  |
