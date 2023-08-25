@@ -33,7 +33,35 @@ Currently the benchmark supports the following verification tools:
 - [SolCMC](https://verify.inf.usi.ch/publications/2022/solcmc-solidity-compiler%E2%80%99s-model-checker)
 - [Certora](https://www.certora.com/)
 
-## Using the benchmark
+## Evaluating a verification tool
+
+For each use case, we evaluate the performance of a verification tool
+as a matrix, where columns represent different contract properties, and
+rows represent different implementations of the use case.
+For each entry of the matrix, we summarize the output of the tool as follows:
+
+| Symbol | Meaning                                                        |
+| ------ | -------                                                        |
+| TP     | True Positive  (property holds, verification succeeds)         |
+| TN     | True Negative  (property does not hold, verification fails)    |
+| FP     | False Positive (property does not hold, verification succeeds) |
+| FN     | False Negative (property holds, verification fails)            |
+| ND     | Property not definable with the tool                           |
+
+Additionally, we mark with ! the classifications TP,TN,FP,FN, when the verification tool 
+guarantees the correctness of the output. 
+Following our [methodological notes](methodology/), we map the outputs of the 
+verification tools according to the following table:
+
+| Suffix  | SolCMC output           | Certora ouput  |
+|---------|-------------------------|----------------|
+| P       |                         | Satisfy green  |
+| P!      | Property is valid       | Assert green   |
+| N       | Property might be false | Assert red     |
+| N       | Timeout                 | Timeout        |
+| N!      | Property is false       | Satisfy red    | 
+
+## Extending the benchmark
 
 Each use case folder includes a file `in.csv` that defines the ground truth for
 that use case. Lines of the csv have the form:
@@ -78,19 +106,3 @@ To use Certora, you must provide the following arguments:
 - `<contract_name>`: The name of the contract within the contract file. Ensure
   it matches the actual contract name.
 - `<spec_file>`: Path to the specification file that defines the property you want to check.
-
-## Evaluating a verification tool
-
-For each use case, we evaluate the performance of a verification tool
-as a matrix, where columns represent different contract properties, and
-rows represent different implementations of the use case.
-For each entry of the matrix, we summarize the output of the tool as follows:
-
-| Symbol | Meaning                                                        |
-| ------ | -------                                                        |
-| TP     | True Positive  (property holds, verification succeeds)         |
-| TN     | True Negative  (property does not hold, verification fails)    |
-| FP     | False Positive (property does not hold, verification succeeds) |
-| FN     | False Negative (property holds, verification fails)            |
-| ?      | Timeout / Unknown                                              |
-| N/D    | Property not definable with the tool                           |
