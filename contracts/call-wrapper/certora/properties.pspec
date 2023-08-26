@@ -1,0 +1,25 @@
+methods {
+    function callyourself() external;
+    function getBalance() external returns (uint) envfree;
+    function getData() external returns (uint) envfree;
+}
+
+rule P1 {
+    env e;
+
+    mathint before = getBalance();
+    callyourself(e);
+    mathint after = getBalance();
+
+    assert before == after;
+}
+
+rule P2 {
+    env e;
+
+    mathint before = getData();
+    callyourself(e);
+    mathint after = getData();
+
+    assert before == after;
+}
