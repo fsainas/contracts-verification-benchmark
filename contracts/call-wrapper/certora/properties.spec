@@ -1,14 +1,15 @@
 methods {
-    function callyourself() external;
+    function callwrap(address) external;
     function getBalance() external returns (uint) envfree;
     function getData() external returns (uint) envfree;
 }
 
 rule P1 {
     env e;
+    address called;
 
     mathint before = getBalance();
-    callyourself(e);
+    callwrap(called);
     mathint after = getBalance();
 
     assert before == after;
@@ -16,9 +17,10 @@ rule P1 {
 
 rule P2 {
     env e;
+    address called;
 
     mathint before = getData();
-    callyourself(e);
+    callwrap(called);
     mathint after = getData();
 
     assert before == after;

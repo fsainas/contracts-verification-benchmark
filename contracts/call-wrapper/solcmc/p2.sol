@@ -1,5 +1,5 @@
-function invariant() public {
+function invariant(address called) public {
     uint _data = data;
-    callyourself();
+    callwrap(called);
     assert(_data == data);
 }

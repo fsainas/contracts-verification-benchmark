@@ -1,5 +1,5 @@
-function invariant() public {
+function invariant(address called) public {
     uint _balance = address(this).balance;
-    callyourself();
+    callwrap(called);
     assert(_balance == address(this).balance);
 }
