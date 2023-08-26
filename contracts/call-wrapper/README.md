@@ -7,11 +7,11 @@ The contract acts as a wrapper to Solidity's `call` function.
 - **p2**: the contract storage is unchanged after a call to `callwrap`.
 
 ## Versions
-- **v1**: Very very cool version, the first of all.
-- **v2**: The second version.
-- **v3**: The third version.
-- **v4**: The fourth version.
-- **v5**: The fifth version.
+- **v1**: reentrant `callwrap`.
+- **v2**: non-reentrant `callwrap`.
+- **v3**: reentrant `callwrap` and additional reentrant function `modifystorage`.
+- **v4**: non-reentrant `callwrap` and additional reentrant function `modifystorage`.
+- **v5**: non-reentrant `callwrap` and additional non-reentrant function `modifystorage`.
 
 ## Ground truths
 |        | p1  | p2  |

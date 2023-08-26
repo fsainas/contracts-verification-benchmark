@@ -2,12 +2,12 @@
 pragma solidity >= 0.8.2;
 import "./lib/ReentrancyGuard.sol";
 
-/// @custom:version The second version.
-contract Caller is ReentrancyGuard {
+/// @custom:version non-reentrant `callwrap`.
+contract CallWrapper is ReentrancyGuard {
     uint data;
 
-    function callyourself() public nonReentrant {
-        msg.sender.call("");
+    function callwrap(address called) public nonReentrant {
+        called.call("");
     }
 
 }
