@@ -2,6 +2,7 @@
 pragma solidity >= 0.8.2;
 import "./lib/ReentrancyGuard.sol";
 
+/// @custom:version The fourth version.
 contract Caller is ReentrancyGuard {
     uint data;
 

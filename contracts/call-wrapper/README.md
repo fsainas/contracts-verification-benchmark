@@ -1,4 +1,4 @@
-# Caller
+# CallWrapper
 ## Specification
 The contract acts as a wrapper to Solidity's `call` function.
 
@@ -7,30 +7,17 @@ The contract acts as a wrapper to Solidity's `call` function.
 - **p2**: the contract storage is unchanged after a call to `callwrap`.
 
 ## Versions
-- **v1**: reentrant `callwrap`.
-- **v2**: non-reentrant `callwrap`.
-- **v3**: reentrant `callwrap` and additional reentrant function `modifystorage`.
-- **v4**: non-reentrant `callwrap` and additional reentrant function `modifystorage`.
-- **v5**: non-reentrant `callwrap` and additional non-reentrant function `modifystorage`.
+- **v1**: Very very cool version, the first of all.
+- **v2**: The second version.
+- **v3**: The third version.
+- **v4**: The fourth version.
+- **v5**: The fifth version.
 
-## Experiments
-
-### SolCMC
-
+## Ground truths
 |        | p1  | p2  |
-| ------ | --- | --- |
-| **v1** | TN  | TP  |
-| **v2** | FP  | TP  |
-| **v3** | TN  | TP  |
-| **v4** | TN  | TP  |
-| **v5** | FP  | TP  |
-
-### Certora
-
-|        | p1  | p2  |
-| ------ | --- | --- |
-| **v1** | TN  | TP  |
-| **v2** | TN  | TP  |
-| **v3** | TN  | TP  |
-| **v4** | TN  | TP  |
-| **v5** | TN  | TP  |
+|--------|-----|-----|
+| **v1** | 0   | 1   |
+| **v2** | 0   | 1   |
+| **v3** | 0   | 0   |
+| **v4** | 0   | 0   |
+| **v5** | 0   | 1   |

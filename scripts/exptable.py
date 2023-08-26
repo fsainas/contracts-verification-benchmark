@@ -12,15 +12,6 @@ Usage:
 import argparse
 import csv
 
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--input', '-i', help='CSV input file')
-parser.add_argument('--output', '-o', help='File to write to')
-args = parser.parse_args()
-
-input_file = args.input
-ouput_file = args.output
-
 min_cell_width = 5
 
 
@@ -78,7 +69,8 @@ def make_markdown_table(pset, vset, results):
     return markdown_table
 
 
-def main():
+def main(input_file, outputfile=True):
+    '''outputfile: if it's out.csv, otherwise assume in.csv'''
     table = []
 
     # Read data from input file
@@ -92,7 +84,10 @@ def main():
         vset = set()
 
         for row in csv_reader:
-            p, v, _, res = row[0], row[1], row[2], row[3]
+            if outputfile:
+                p, v, _, res = row[0], row[1], row[2], row[3]
+            else:
+                p, v, res = row[0], row[1], row[2]
 
             pset.add(p)
             vset.add(v)
@@ -100,13 +95,21 @@ def main():
 
         table = make_markdown_table(pset, vset, results)
 
-    print(table)
+    return table
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--input', '-i', help='CSV input file')
+    parser.add_argument('--output', '-o', help='File to write to')
+    args = parser.parse_args()
+
+    input_file = args.input
+    ouput_file = args.output
+
+    table = main(args.input)
 
     # Eventually writes to output file
     if ouput_file is not None:
         with open(ouput_file, 'w') as file:
             file.write(table)
-
-
-if __name__ == "__main__":
-    main()

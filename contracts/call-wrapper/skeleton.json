@@ -1,7 +1,8 @@
 {
+    "name": "CallWrapper",
     "specification": "The contract acts as a wrapper to Solidity's `call` function.",
-    "properties": {
-        "p1": "the contract balance is unchanged after a call to  `callwrap`.",
-        "p2": "the contract storage is unchanged after a call to `callwrap`."
-    }
+    "properties": [
+        "the contract balance is unchanged after a call to  `callwrap`.",
+        "the contract storage is unchanged after a call to `callwrap`."
+    ]
 }
