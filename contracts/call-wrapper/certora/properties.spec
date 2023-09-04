@@ -9,7 +9,7 @@ rule P1 {
     address called;
 
     mathint before = getBalance();
-    callwrap(called);
+    callwrap(e, called);
     mathint after = getBalance();
 
     assert before == after;
@@ -20,7 +20,7 @@ rule P2 {
     address called;
 
     mathint before = getData();
-    callwrap(called);
+    callwrap(e, called);
     mathint after = getData();
 
     assert before == after;

@@ -1,6 +1,5 @@
 # Directories
 VERSIONS_DIR = ../versions/
-PROPERTIES_DIR = .
 BUILD_DIR = build
 CONTRACTS_DIR = $(BUILD_DIR)/contracts
 LOGS_DIR = $(BUILD_DIR)/logs
@@ -9,11 +8,12 @@ LIB_DIR = $(CONTRACTS_DIR)/lib
 PYTHON = python
 
 GETTER_FILE = getters.sol
+PROPERTIES_FILE = properties.spec
 
 .PHONY = run clean
 
-#run: directories contracts 
-#	$(PYTHON) ../../../scripts/run_solcmc.py --input $(CONTRACTS_DIR) --output $(BUILD_DIR)
+run: directories contracts 
+	$(PYTHON) ../../../scripts/run_certora.py --input $(CONTRACTS_DIR) --spec $(PROPERTIES_FILE) -o $(BUILD_DIR)
 
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR)
 
