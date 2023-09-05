@@ -11,6 +11,7 @@ Usage:
 
 import argparse
 import csv
+import sys
 
 min_cell_width = 5
 
@@ -21,7 +22,7 @@ def make_markdown_table(pset, vset, results):
 
     Args:
         pset (set): The set of properties.
-        vset (set): The set of variants.
+        vset (set): The set of versions.
         results (dict): Results of experiments, the keys are (p,v) couples.
 
     Returns:
@@ -31,8 +32,8 @@ def make_markdown_table(pset, vset, results):
     plist = sorted(list(pset))
     vlist = sorted(list(vset))
 
-    max_p_length = max([len(plist[i]) for i in range(len(plist))])
-    max_v_length = max([len(vlist[i]) for i in range(len(vlist))])
+    max_p_length = max([len(p) for p in enumerate(plist)])
+    max_v_length = max([len(v) for v in enumerate(vlist)])
 
     cell_width = max(min_cell_width, max_p_length+2)    # 2 is the margin
 
@@ -69,7 +70,7 @@ def make_markdown_table(pset, vset, results):
     return markdown_table
 
 
-def main(input_file, outputfile=True):
+def main(input_file):
     '''outputfile: if it's out.csv, otherwise assume in.csv'''
     table = []
 
@@ -84,10 +85,7 @@ def main(input_file, outputfile=True):
         vset = set()
 
         for row in csv_reader:
-            if outputfile:
-                p, v, _, res = row[0], row[1], row[2], row[3]
-            else:
-                p, v, res = row[0], row[1], row[2]
+            p, v, res = row[0], row[1], row[2]
 
             pset.add(p)
             vset.add(v)
@@ -100,16 +98,16 @@ def main(input_file, outputfile=True):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', '-i', help='CSV input file')
-    parser.add_argument('--output', '-o', help='File to write to')
+    parser.add_argument(
+            '--input', 
+            '-i', 
+            help='CSV input file',
+            required=True
+    )
     args = parser.parse_args()
 
     input_file = args.input
-    ouput_file = args.output
 
     table = main(args.input)
 
-    # Eventually writes to output file
-    if ouput_file is not None:
-        with open(ouput_file, 'w') as file:
-            file.write(table)
+    sys.stdout.write(table)

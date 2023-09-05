@@ -25,7 +25,7 @@ $(LIB_DIR):
 	cp -r ../../../lib/ $@
 
 contracts: $(CONTRACTS_DIR)
-	$(PYTHON) ../../../scripts/solcmc_contract_builder.py --version $(VERSIONS_DIR) --property $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
+	$(PYTHON) ../../../scripts/contract_builder.py --base $(VERSIONS_DIR) --inject $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
 
 clean:
 	rm -rf build/

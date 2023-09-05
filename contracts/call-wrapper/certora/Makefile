@@ -13,7 +13,7 @@ PROPERTIES_FILE = properties.spec
 .PHONY = run clean
 
 run: directories contracts 
-	$(PYTHON) ../../../scripts/run_certora.py --input $(CONTRACTS_DIR) --spec $(PROPERTIES_FILE) -o $(BUILD_DIR)
+	$(PYTHON) ../../../scripts/run_certora.py --input $(CONTRACTS_DIR) --spec $(PROPERTIES_FILE) --output $(BUILD_DIR)
 
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR)
 

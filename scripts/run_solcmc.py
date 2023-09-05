@@ -1,14 +1,14 @@
 """
 Name: run_solcmc
 Description:
-    Runs on a file or every file inside a directory.
+    Operates on either a single file or every file within a directory.
 
 Usage:
-    python run_solcmc.py -i <file_or_dir> -o <output_dir> -t <timeout>
+    python run_solcmc.py -i <file_or_dir> -o <output_dir> [-t <timeout>]
 """
 
-import subprocess
 from string import Template
+import subprocess
 import argparse
 import csv
 import re
@@ -19,8 +19,7 @@ COMMAND_TEMPLATE = Template(
 --model-checker-engine chc \
 --model-checker-timeout $timeout \
 --model-checker-targets assert \
---model-checker-show-unproved \
-"""
+--model-checker-show-unproved"""
 )
 
 DEFAULT_TIMEOUT = 0
@@ -59,7 +58,7 @@ def run_solcmc(c_path, timeout):
     Runs a single solcmc experiment.
 
     Args:
-        c_path (string): Contract file path.
+        c_path (str): Contract file path.
         timeout (int): Experiment timeout.
 
     Returns:
@@ -83,7 +82,7 @@ def run_all_solcmc(contracts_dir, timeout):
     Runs solcmc on all files of a directory.
 
     Args:
-        contracts_dir (string): Contracts directory path.
+        contracts_dir (str): Contracts directory path.
         timeout (int): Solcmc timeout.
 
     Returns:
