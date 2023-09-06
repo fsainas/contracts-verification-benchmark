@@ -154,7 +154,7 @@ def run_all_certora(contracts_dir, spec):
     properties = get_properties(spec)
 
     for file in os.listdir(contracts_dir):
-        if not os.path.isdir(file):     # lib/ is ignored
+        if not os.path.isdir(contracts_dir + file):     # lib/ is ignored
             for p in properties:
                 id = p.lower() + '_' + file.split('_')[-1].split('.sol')[0]  # e.g. p1_v1
                 outcomes[id] = run_certora(contracts_dir + file, spec, p)

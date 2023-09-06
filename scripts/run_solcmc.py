@@ -91,7 +91,7 @@ def run_all_solcmc(contracts_dir, timeout):
     outcomes = {}
 
     for file in os.listdir(contracts_dir):
-        if not os.path.isdir(file):     # lib/ is ignored
+        if not os.path.isdir(contracts_dir + file):     # lib/ is ignored
             id = '_'.join(file.split('_')[-2:]).split('.sol')[0]
             outcomes[id] = run_solcmc(contracts_dir + file, timeout)
 
