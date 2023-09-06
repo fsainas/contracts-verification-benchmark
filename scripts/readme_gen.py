@@ -1,7 +1,7 @@
 import json
 from string import Template
 from os import listdir
-from mdtable_gen import main
+from mdtable_gen import gen_from_csv 
 import re
 import logging
 import argparse
@@ -62,7 +62,7 @@ def readme_gen(usecase_dir):
     readme['specification'] = skeleton['specification']
     readme['properties'] = md_property_list(skeleton['properties'])
     readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
-    readme['ground_truth'] = main(f'{usecase_dir}/ground-truth.csv')
+    readme['ground_truth'] = gen_from_csv(f'{usecase_dir}/ground-truth.csv')
 
     return PLAIN_README_TEMPLATE.substitute(readme)
 

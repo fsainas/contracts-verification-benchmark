@@ -1,113 +1,108 @@
 """
-Script Name: exptable
+Script Name: mdtable_gen
 Description:
-    Creates a markdown table summarizing experiment results
-    from an 'out.csv' file.
+    Creates a markdown table from a csv file with this scheme:
+    cols, rows, data.
 
 Usage:
-    python exptable.py -i simple_transfer/solcmc/out.csv
-    -o simple_transfer_solcmc.md
+    python mdtable_gen.py --input file.csv
 """
 
 import argparse
 import csv
 import sys
 
-min_cell_width = 5
+
+MIN_CELL_WIDTH = 5
+MARGIN = 2   # between cells
 
 
-def make_markdown_table(pset, vset, results):
+def gen_from_dict(data):
     """
     Writes the markdown table as a list of rows.
 
     Args:
-        pset (set): The set of properties.
-        vset (set): The set of versions.
-        results (dict): Results of experiments, the keys are (p,v) couples.
+        data (dict): { (col, row): data }
 
     Returns:
-        list: The list of rows.
+        str: markdown table
     """
 
-    plist = sorted(list(pset))
-    vlist = sorted(list(vset))
+    cols = sorted(set([c for c, _ in data.keys()]))
+    rows = sorted(set([r for _, r in data.keys()]))
 
-    max_p_length = max([len(p) for p in enumerate(plist)])
-    max_v_length = max([len(v) for v in enumerate(vlist)])
+    max_c_length = max([len(c) for c in cols])
+    max_r_length = max([len(r) for r in rows])
 
-    cell_width = max(min_cell_width, max_p_length+2)    # 2 is the margin
+    cell_width = max(
+            MIN_CELL_WIDTH,
+            max_c_length + MARGIN,
+            max_r_length + MARGIN
+    )
 
     # Create the header row
     header = (
-            "|" + " " * (max_v_length + 6) + "| " +
-            "| ".join([p + " "*(cell_width-len(p)-1) for p in plist]) +
+            "|" + " " * (max_r_length + 6) + "| " +
+            "| ".join([c + " "*(cell_width-len(c)-1) for c in cols]) +
             "|"
     )
     separator = (
-            "|" + "-" * (max_v_length + 6) + "|" +
+            "|" + "-" * (max_r_length + 6) + "|" +
             "|".join([
                 "-" * len(header.split('|')[i])
-                for i in range(2, len(plist) + 2)
+                for i in range(2, len(cols) + 2)
             ]) + "|"
     )
 
     # Create the rows
-    rows = []
-    for v in vlist:
-        row_str = "| **" + v + "** |"
-        for p in plist:
-            res = results[(p,v)]
-            if res is not None:
-                row_str += " " + res + " " * (cell_width-len(res)-1) + "|"
+    table_rows = []
+    for r in rows:
+        row_str = "| **" + r + "** |"
+        for c in cols:
+            d = data[(c,r)]
+            if d is not None:
+                row_str += " " + d + " " * (cell_width-len(d)-1) + "|"
             else:
                 row_str += cell_width
 
-        rows.append(row_str)
+        table_rows.append(row_str)
 
     # Combine everything into a Markdown table
-    markdown_table = "\n".join([header, separator] + rows)
+    mdtable = "\n".join([header, separator] + table_rows)
 
-    return markdown_table
+    return mdtable 
 
 
-def main(input_file):
-    '''outputfile: if it's out.csv, otherwise assume in.csv'''
-    table = []
+def gen_from_csv(input_file):
+    mdtable = []
 
     # Read data from input file
-    with open(input_file, 'r') as input:
-        csv_reader = csv.reader(input)
+    with open(input_file, 'r') as f:
+        csv_reader = csv.reader(f)
 
         next(csv_reader)
 
-        results = {}      # (p,v): res
-        pset = set()
-        vset = set()
+        data = {}      # (c,r): data
 
         for row in csv_reader:
-            p, v, res = row[0], row[1], row[2]
+            c, r, d = row[0], row[1], row[2]
+            data.update({(c,r): d})
 
-            pset.add(p)
-            vset.add(v)
-            results.update({(p,v): res})
+        mdtable = gen_from_dict(data)
 
-        table = make_markdown_table(pset, vset, results)
-
-    return table
+    return mdtable
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-            '--input', 
-            '-i', 
+            '--input',
+            '-i',
             help='CSV input file',
             required=True
     )
     args = parser.parse_args()
 
-    input_file = args.input
+    mdtable = gen_from_csv(args.input)
 
-    table = main(args.input)
-
-    sys.stdout.write(table)
+    sys.stdout.write(mdtable)
