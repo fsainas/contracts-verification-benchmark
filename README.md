@@ -63,8 +63,32 @@ verification tools according to the following table:
 
 ## Extending the benchmark
 
-Each use case folder includes a file `in.csv` that defines the ground truth for
-that use case. Lines of the csv have the form:
+Each use case directory includes:
+- `skeleton.json`
+- `ground-truth.csv`
+- `versions` directory
+- `Makefile`
+- A directory for every verification tool used
+
+### skeleton.json
+
+This file stores the use case's **name**, **specification** and **properties**
+defined in natural language:
+```
+{
+    "name": "Simple Transfer",
+    "specification": "The contract has an initial balance...",
+    "properties": [
+        "the overall sent amount does not exceed the initial deposit.",
+        ... 
+    ]
+}
+```
+
+## ground-truth.csv
+
+This file defines the ground truth for the corresponding use case. Lines of the
+csv have the form:
 ```
 property,version,sat
 ```
@@ -72,37 +96,20 @@ where `sat` is 1 when the property holds on the given version, and 0 when it
 does not hold. The ground truth is constructed manually, and (in some cases)
 confirmed by the verification tools.
 
-The `contracts` folder contains a Python script to automatize the execution of
-verification tools. For instance, to run SolCMC on the `simple_transfer` use
-case, execute the command:
-```
-$ python run.py -d simple_transfer -T solcmc
-```
-The output is written in the file `simple_transfer/solcmc/out.csv`.
+## Versions Directory
 
-### Run single tests
+The `versions/` directory contains various Solidity variants of the use case
+contract, with version definitions in natural language written using the
+NatSpec format and the `@custom:version` tag:
+```
+/// @custom:version reentrant `withdraw`.
+```
 
-To execute a targeted test for a particular property of a specific contract,
-use the `run.sh` script available in the `solcmc/` and `certora/` directories. 
-The script behaves differently depending on the verification tool in use:
+## Makefile
 
-#### SolCMC
-```
-$ sh run.sh <contract_file> [<timeout>]
-```
-To use SolCMC, provide the path to the contract file as an argument when
-running the run.sh script. Replace `<contract_file>` with the actual path to
-your contract file. Optionally, you can specify a `<timeout>` to set a time
-limit for execution. If no `<timeout>` is provided or if it is set to 0, there
-will be no timeout for the execution.
-
-#### Certora
-```
-$ sh run.sh <contract_file> <contract_name> <spec_file>
-```
-To use Certora, you must provide the following arguments:
-- `<contract_file>`: Path to the contract file that contains the contract you
-  wish to test.
-- `<contract_name>`: The name of the contract within the contract file. Ensure
-  it matches the actual contract name.
-- `<spec_file>`: Path to the specification file that defines the property you want to check.
+The Makefile defines three commands:
+1. `make plain`: This command generates the README without experiment results. It
+   utilizes `skeleton.json`, `ground-truth.csv` and version files from
+   `versions/`.
+1. `make verif`: This command calls the Makefiles of verification tools and runs experiments.
+1. `make all`: This command runs experiments generates the complete README.
