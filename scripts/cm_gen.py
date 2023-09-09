@@ -19,7 +19,7 @@ def get_result(t, r):
             return 'T' + r  # TP
 
 
-def main(ground_truth_csv, results_csv):
+def gen(ground_truth_csv, results_csv):
     rows = [CM_HEADER]
     truths = {}     # (p,v): truth
     
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    cm_csv = main(args.ground_truth, args.results)
+    cm_csv = gen(args.ground_truth, args.results)
 
     cm_csv = [cm_csv[0]] + sorted(cm_csv[1:])
     csv.writer(sys.stdout).writerows(cm_csv)
