@@ -18,7 +18,7 @@ all: plain verif
 	$(PYTHON) ../../scripts/cm_gen.py --ground-truth $(GROUND_TRUTH) --results $(SOLCMC_OUT) > $(SOLCMC_CM)
 	$(PYTHON) ../../scripts/cm_gen.py --ground-truth $(GROUND_TRUTH) --results $(CERTORA_OUT) > $(CERTORA_CM)
 	echo "" >> $(README) 	# new line
-	echo "### Experiments" >> $(README)
+	echo "## Experiments" >> $(README)
 	echo "" >> $(README)
 	echo "### SolCMC" >> $(README)
 	$(PYTHON) ../../scripts/mdtable_gen.py --input $(SOLCMC_CM) >> $(README)
@@ -33,3 +33,7 @@ plain: $(VERSIONS_DIR) $(SKELETON) $(GROUND_TRUTH)
 verif:
 	cd $(realpath $(SOLCMC_DIR)) && make
 	cd $(realpath $(CERTORA_DIR)) && make
+
+clean:
+	cd $(realpath $(SOLCMC_DIR)) && make clean
+	cd $(realpath $(CERTORA_DIR)) && make clean
