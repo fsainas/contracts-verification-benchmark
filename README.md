@@ -85,7 +85,7 @@ defined in natural language:
 }
 ```
 
-## ground-truth.csv
+### ground-truth.csv
 
 This file defines the ground truth for the corresponding use case. Lines of the
 csv have the form:
@@ -96,7 +96,7 @@ where `sat` is 1 when the property holds on the given version, and 0 when it
 does not hold. The ground truth is constructed manually, and (in some cases)
 confirmed by the verification tools.
 
-## Versions Directory
+### Versions Directory
 
 The `versions/` directory contains various Solidity variants of the use case
 contract, with version definitions in natural language written using the
@@ -105,7 +105,7 @@ NatSpec format and the `@custom:version` tag:
 /// @custom:version reentrant `withdraw`.
 ```
 
-## Makefile
+### Makefile
 
 The Makefile defines three commands:
 1. `make plain`: This command generates the README without experiment results. It
