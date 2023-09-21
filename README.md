@@ -13,6 +13,7 @@ more precise verification techniques.
 ## Contracts
 
 The benchmark currently comprises several versions (correct or bugged) of the following use cases:
+- [Zero-token Bet](contracts/zerotoken_bet/)
 - [Simple Transfer](contracts/simple_transfer/)
 - [Token Transfer](contracts/token_transfer/)
 - [Bank](contracts/bank/)
