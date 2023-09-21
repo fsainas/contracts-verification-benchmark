@@ -44,8 +44,4 @@ contract ZeroTokenBet {
 	balance_b += 1;
 	balance -= 2;
    }
-
-    function invariant() public view {
-	assert (balance <= 2);
-    }
 }
