@@ -3,9 +3,9 @@ function getBalance() public view returns (uint) {
 }
 
 function getBalanceA() public view returns (uint) {
-    return balanceA;
+    return balance_a;
 }
 
-function getBalanceA() public view returns (uint) {
-    return balanceB;
+function getBalanceB() public view returns (uint) {
+    return balance_b;
 }

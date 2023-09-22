@@ -1,4 +1,4 @@
-/// @custom:version compliant with the specification.
+/// @custom:version deposit() omits require enforcing a single call.
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
@@ -25,7 +25,9 @@ contract ZeroTokenBet {
     
     function deposit() public {
         require (msg.sender==b);
-        require (balance==1);	
+
+	// omitted check
+        // require (balance==1);	
 	balance_b = balance_b - 1;
 	balance = balance + 1;
     }
@@ -50,5 +52,5 @@ contract ZeroTokenBet {
         require (balance>=1);	
 	balance_b += 1;
 	balance -= 1;
-   }    
+   }
 }
