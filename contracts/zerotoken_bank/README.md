@@ -1,8 +1,8 @@
-# Bank
+# Zero-token bank
 
 ## Specification
 
-The Bank contract is designed to accepts deposits and withdrawals from any
+The ZeroTokenBank contract is designed to accepts deposits and withdrawals from any
 address. When a deposit is made, the corresponding amount is added to the
 account balance of the depositing address. These balances are maintained using
 a mapping function within the contract. To withdraw funds, a depositor can call
