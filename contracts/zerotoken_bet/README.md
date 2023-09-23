@@ -4,7 +4,7 @@ The contract involves three players and an oracle. Player A initiates the contra
 
 ## Properties
 - **p1**: the contract balance is always nonnegative
-- **p2**: the contract balance does not exceed 2 tokens.
+- **p2**: the contract balance does not exceed 2 tokens
 
 ## Versions
 - **v1**: compliant with the specification.
@@ -28,4 +28,4 @@ The contract involves three players and an oracle. Player A initiates the contra
 |        | p1  | p2  |
 |--------|-----|-----|
 | **v1** | TP! | TP! |
-| **v2** | FN! | TN! |
+| **v2** | TP! | TN! |

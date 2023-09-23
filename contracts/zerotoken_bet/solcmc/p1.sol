@@ -1,3 +1,3 @@
 function invariant() public view {
-    assert (balance >=0);
+    assert (balance >= 0);
 }

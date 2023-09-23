@@ -8,43 +8,28 @@ methods {
     function getBalanceB() external returns (int) envfree;    
 }
 
-invariant sum2()
+invariant nonneg_and_sum2()
+    getBalanceA()>=0 && getBalanceB()>=0 && getBalance()>=0 &&
     getBalanceA() + getBalanceB() + getBalance() == 2;
 
 rule P1 {
-    env e1;    
-    deposit(e1);
-    mathint b1 = getBalance();    
-    assert b1 >= 0;
-
-    env e2;
-    address p;
-    win(e2, p);
-    mathint b2 = getBalance();    
-    assert b2 >= 0;
-
-    env e3;    
-    timeout(e3);
-    mathint b3 = getBalance();    
-    assert b3 >= 0;    
+    requireInvariant nonneg_and_sum2();
+    assert true;
 }
 
 rule P2 {
-    requireInvariant sum2();
+    requireInvariant nonneg_and_sum2();
+
+    method f;
+    env e;
+    calldataarg args;
+
+    require f.selector == sig:deposit().selector
+     || f.selector == sig:win(address).selector    
+     || f.selector == sig:timeout().selector;
     
-    env e1;    
-    deposit(e1);
-    mathint b1 = getBalance();    
-    assert b1 <= 2;
+    f(e,args);    
 
-    env e2;
-    address p;
-    win(e2, p);
-    mathint b2 = getBalance();    
-    assert b2 <= 2;
-
-    env e3;    
-    timeout(e3);
-    mathint b3 = getBalance();    
-    assert b3 <= 2;    
+    mathint b = getBalance();        
+    assert b <= 2;    
 }
