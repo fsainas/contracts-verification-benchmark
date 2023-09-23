@@ -1,0 +1,8 @@
+{
+    "name": "Usecase Name",
+    "specification": "Usecase specification.",
+    "properties": [
+        "x is equal to x",
+        "property 2"
+    ]
+}
