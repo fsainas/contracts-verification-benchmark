@@ -66,7 +66,7 @@ def get_contract_name(contract):
 
     if matches:
         # The contract to verify is the last one
-        contract_name = matches[-1]
+        contract_name = matches[0]
         return contract_name
     else:
         sys.stderr.write(
@@ -104,10 +104,13 @@ def run_certora(contract, spec, property):
     command = COMMAND_TEMPLATE.substitute(params)
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
+    if log.stderr:
+        print(log.stderr, file=sys.stderr)
+
     if has_property_error(log.stdout, property):
-        return (STRONG_NEGATIVE, log.stdout)
+        return (STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
     else:
-        return (STRONG_POSITIVE, log.stdout)
+        return (STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
 
 
 def get_properties(spec):

@@ -15,3 +15,17 @@ The contract involves three players and an oracle. Player A initiates the contra
 |--------|-----|-----|
 | **v1** | 1   | 1   |
 | **v2** | 1   | 0   |
+
+## Experiments
+
+### SolCMC
+|        | p1  | p2  |
+|--------|-----|-----|
+| **v1** | TP! | TP! |
+| **v2** | TP! | TN! |
+
+### Certora
+|        | p1  | p2  |
+|--------|-----|-----|
+| **v1** | TP! | TP! |
+| **v2** | FN! | TN! |

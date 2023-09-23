@@ -14,25 +14,29 @@ README = README.md
 
 PYTHON = python
 
-all: plain verif
-	$(PYTHON) ../../scripts/cm_gen.py --ground-truth $(GROUND_TRUTH) --results $(SOLCMC_OUT) > $(SOLCMC_CM)
+all: solcmc certora
+
+certora: plain exp
+	cd $(realpath $(CERTORA_DIR)) && make
 	$(PYTHON) ../../scripts/cm_gen.py --ground-truth $(GROUND_TRUTH) --results $(CERTORA_OUT) > $(CERTORA_CM)
-	echo "" >> $(README) 	# new line
-	echo "## Experiments" >> $(README)
+	echo "" >> $(README) 	
+	echo "### Certora" >> $(README)
+	$(PYTHON) ../../scripts/mdtable_gen.py --input $(CERTORA_CM) >> $(README)
+
+solcmc: plain exp
+	cd $(realpath $(SOLCMC_DIR)) && make
+	$(PYTHON) ../../scripts/cm_gen.py --ground-truth $(GROUND_TRUTH) --results $(SOLCMC_OUT) > $(SOLCMC_CM)
 	echo "" >> $(README)
 	echo "### SolCMC" >> $(README)
 	$(PYTHON) ../../scripts/mdtable_gen.py --input $(SOLCMC_CM) >> $(README)
 	echo "" >> $(README) 	
-	echo "" >> $(README) 	
-	echo "### Certora" >> $(README)
-	$(PYTHON) ../../scripts/mdtable_gen.py --input $(CERTORA_CM) >> $(README)
+
+exp:
+	echo "" >> $(README) 	# new line
+	echo "## Experiments" >> $(README)
 	
 plain: $(VERSIONS_DIR) $(SKELETON) $(GROUND_TRUTH)
 	$(PYTHON) ../../scripts/readme_gen.py -d . > $(README)
-
-verif:
-	cd $(realpath $(SOLCMC_DIR)) && make
-	cd $(realpath $(CERTORA_DIR)) && make
 
 clean:
 	cd $(realpath $(SOLCMC_DIR)) && make clean
