@@ -33,3 +33,27 @@ rule P2 {
     mathint b = getBalance();        
     assert b <= 2;    
 }
+
+// before the deadline, if B has at least 1 token and he has not joined the bet yet, then he can deposit 1 token in the contract
+    
+    int old_balance_b = balance_b;
+    require (balance_b>=1 && balance==1);
+    deposit();
+    assert (balance_b==old_balance_b-1 && balance==2);
+}
+
+rule P3 {
+    requireInvariant nonneg_and_sum2();
+    mathint old_balance_b = getBalanceB();
+    env e;
+    
+    deposit(e);
+    
+    mathint new_balance_b = getBalanceB();
+    mathint new_balance = getBalance();    
+    assert (new_balance_b==old_balance_b-1 && new_balance==2);    
+}
+
+rule P4 {
+    assert (true);
+}
