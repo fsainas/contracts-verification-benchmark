@@ -39,7 +39,15 @@ def gen(ground_truth_csv, results_csv):
 
         for row in res_reader:
             p, v, r = row[0], row[1], row[2]
-            rows.append([p, v, get_result(int(truths[(p,v)]), r)])
+            try:
+                rows.append([p, v, get_result(int(truths[(p,v)]), r)])
+            except KeyError as e:
+                print("\n[Error]: cm_gen.py:" +
+                      " Missing lines in ground-truth.csv:",
+                      e,
+                      file=sys.stderr)
+                sys.exit(1)
+
 
     return rows
 
