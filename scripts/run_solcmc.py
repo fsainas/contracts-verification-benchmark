@@ -11,6 +11,7 @@ from string import Template
 import subprocess
 import argparse
 import csv
+import sys 
 import re
 import os
 
@@ -43,6 +44,16 @@ def write_csv(path, rows):
         csv.writer(file).writerows(rows)
 
 
+def has_error(output):
+    pattern = rf".*Error:.*"
+    return re.search(pattern, output, re.DOTALL)
+
+
+def has_source_error(output):
+    pattern = rf".*Error: Source.*"
+    return re.search(pattern, output, re.DOTALL)
+
+
 def has_assertion_warning(output):
     pattern = r".*Warning: CHC: Assertion violation happens here.*"
     return re.search(pattern, output, re.DOTALL)
@@ -69,6 +80,13 @@ def run_solcmc(c_path, timeout):
     params['timeout'] = timeout
     command = COMMAND_TEMPLATE.substitute(params)
     log = subprocess.run(command.split(), capture_output=True, text=True)
+
+    if has_error(log.stderr):
+        print(log.stderr, file=sys.stderr)
+        if has_source_error(log.stderr):
+            print("Use the dot to make a relative import: e.g. './lib/lib.sol'.\n")
+        sys.exit(1)
+
     if is_timeout_or_unknown(log.stderr):
         return (WEAK_NEGATIVE, log.stderr)
     elif has_assertion_warning(log.stderr):

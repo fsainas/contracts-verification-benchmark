@@ -41,9 +41,19 @@ def write_csv(path, rows):
     with open(path, 'w') as file:
         csv.writer(file).writerows(rows)
 
-
+# Check if there is an error in the output (Dep)
 def has_property_error(output, property):
     pattern = rf".*ERROR: \[rule\] {re.escape(property).upper()}.*"
+    return re.search(pattern, output, re.DOTALL)
+
+
+def no_errors_found(output):
+    pattern = rf".*No errors found by Prover!.*"
+    return re.search(pattern, output, re.DOTALL)
+
+
+def has_critical_error(output):
+    pattern = rf".*CRITICAL.*"
     return re.search(pattern, output, re.DOTALL)
 
 
@@ -107,10 +117,14 @@ def run_certora(contract, spec, property):
     if log.stderr:
         print(log.stderr, file=sys.stderr)
 
-    if has_property_error(log.stdout, property):
-        return (STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
-    else:
+    if has_critical_error(log.stdout):
+        print(log.stdout, file=sys.stderr)
+        sys.exit(1)
+
+    if no_errors_found(log.stdout):
         return (STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
+    else:
+        return (STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
 
 
 def get_properties(spec):
