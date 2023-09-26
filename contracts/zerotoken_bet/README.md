@@ -25,3 +25,9 @@ The contract involves three players and an oracle. Player A initiates the contra
 |--------|-----|-----|-----|-----|
 | **v1** | TP! | TP! | TP! | TP! |
 | **v2** | TP! | TN! | TP! | TN! |
+
+### Certora
+|        | p1  | p2  | p3  | p4  |
+|--------|-----|-----|-----|-----|
+| **v1** | TP! | TP! | TP! | TP! |
+| **v2** | TP! | TN! | TP! | TN! |
