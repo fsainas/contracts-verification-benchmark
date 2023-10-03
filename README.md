@@ -64,12 +64,15 @@ verification tools according to the following table:
 
 ## Extending the benchmark
 
-Each use case directory includes:
+Each use case directory must include the following files:
 - `skeleton.json`
 - `ground-truth.csv`
 - `versions` directory
 - `Makefile`
 - A directory for every verification tool used
+
+Find a minimal example in [`contracts/template/`](contracts/template)
+directory.
 
 ### skeleton.json
 
@@ -112,5 +115,7 @@ The Makefile defines three commands:
 1. `make plain`: This command generates the README without experiment results. It
    utilizes `skeleton.json`, `ground-truth.csv` and version files from
    `versions/`.
-1. `make verif`: This command calls the Makefiles of verification tools and runs experiments.
-1. `make all`: This command runs experiments generates the complete README.
+1. `make solcmc`/`make certora`: These commands call the Makefile of the tool
+   specified to run experiments, results are written in the README.
+1. `make all`: This command runs experiments with all verification tools and
+   generates the complete README.
