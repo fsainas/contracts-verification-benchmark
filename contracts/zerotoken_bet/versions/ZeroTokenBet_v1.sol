@@ -25,6 +25,7 @@ contract ZeroTokenBet {
     
     function deposit() public {
         require (msg.sender==b);
+        require (balance_b>=1);		
         require (balance==1);	
 	balance_b = balance_b - 1;
 	balance = balance + 1;

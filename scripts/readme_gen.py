@@ -17,7 +17,7 @@ $properties
 ## Versions
 $versions
 
-## Ground truths
+## Ground truth
 $ground_truth'''
 )
 
