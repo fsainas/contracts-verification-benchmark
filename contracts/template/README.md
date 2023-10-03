@@ -9,7 +9,7 @@ Usecase specification.
 ## Versions
 - **v1**: *version description*
 
-## Ground truths
+## Ground truth
 |        | p1  |
 |--------|-----|
 | **v1** | 1   |
