@@ -10,8 +10,11 @@ PYTHON = python
 
 .PHONY = run clean
 
-run: directories contracts 
+run: contracts directories
 	$(PYTHON) ../../../scripts/run_solcmc.py --input $(CONTRACTS_DIR) --output $(BUILD_DIR)
+
+contracts: $(CONTRACTS_DIR)
+	$(PYTHON) ../../../scripts/contract_builder.py --base $(VERSIONS_DIR) --inject $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
 
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR)
 
@@ -23,9 +26,6 @@ $(LOGS_DIR):
 
 $(LIB_DIR):
 	cp -r ../../../lib/ $@
-
-contracts: $(CONTRACTS_DIR)
-	$(PYTHON) ../../../scripts/contract_builder.py --base $(VERSIONS_DIR) --inject $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
 
 clean:
 	rm -rf build/
