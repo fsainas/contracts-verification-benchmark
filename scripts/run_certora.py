@@ -9,6 +9,7 @@ Usage:
 
 from string import Template
 import subprocess
+import glob
 import os
 import sys
 import re
@@ -18,8 +19,7 @@ import datetime
 
 COMMAND_TEMPLATE = Template(
 """certoraRun $contract:$name \
---verify $name:$spec \
---rule $property
+--verify $name:$spec
 """
 )
 
@@ -87,14 +87,13 @@ def get_contract_name(contract):
         return
 
 
-def run_certora(contract, spec, property):
+def run_certora(contract, spec_path):
     """
     Runs a single certora experiment.
 
     Args:
         contract (str): Contract file path.
-        spec (str): CVL spec file path.
-        property (str): Rule to verify.
+        spec_path (str): CVL spec file path.
 
     Returns:
         tuple: (outcome, log)
@@ -108,8 +107,8 @@ def run_certora(contract, spec, property):
     params = {}
     params['contract'] = contract 
     params['name'] = contract_name
-    params['spec'] = spec
-    params['property'] = property
+    params['spec'] = spec_path
+    #params['property'] = property
 
     command = COMMAND_TEMPLATE.substitute(params)
     log = subprocess.run(command.split(), capture_output=True, text=True)
@@ -127,7 +126,7 @@ def run_certora(contract, spec, property):
         return (STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
 
 
-def get_properties(spec):
+def get_properties(spec_path):
     """
     Retrieves the list of properties defined in a CVL spec file.
 
@@ -137,44 +136,38 @@ def get_properties(spec):
     Returns:
         list: The list of property names.
     """
-    spec_code = ""
-
-    with open(spec, 'r') as spec_file:
-        spec_code = spec_file.read()
-
-    matches = re.findall(r'rule\s+([^ ]+)', spec_code)
-
-    if matches:
-        return [ match.split()[-1] for match in matches ] 
-    else:
-        sys.stderr.write(
-                '[Error]:' +
-                f'{spec}:' +
-                f"Couldn't retrieve properties from spec file.\n"
-        )
-        return
+    return (
+            glob.glob(f'{spec_path}/p*.spec')
+            if os.path.isdir(spec_path)
+            else [spec_path]
+    )
 
 
-def run_all_certora(contracts_dir, spec):
+
+def run_all_certora(contracts_dir, spec_path):
     """
     Runs certora on all files of a directory.
 
     Args:
         contracts_dir (str): Contracts directory path.
-        spec (str): CVL spec file path.
+        spec (str): CVL spec dir path.
 
     Returns:
         dict: {p*_v*: (outcome, log)}
     """
     outcomes = {}
 
-    properties = get_properties(spec)
+    specs = get_properties(spec_path)   # list of paths
 
     for file in os.listdir(contracts_dir):
         if not os.path.isdir(contracts_dir + file):     # lib/ is ignored
-            for p in properties:
-                id = p.lower() + '_' + file.split('_')[-1].split('.sol')[0]  # e.g. p1_v1
-                outcomes[id] = run_certora(contracts_dir + file, spec, p)
+            for s_path in specs:
+                id = (  # e.g. p1_v1
+                        s_path.split('.')[0].split('/')[-1] + 
+                        '_' + 
+                        file.split('_')[-1].split('.sol')[0]
+                )
+                outcomes[id] = run_certora(contracts_dir + file, s_path)
 
     return outcomes
 
@@ -190,7 +183,7 @@ if __name__ == "__main__":
     parser.add_argument(
             '--spec', 
             '-s', 
-            help='CVL Specification file.',
+            help='CVL Specification dir or file.',
             required=True
             )
     parser.add_argument(  # build/
@@ -204,9 +197,10 @@ if __name__ == "__main__":
     contracts_dir = args.input if args.input[-1] == '/' else args.input + '/'
     output_dir = args.output if args.output[-1] == '/' else args.output + '/'
     logs_dir = output_dir + 'logs/'
-    spec_file = args.spec
+    #spec = args.spec if args.spec[-1] == '/' else args.spec + '/'
+    spec_path = args.spec
 
-    outcomes = run_all_certora(contracts_dir, spec_file)
+    outcomes = run_all_certora(contracts_dir, spec_path)
 
     out_csv = [OUT_HEADER] 
     for id in outcomes.keys():
