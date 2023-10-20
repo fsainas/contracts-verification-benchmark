@@ -14,7 +14,7 @@ run: contracts directories
 	$(PYTHON) ../../../scripts/run_solcmc.py --input $(CONTRACTS_DIR) --output $(BUILD_DIR)
 
 contracts: $(CONTRACTS_DIR)
-	$(PYTHON) ../../../scripts/contract_builder.py --base $(VERSIONS_DIR) --inject $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
+	$(PYTHON) ../../../scripts/builder.py --versions $(VERSIONS_DIR) --properties $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
 
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR)
 
