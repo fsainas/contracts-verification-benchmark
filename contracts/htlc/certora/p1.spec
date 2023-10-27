@@ -1,8 +1,3 @@
-methods {
-       function getStart() external returns (uint) envfree;
-       function getBalance() external returns (uint);
-}
-
 rule P1 {
     env e1;
     require e1.block.number == getStart();
@@ -11,16 +6,6 @@ rule P1 {
     require e2.block.number > e1.block.number;
     
     assert getBalance(e1) >= getBalance(e2);
-}
-
-rule NotP1 {
-    env e1;
-    require e1.block.number == getStart();
-
-    env e2;
-    require e2.block.number > e1.block.number;
-    
-    assert getBalance(e1) < getBalance(e2);
 }
 
 // V1 proof: https://prover.certora.com/output/49230/fbf67611197848d39391ad27c9dac36d?anonymousKey=46ea3238e84a93b5579bd69b4c4f1408b590b557

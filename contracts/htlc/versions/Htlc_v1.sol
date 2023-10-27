@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
+/// @custom:version conformant to specification.
 contract HTLC {
    address payable public owner;  
    address payable public verifier;
@@ -9,8 +10,14 @@ contract HTLC {
    uint start;
 
    // ghost variables
+   uint _sent;
+   uint _deposited;
+   bool _commit_called = false;   
+   bool _reveal_called = false;
+   bool _timeout_called = false;
+   uint _timeout_diff;   
    address _commit_sender;
-   
+  
    constructor(address payable v) {
        owner = payable(msg.sender);
        verifier = v;
@@ -22,8 +29,13 @@ contract HTLC {
        require(msg.sender == owner);
        require(msg.value >= 1 ether);
        require(!isCommitted);
+
        hash = h;
        isCommitted = true;
+        
+       // ghost state
+       _deposited = address(this).balance;       
+       _commit_called = true;
        _commit_sender = msg.sender;
    }
 
@@ -31,21 +43,27 @@ contract HTLC {
        require(msg.sender == owner);
        require(keccak256(abi.encodePacked(s)) == hash);
        require(isCommitted);       
-       (bool success,) = owner.call{value: address(this).balance }("");
+
+       uint _to_send = address(this).balance;       
+       (bool success,) = owner.call{value: _to_send}("");
        require(success, "Transfer failed.");
+
+       // ghost state
+       _sent += _to_send;
+       _reveal_called = true;            
    }
 
-   // v4
    function timeout() public {
        require(block.number > start + 1000);
-       require(isCommitted);
-       (bool success,) = msg.sender.call{value: address(this).balance }("");
-       require(success, "Transfer failed.");
-   }
+       require(isCommitted);       
 
-   // p4: if commit is called, then the sender must be the owner
-   function invariant() public view {
-       assert(!isCommitted || _commit_sender==owner);
+       uint _to_send = address(this).balance;
+       (bool success,) = verifier.call{value: _to_send}("");
+       require(success, "Transfer failed.");
+
+       // ghost state
+       _sent += _to_send;       
+       _timeout_called = true;      
+       _timeout_diff = block.number - start;       
    }
-   
 }

@@ -1,6 +1,5 @@
 *~
-**/_build
-*.opam
+**/build
 
 **/.certora_internal/
 **/.certora_recent_jobs.json
