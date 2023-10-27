@@ -111,6 +111,7 @@ def run_certora(contract, spec_path):
     #params['property'] = property
 
     command = COMMAND_TEMPLATE.substitute(params)
+    print(command)
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
     if log.stderr:
@@ -128,10 +129,10 @@ def run_certora(contract, spec_path):
 
 def get_properties(spec_path):
     """
-    Retrieves the list of properties defined in a CVL spec file.
+    Retrieves the list of properties defined in CVL spec files.
 
     Args:
-        spec (str): CVL spec file path.
+        spec (str): CVL specs file or dir path.
 
     Returns:
         list: The list of property names.
@@ -159,15 +160,44 @@ def run_all_certora(contracts_dir, spec_path):
 
     specs = get_properties(spec_path)   # list of paths
 
-    for file in os.listdir(contracts_dir):
-        if not os.path.isdir(contracts_dir + file):     # lib/ is ignored
-            for s_path in specs:
+    # Specific properties
+    bounded_properties_paths = list(filter(
+            lambda x: re.search("p.*_v.*", x),
+            specs))
+    unbounded_properties_paths = list(
+            set(specs) - set(bounded_properties_paths))
+
+
+    for v_path in os.listdir(contracts_dir):
+        if not os.path.isdir(contracts_dir + v_path):     # lib/ is ignored
+
+            # Extract base id from base path (e.g. v1)
+            v_id = v_path.split('/')[-1].split('_')[-1].split('.')[0]
+
+            v_bounded = list(filter(
+                    lambda x: re.search(f'p.*_{v_id}.*', x), 
+                    bounded_properties_paths))
+
+            
+            v_unbounded = unbounded_properties_paths
+
+            for bp_path in v_bounded:
+                p_id = bp_path.split('/')[-1].split('_')[0]     # ../p1_v1.sol -> p1
+                # Remove bounded properties from the unbounded variants
+                v_unbounded = list(filter(
+                        lambda x: not re.search(f'{p_id}', x),
+                        v_unbounded
+                        ))
+
+            v_properties_paths = v_bounded + v_unbounded
+
+            for s_path in v_properties_paths:
                 id = (  # e.g. p1_v1
-                        s_path.split('.')[0].split('/')[-1] + 
+                        s_path.split('.')[-2].split('/')[-1].split('_')[0] + 
                         '_' + 
-                        file.split('_')[-1].split('.sol')[0]
+                        v_path.split('_')[-1].split('.sol')[0]
                 )
-                outcomes[id] = run_certora(contracts_dir + file, s_path)
+                outcomes[id] = run_certora(contracts_dir + v_path, s_path)
 
     return outcomes
 
@@ -197,8 +227,7 @@ if __name__ == "__main__":
     contracts_dir = args.input if args.input[-1] == '/' else args.input + '/'
     output_dir = args.output if args.output[-1] == '/' else args.output + '/'
     logs_dir = output_dir + 'logs/'
-    #spec = args.spec if args.spec[-1] == '/' else args.spec + '/'
-    spec_path = args.spec
+    spec_path = args.spec if args.spec[-1] == '/' else args.spec + '/'
 
     outcomes = run_all_certora(contracts_dir, spec_path)
 
