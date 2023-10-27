@@ -60,7 +60,6 @@ def inject_product(base_files: list, to_inject_files: list) -> dict:
         # Extract file name from base path
         file_name = "".join(b_path.split('/')[-1].split('_')[0:-1])
         file_ext = b_path.split('.')[-1]
-        print(file_ext)
 
         # Extract base id from base path (e.g. v1)
         b_id = b_path.split('/')[-1].split('_')[-1].split('.')[0]
