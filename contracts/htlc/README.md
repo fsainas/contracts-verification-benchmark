@@ -1,4 +1,3 @@
-.
 # HTLC
 ## Specification
 The Hash Timed Locked Contract (HTLC) involves two users, the *committer* and the *verifier*, and it allows the committer to commit a secret and reveal it afterwards, within a given deadline. The commit is the SHA256 digest of the secret (a bitstring). At contract creation, the committer specifies the receiver of the collateral, in case the deposit is not revealed within the deadline. The deadline expires 1000 blocks after the block where the contract has been deployed: if deployment is at block N, `timeout` can be called in a block with height strictly greater than N+1000.
@@ -41,7 +40,7 @@ After contract creation, the HTLC allows the following actions:
 ### Certora
 |        | p1  | p2  | p3  | p4  |
 |--------|-----|-----|-----|-----|
-| **v1** | TN! | FN! | FN! | FN! |
-| **v2** | TN! | TN! | FN! | FN! |
-| **v3** | TN! | FN! | TN! | FN! |
-| **v4** | TN! | FN! | FN! | FN! |
+| **v1** | FP! | FN! | TP! | TP! |
+| **v2** | FP! | TN! | TP! | TP! |
+| **v3** | FP! | FN! | TN! | TP! |
+| **v4** | FP! | FN! | TP! | TP! |
