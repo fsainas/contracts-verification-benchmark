@@ -13,15 +13,15 @@ PYTHON = python
 GETTER_FILE = getters.sol
 METHODS_FILE = methods.spec
 
-.PHONY = run clean
+.PHONY = run clean specs
 
-run: contracts specs directories 
-	$(PYTHON) ../../../scripts/run_certora.py --input $(CONTRACTS_DIR) --spec $(SPEC_DIR) --output $(BUILD_DIR)
+run: clean_specs contracts specs directories 
+	@$(PYTHON) ../../../scripts/run_certora.py --input $(CONTRACTS_DIR) --spec $(SPEC_DIR) --output $(BUILD_DIR)
 
 contracts: $(CONTRACTS_DIR)
-	$(PYTHON) ../../../scripts/injector.py --base $(VERSIONS_DIR) --inject $(GETTER_FILE) --output $(CONTRACTS_DIR)
+	@$(PYTHON) ../../../scripts/injector.py --base $(VERSIONS_DIR) --inject $(GETTER_FILE) --output $(CONTRACTS_DIR)
 
-specs: $(SPEC_DIR)
+specs: $(SPEC_DIR) 
 	@for file in $(SPEC_FILES); do \
 		echo "Processing $$file"; \
 		cat $(METHODS_FILE) $$file >> $(SPEC_DIR)/$$file; \
@@ -30,17 +30,20 @@ specs: $(SPEC_DIR)
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR) $(SPEC_DIR)
 
 $(CONTRACTS_DIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(SPEC_DIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(LOGS_DIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(LIB_DIR):
-	cp -r ../../../lib/ $@
+	@cp -r ../../../lib/ $@
+
+clean_specs:
+	rm -rf $(SPEC_DIR)
 
 clean:
-	rm -rf build/
+	rm -rf $(BUILD_DIR)
 
