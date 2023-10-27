@@ -66,7 +66,7 @@ def inject_product(base_files: list, to_inject_files: list) -> dict:
 
         for i_path in to_inject_files:
             # e.g. p1 for solcmc or getters for certora
-            i_id = i_path.split('/')[-1].split('.')[0]
+            i_id = i_path.split('.')[-2].split('/')[-1].split('_')[0]
             file = inject_code(b_path, i_path)
             filename = file_name + '_' + i_id + '_' + b_id + '.' + file_ext
             updated_files[filename] = file 

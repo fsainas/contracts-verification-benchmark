@@ -96,3 +96,10 @@ if __name__ == "__main__":
             versions_paths,
             properties_paths 
     )
+
+    for name in contracts.keys():
+        if args.output:
+            with open(args.output + name, 'w') as file:
+                file.write(contracts[name])
+        else:
+            print(contracts[name])
