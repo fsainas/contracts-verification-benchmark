@@ -3,6 +3,7 @@ from string import Template
 from os import listdir
 from mdtable_gen import gen_from_csv 
 import re
+import sys
 import logging
 import argparse
 
@@ -54,8 +55,16 @@ def get_versions(versions_dir):
 
 def readme_gen(usecase_dir):
 
-    with open(f'{usecase_dir}/skeleton.json') as f:
-        skeleton = json.loads(f.read())
+    try:
+        with open(f'{usecase_dir}/skeleton.json') as f:
+            skeleton = json.loads(f.read())
+    except json.decoder.JSONDecodeError as e:
+        print("\n[Error]: README generation:" +
+              " Bad skeleton.json formatting.\n" +
+              str(e),
+              file=sys.stderr)
+        sys.exit(1)
+
 
     readme = {}
     readme['name'] = skeleton['name']
