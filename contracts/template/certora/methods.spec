@@ -4,6 +4,3 @@ methods {
     function getX() external returns (uint) envfree;
 }
 
-rule P1 {
-    assert getX() == getX();
-}
