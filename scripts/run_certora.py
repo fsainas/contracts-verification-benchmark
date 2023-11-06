@@ -16,17 +16,15 @@ import sys
 import re
 import csv
 import argparse
-import datetime
 
 THREADS = 6
 
 COMMAND_TEMPLATE = Template(
-"""certoraRun $contract:$name \
---verify $name:$spec
-"""
+    "certoraRun $contract:$name \
+    --verify $name:$spec"
 )
 
-OUT_HEADER = ['property','version','outcome']     # outcome in P,P!,N,N!
+OUT_HEADER = ['property', 'version', 'outcome']     # outcome in P,P!,N,N!
 
 WEAK_POSITIVE = "P"
 WEAK_NEGATIVE = "N"
@@ -44,19 +42,20 @@ def write_csv(path, rows):
     with open(path, 'w') as file:
         csv.writer(file).writerows(rows)
 
+
 # Check if there is an error in the output (Dep)
 def has_property_error(output, property):
-    pattern = rf".*ERROR: \[rule\] {re.escape(property).upper()}.*"
+    pattern = rf'.*ERROR: \[rule\] {re.escape(property).upper()}.*'
     return re.search(pattern, output, re.DOTALL)
 
 
 def no_errors_found(output):
-    pattern = rf".*No errors found by Prover!.*"
+    pattern = r'.*No errors found by Prover!.*'
     return re.search(pattern, output, re.DOTALL)
 
 
 def has_critical_error(output):
-    pattern = rf".*CRITICAL.*"
+    pattern = r'.*CRITICAL.*'
     return re.search(pattern, output, re.DOTALL)
 
 
@@ -85,7 +84,7 @@ def get_contract_name(contract):
         sys.stderr.write(
                 '[Error]:' +
                 f'{contract}:' +
-                f"Couldn't retrieve contract name.\n"
+                "Couldn't retrieve contract name.\n"
         )
         return
 
@@ -108,10 +107,9 @@ def run_certora(contract, spec_path):
         return
 
     params = {}
-    params['contract'] = contract 
+    params['contract'] = contract
     params['name'] = contract_name
     params['spec'] = spec_path
-    #params['property'] = property
 
     command = COMMAND_TEMPLATE.substitute(params)
     print(command)
@@ -182,10 +180,9 @@ def run_all_certora(contracts_dir, spec_path):
             v_id = v_path.split('/')[-1].split('_')[-1].split('.')[0]
 
             v_bounded = list(filter(
-                    lambda x: re.search(f'p.*_{v_id}.*', x), 
+                    lambda x: re.search(f'p.*_{v_id}.*', x),
                     bounded_properties_paths))
 
-            
             v_unbounded = unbounded_properties_paths
 
             for bp_path in v_bounded:
@@ -200,12 +197,12 @@ def run_all_certora(contracts_dir, spec_path):
 
             for s_path in v_properties_paths:
                 id = (  # e.g. p1_v1
-                        s_path.split('.')[-2].split('/')[-1].split('_')[0] + 
-                        '_' + 
+                        s_path.split('.')[-2].split('/')[-1].split('_')[0] +
+                        '_' +
                         v_path.split('_')[-1].split('.sol')[0]
                 )
                 inputs.append((id, contracts_dir + v_path, s_path))
-    
+
     with Pool(processes=THREADS) as pool:
         # [(id, (outcome, log)), ...]
         outcomes1 = pool.starmap(run_certora_paral, inputs)
@@ -219,14 +216,14 @@ def run_all_certora(contracts_dir, spec_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-            '--input', 
-            '-i', 
+            '--input'
+            '-i',
             help='File or directory with contracts.',
             required=True
             )
     parser.add_argument(
-            '--spec', 
-            '-s', 
+            '--spec',
+            '-s',
             help='CVL Specification dir or file.',
             required=True
             )
@@ -234,7 +231,7 @@ if __name__ == "__main__":
             '--output',
             '-o',
             help='Directory to write output.',
-            #required=True
+            required=True
     )
     args = parser.parse_args()
 
@@ -245,7 +242,7 @@ if __name__ == "__main__":
 
     outcomes = run_all_certora(contracts_dir, spec_path)
 
-    out_csv = [OUT_HEADER] 
+    out_csv = [OUT_HEADER]
     for id in outcomes.keys():
         out_csv.append([id.split('_')[0], id.split('_')[1], outcomes[id][0]])
         write_log(logs_dir + id + '.log', outcomes[id][1])
