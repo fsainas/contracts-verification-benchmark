@@ -8,94 +8,86 @@ Usage:
 """
 
 from string import Template
+from multiprocessing import Pool
 import subprocess
 import argparse
-import csv
-import sys 
+import utils
+import sys
 import re
 import os
 
-COMMAND_TEMPLATE = Template(
-"""solc $c_path \
---model-checker-engine chc \
---model-checker-timeout $timeout \
---model-checker-targets assert \
---model-checker-show-unproved"""
-)
-
 DEFAULT_TIMEOUT = 0
+THREADS = 6
 
-OUT_HEADER = ['property','version','outcome']     # outcome in P,P!,N,N!
-
-WEAK_POSITIVE = "P"
-WEAK_NEGATIVE = "N"
-STRONG_POSITIVE = "P!"
-STRONG_NEGATIVE = "N!"
-
-
-def write_log(path, log):
-    with open(path, 'w') as file:
-        file.write(log)
-
-
-def write_csv(path, rows):
-    rows = [rows[0]] + sorted(rows[1:])
-    with open(path, 'w') as file:
-        csv.writer(file).writerows(rows)
+COMMAND_TEMPLATE = Template(
+        'solc $contract_path ' +
+        '--model-checker-engine chc ' +
+        '--model-checker-timeout $timeout ' +
+        '--model-checker-targets assert ' +
+        '--model-checker-show-unproved'
+)
 
 
 def has_error(output):
-    pattern = rf".*Error:.*"
+    pattern = r'.*Error:.*'
     return re.search(pattern, output, re.DOTALL)
 
 
 def has_source_error(output):
-    pattern = rf".*Error: Source.*"
+    pattern = r'.*Error: Source.*'
     return re.search(pattern, output, re.DOTALL)
 
 
 def has_assertion_warning(output):
-    pattern = r".*Warning: CHC: Assertion violation happens here.*"
+    pattern = r'.*Warning: CHC: Assertion violation happens here.*'
     return re.search(pattern, output, re.DOTALL)
 
 
 def is_timeout_or_unknown(output):
-    pattern = r".*Warning: CHC: Assertion violation might happen here.*"
+    pattern = r'.*Warning: CHC: Assertion violation might happen here.*'
     return re.search(pattern, output, re.DOTALL)
 
 
-def run_solcmc(c_path, timeout):
+def run_solcmc(contract_path, timeout):
     """
     Runs a single solcmc experiment.
-
-    Args:
-        c_path (str): Contract file path.
-        timeout (int): Experiment timeout.
 
     Returns:
         tuple: (outcome, log)
     """
     params = {}
-    params['c_path'] = c_path
+    params['contract_path'] = contract_path
     params['timeout'] = timeout
+
     command = COMMAND_TEMPLATE.substitute(params)
+    print(command)
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
     if has_error(log.stderr):
         print(log.stderr, file=sys.stderr)
         if has_source_error(log.stderr):
-            print("Use the dot to make a relative import: e.g. './lib/lib.sol'.\n")
+            print('Use the dot to make a relative import: ' +
+                  "e.g. './lib/lib.sol'.\n")
         sys.exit(1)
 
     if is_timeout_or_unknown(log.stderr):
-        return (WEAK_NEGATIVE, log.stderr)
+        return (utils.WEAK_NEGATIVE, log.stderr)
     elif has_assertion_warning(log.stderr):
-        return (STRONG_NEGATIVE, log.stderr)
+        return (utils.STRONG_NEGATIVE, log.stderr)
     else:
-        return (STRONG_POSITIVE, log.stderr)
+        return (utils.STRONG_POSITIVE, log.stderr)
 
 
-def run_all_solcmc(contracts_dir, timeout):
+def run_solcmc_parallel(id, contract_path, timeout, logs_dir):
+    """
+    Calls run_solcmc() and writes the log.
+    """
+    (outcome, log) = run_solcmc(contract_path, timeout)
+    utils.write_log(logs_dir + id + '.log', log)
+    return (id, outcome)
+
+
+def run_all_solcmc(contracts_dir, timeout, logs_dir):
     """
     Runs solcmc on all files of a directory.
 
@@ -108,10 +100,20 @@ def run_all_solcmc(contracts_dir, timeout):
     """
     outcomes = {}
 
+    # inputs for run_solcmc_parallel()
+    # [(id, contract_path, timeout, logs_dir), ...]
+    inputs = []
+
     for file in os.listdir(contracts_dir):
         if not os.path.isdir(contracts_dir + file):     # lib/ is ignored
             id = '_'.join(file.split('_')[-2:]).split('.sol')[0]
-            outcomes[id] = run_solcmc(contracts_dir + file, timeout)
+            inputs.append((id, contracts_dir + file, timeout, logs_dir))
+
+    with Pool(processes=THREADS) as pool:
+        # [(id, outcome), ...]
+        results = pool.starmap(run_solcmc_parallel, inputs)
+        for (id, outcome) in results:
+            outcomes[id] = outcome
 
     return outcomes
 
@@ -119,15 +121,15 @@ def run_all_solcmc(contracts_dir, timeout):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-            '--input',
-            '-i',
-            help='File or directory with contracts.',
+            '--contracts',
+            '-c',
+            help='Contracts dir.',
             required=True
     )
     parser.add_argument(  # build/
             '--output',
             '-o',
-            help='Directory to write output.',
+            help='Output dir.',
             required=True
     )
     parser.add_argument(
@@ -138,14 +140,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     timeout = args.timeout if args.timeout else DEFAULT_TIMEOUT
-    contracts_dir = args.input if args.input[-1] == '/' else args.input + '/'
+    contracts_dir = (
+            args.contracts
+            if args.contracts[-1] == '/'
+            else args.contracts + '/'
+            )
     output_dir = args.output if args.output[-1] == '/' else args.output + '/'
     logs_dir = output_dir + 'logs/'
 
-    outcomes = run_all_solcmc(contracts_dir, timeout)
+    outcomes = run_all_solcmc(contracts_dir, timeout, logs_dir)
 
-    out_csv = [OUT_HEADER] 
+    out_csv = [utils.OUT_HEADER]
+
     for id in outcomes.keys():
-        out_csv.append([id.split('_')[0], id.split('_')[1], outcomes[id][0]])
-        write_log(logs_dir + id + '.log', outcomes[id][1])
-    write_csv(output_dir + 'out.csv', out_csv)
+        p = id.split('_')[0]
+        v = id.split('_')[1]
+        out_csv.append([p, v, outcomes[id]])
+
+    utils.write_csv(output_dir + 'out.csv', out_csv)

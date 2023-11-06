@@ -20,7 +20,7 @@ import re
 THREADS = 6     # n of parallel executions
 
 COMMAND_TEMPLATE = Template(
-    "certoraRun $contract:$name --verify $name:$spec"
+    'certoraRun $contract_path:$name --verify $name:$spec_path'
 )
 
 
@@ -68,9 +68,9 @@ def run_certora(contract_path, spec_path):
         return
 
     params = {}
-    params['contract'] = contract_path
+    params['contract_path'] = contract_path
     params['name'] = contract_name
-    params['spec'] = spec_path
+    params['spec_path'] = spec_path
 
     command = COMMAND_TEMPLATE.substitute(params)
     print(command)
@@ -121,7 +121,7 @@ def run_all_certora(contracts_dir, spec_path, logs_dir):
     unbounded_properties_paths = list(
             set(specs) - set(bounded_properties_paths))
 
-    inputs = []     # inputs for run_certora()
+    inputs = []     # inputs for run_certora_parallel()
 
     for v_path in os.listdir(contracts_dir):
         if not os.path.isdir(contracts_dir + v_path):     # lib/ is ignored
