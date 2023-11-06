@@ -8,6 +8,7 @@ Usage:
 """
 
 from string import Template
+from multiprocessing import Pool
 import subprocess
 import glob
 import os
@@ -16,6 +17,8 @@ import re
 import csv
 import argparse
 import datetime
+
+THREADS = 6
 
 COMMAND_TEMPLATE = Template(
 """certoraRun $contract:$name \
@@ -144,6 +147,9 @@ def get_properties(spec_path):
     )
 
 
+def run_certora_paral(id, contract, spec):
+    return (id, run_certora(contract, spec))
+
 
 def run_all_certora(contracts_dir, spec_path):
     """
@@ -167,6 +173,7 @@ def run_all_certora(contracts_dir, spec_path):
     unbounded_properties_paths = list(
             set(specs) - set(bounded_properties_paths))
 
+    inputs = []     # inputs for run_certora()
 
     for v_path in os.listdir(contracts_dir):
         if not os.path.isdir(contracts_dir + v_path):     # lib/ is ignored
@@ -197,7 +204,14 @@ def run_all_certora(contracts_dir, spec_path):
                         '_' + 
                         v_path.split('_')[-1].split('.sol')[0]
                 )
-                outcomes[id] = run_certora(contracts_dir + v_path, s_path)
+                inputs.append((id, contracts_dir + v_path, s_path))
+    
+    with Pool(processes=THREADS) as pool:
+        # [(id, (outcome, log)), ...]
+        outcomes1 = pool.starmap(run_certora_paral, inputs)
+        for o in outcomes1:
+            (id, t) = o
+            outcomes[id] = t
 
     return outcomes
 
