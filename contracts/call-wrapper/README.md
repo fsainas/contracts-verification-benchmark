@@ -13,7 +13,7 @@ The contract acts as a wrapper to Solidity's `call` function.
 - **v4**: non-reentrant `callwrap` and additional reentrant function `modifystorage`.
 - **v5**: non-reentrant `callwrap` and additional non-reentrant function `modifystorage`.
 
-## Ground truths
+## Ground truth
 |        | p1  | p2  |
 |--------|-----|-----|
 | **v1** | 0   | 1   |
@@ -27,17 +27,17 @@ The contract acts as a wrapper to Solidity's `call` function.
 ### SolCMC
 |        | p1  | p2  |
 |--------|-----|-----|
-| **v1** | TN! | TP! |
+| **v1** | FP! | TP! |
 | **v2** | FP! | TP! |
 | **v3** | TN! | TN! |
-| **v4** | FP! | FP! |
+| **v4** | TN! | TN! |
 | **v5** | FP! | TP! |
 
 ### Certora
 |        | p1  | p2  |
 |--------|-----|-----|
 | **v1** | TN! | TP! |
-| **v2** | FP! | TP! |
+| **v2** | TN! | TP! |
 | **v3** | TN! | FP! |
-| **v4** | FP! | FP! |
-| **v5** | FP! | TP! |
+| **v4** | TN! | FP! |
+| **v5** | TN! | TP! |
