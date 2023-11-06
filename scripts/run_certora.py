@@ -4,7 +4,7 @@ Description:
     Operates on either a single file or every file within a directory.
 
 Usage:
-    python run_certora.py -i <file_or_dir> -s <spec_file> -o <output_dir>
+    python run_certora.py -c <file_or_dir> -s <spec_file> -o <output_dir>
 """
 
 from string import Template
