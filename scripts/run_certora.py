@@ -10,40 +10,21 @@ Usage:
 from string import Template
 from multiprocessing import Pool
 import subprocess
-import glob
-import os
-import sys
-import re
-import csv
 import argparse
+import utils
+import glob
+import sys
+import os
+import re
 
-THREADS = 6
+THREADS = 6     # n of parallel executions
 
 COMMAND_TEMPLATE = Template(
-    "certoraRun $contract:$name \
-    --verify $name:$spec"
+    "certoraRun $contract:$name --verify $name:$spec"
 )
 
-OUT_HEADER = ['property', 'version', 'outcome']     # outcome in P,P!,N,N!
 
-WEAK_POSITIVE = "P"
-WEAK_NEGATIVE = "N"
-STRONG_POSITIVE = "P!"
-STRONG_NEGATIVE = "N!"
-
-
-def write_log(path, log):
-    with open(path, 'w') as file:
-        file.write(log)
-
-
-def write_csv(path, rows):
-    rows = [rows[0]] + sorted(rows[1:])
-    with open(path, 'w') as file:
-        csv.writer(file).writerows(rows)
-
-
-# Check if there is an error in the output (Dep)
+# Check if there is an error in the output (Deprec)
 def has_property_error(output, property):
     pattern = rf'.*ERROR: \[rule\] {re.escape(property).upper()}.*'
     return re.search(pattern, output, re.DOTALL)
@@ -59,55 +40,35 @@ def has_critical_error(output):
     return re.search(pattern, output, re.DOTALL)
 
 
-def get_contract_name(contract):
+def get_properties(spec_path):
     """
-    Extracts the contract name from a contract path.
-
-    Args:
-        contract (str): Contract file path.
+    Retrieves the list of properties defined in CVL spec files.
 
     Returns:
-        str: Contract name.
+        list: The list of property names.
     """
-    contract_code = ""
-
-    with open(contract, 'r') as contract_file:
-        contract_code = contract_file.read()
-
-    matches = re.findall(r'contract\s+([^ ]+)', contract_code)
-
-    if matches:
-        # The contract to verify is the last one
-        contract_name = matches[0]
-        return contract_name
-    else:
-        sys.stderr.write(
-                '[Error]:' +
-                f'{contract}:' +
-                "Couldn't retrieve contract name.\n"
-        )
-        return
+    return (
+            glob.glob(f'{spec_path}/p*.spec')
+            if os.path.isdir(spec_path)
+            else [spec_path]
+    )
 
 
-def run_certora(contract, spec_path):
+def run_certora(contract_path, spec_path):
     """
     Runs a single certora experiment.
-
-    Args:
-        contract (str): Contract file path.
-        spec_path (str): CVL spec file path.
 
     Returns:
         tuple: (outcome, log)
     """
 
-    contract_name = get_contract_name(contract)
+    contract_name = utils.get_contract_name(contract_path)
 
     if not contract_name:
         return
 
     params = {}
-    params['contract'] = contract
+    params['contract'] = contract_path
     params['name'] = contract_name
     params['spec'] = spec_path
 
@@ -123,42 +84,31 @@ def run_certora(contract, spec_path):
         sys.exit(1)
 
     if no_errors_found(log.stdout):
-        return (STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
+        return (utils.STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
     else:
-        return (STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
+        return (utils.STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
 
 
-def get_properties(spec_path):
+def run_certora_parallel(id, contract_path, spec_path, logs_dir):
     """
-    Retrieves the list of properties defined in CVL spec files.
-
-    Args:
-        spec (str): CVL specs file or dir path.
-
-    Returns:
-        list: The list of property names.
+    Calls run_certora() and writes the log.
     """
-    return (
-            glob.glob(f'{spec_path}/p*.spec')
-            if os.path.isdir(spec_path)
-            else [spec_path]
-    )
+    (outcome, log) = run_certora(contract_path, spec_path)
+    utils.write_log(logs_dir + id + '.log', log)
+    return (id, outcome)
 
 
-def run_certora_paral(id, contract, spec):
-    return (id, run_certora(contract, spec))
-
-
-def run_all_certora(contracts_dir, spec_path):
+def run_all_certora(contracts_dir, spec_path, logs_dir):
     """
     Runs certora on all files of a directory.
 
     Args:
         contracts_dir (str): Contracts directory path.
-        spec (str): CVL spec dir path.
+        spec_path (str): CVL spec dir path.
+        log_dir (str): Log directory path.
 
     Returns:
-        dict: {p*_v*: (outcome, log)}
+        dict: {p*_v*: outcome}
     """
     outcomes = {}
 
@@ -201,14 +151,13 @@ def run_all_certora(contracts_dir, spec_path):
                         '_' +
                         v_path.split('_')[-1].split('.sol')[0]
                 )
-                inputs.append((id, contracts_dir + v_path, s_path))
+                inputs.append((id, contracts_dir + v_path, s_path, logs_dir))
 
     with Pool(processes=THREADS) as pool:
-        # [(id, (outcome, log)), ...]
-        outcomes1 = pool.starmap(run_certora_paral, inputs)
-        for o in outcomes1:
-            (id, t) = o
-            outcomes[id] = t
+        # [(id, outcome), ...]
+        results = pool.starmap(run_certora_parallel, inputs)
+        for (id, outcome) in results:
+            outcomes[id] = outcome
 
     return outcomes
 
@@ -216,13 +165,13 @@ def run_all_certora(contracts_dir, spec_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-            '--input'
-            '-i',
-            help='File or directory with contracts.',
+            '--contracts',
+            '-c',
+            help='Contracts directory',
             required=True
             )
     parser.add_argument(
-            '--spec',
+            '--specs',
             '-s',
             help='CVL Specification dir or file.',
             required=True
@@ -230,20 +179,27 @@ if __name__ == "__main__":
     parser.add_argument(  # build/
             '--output',
             '-o',
-            help='Directory to write output.',
+            help='Output directory.',
             required=True
     )
     args = parser.parse_args()
 
-    contracts_dir = args.input if args.input[-1] == '/' else args.input + '/'
+    contracts_dir = (
+            args.contracts
+            if args.contracts[-1] == '/'
+            else args.contracts + '/'
+            )
     output_dir = args.output if args.output[-1] == '/' else args.output + '/'
     logs_dir = output_dir + 'logs/'
-    spec_path = args.spec if args.spec[-1] == '/' else args.spec + '/'
+    spec_path = args.specs if args.specs[-1] == '/' else args.specs + '/'
 
-    outcomes = run_all_certora(contracts_dir, spec_path)
+    outcomes = run_all_certora(contracts_dir, spec_path, logs_dir)
 
-    out_csv = [OUT_HEADER]
+    out_csv = [utils.OUT_HEADER]
+
     for id in outcomes.keys():
-        out_csv.append([id.split('_')[0], id.split('_')[1], outcomes[id][0]])
-        write_log(logs_dir + id + '.log', outcomes[id][1])
-    write_csv(output_dir + 'out.csv', out_csv)
+        p = id.split('_')[0]
+        v = id.split('_')[1]
+        out_csv.append([p, v, outcomes[id]])
+
+    utils.write_csv(output_dir + 'out.csv', out_csv)
