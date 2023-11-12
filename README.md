@@ -64,6 +64,16 @@ verification tools according to the following table:
 
 ## Extending the benchmark
 
+In the `contracts/` directory, run the following command to initialize a new
+use case:
+
+```
+$ make init name=<usecase-name>
+```
+This command creates a new directory and provides the template to start your work.
+
+### Use case directory structure
+
 Each use case directory must include the following files:
 - `skeleton.json`
 - `ground-truth.csv`
@@ -74,7 +84,7 @@ Each use case directory must include the following files:
 Find a minimal example in [`contracts/template/`](contracts/template)
 directory.
 
-### skeleton.json
+#### skeleton.json
 
 This file stores the use case's **name**, **specification** and **properties**
 defined in natural language:
@@ -89,7 +99,7 @@ defined in natural language:
 }
 ```
 
-### ground-truth.csv
+#### ground-truth.csv
 
 This file defines the ground truth for the corresponding use case. Lines of the
 csv have the form:
@@ -100,7 +110,7 @@ where `sat` is 1 when the property holds on the given version, and 0 when it
 does not hold. The ground truth is constructed manually, and (in some cases)
 confirmed by the verification tools.
 
-### Versions Directory
+#### Versions Directory
 
 The `versions/` directory contains various Solidity variants of the use case
 contract, with version definitions in natural language written using the
@@ -109,13 +119,78 @@ NatSpec format and the `@custom:version` tag:
 /// @custom:version reentrant `withdraw`.
 ```
 
-### Makefile
+#### Makefile
 
 The Makefile defines three commands:
-1. `make plain`: This command generates the README without experiment results. It
-   utilizes `skeleton.json`, `ground-truth.csv` and version files from
-   `versions/`.
-1. `make solcmc`/`make certora`: These commands call the Makefile of the tool
-   specified to run experiments, results are written in the README.
-1. `make all`: This command runs experiments with all verification tools and
-   generates the complete README.
+1. `make plain`: generates the README without experiment results. It utilizes
+   `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
+1. `make solcmc`/`make certora`: call the Makefile of the tool specified to run
+   experiments, results are written in the README.
+1. `make all`: runs experiments with all verification tools and generates the
+   complete README.
+1. `make clean`: removes build directories from verification tool directories.
+1. `make cleanr`: removes the readme file.
+
+
+### SolCMC directory structure
+
+SolCMC directories contain:
+
+- `Makefile`: to run solcmc experiments and manage contracts building.
+- Property files.
+
+Property files adhere to the following naming conventions:
+`p<property_number>.sol` or `p<property_number>_v<version_number>.sol` if the
+property is associated with a specific contract version. The tool automatically
+handles the matching of properties and versions.
+
+An example of a property file:
+
+```
+function p(<T> y, ...) public {
+    // preconditions
+    require(x != y);
+    // ...
+
+    // some change in state
+    f1(x, y);
+    f2();
+    // ...
+
+    // postconditions
+    assert(x != y);
+    // ...
+}
+```
+
+In this case `x` could be a state variable of the contract and `y` an arbitrary value of type `T`.
+
+### Certora directory structure
+
+Certora directories contain:
+- `Makefile`: to run certora experiments and manage contracts building.
+- `getters.sol`: a collection of getters for contract state variables, useful to write certora specifications.
+- `methods.spec`: methods declaration to use in certora specifications.
+- Specification files.
+
+Similarly to SolCMC property files, certora specification files adhere to the
+following naming convetions: `p<property_number>.spec` or
+`p<property_number>_v<version_number>.spec` if the property is associated with
+a specific contract version.
+
+An example of a specification file:
+
+```
+rule P1 {
+    env e;
+
+    mathint y;
+    x = getX();
+    require x != y;
+
+    f1(x,y);
+    f2();
+
+    assert x != y;
+}
+```
