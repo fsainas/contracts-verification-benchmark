@@ -23,21 +23,3 @@ The contract acts as a wrapper to Solidity's `call` function.
 | **v5** | 0   | 1   |
 
 ## Experiments
-
-### SolCMC
-|        | p1  | p2  |
-|--------|-----|-----|
-| **v1** | FP! | TP! |
-| **v2** | FP! | TP! |
-| **v3** | TN! | TN! |
-| **v4** | TN! | TN! |
-| **v5** | FP! | TP! |
-
-### Certora
-|        | p1  | p2  |
-|--------|-----|-----|
-| **v1** | TN! | TP! |
-| **v2** | TN! | TP! |
-| **v3** | TN! | FP! |
-| **v4** | TN! | FP! |
-| **v5** | TN! | TP! |

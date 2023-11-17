@@ -11,7 +11,7 @@ PYTHON = python
 .PHONY = run clean
 
 run: contracts directories
-	@$(PYTHON) ../../../scripts/run_solcmc.py --input $(CONTRACTS_DIR) --output $(BUILD_DIR)
+	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR) --output $(BUILD_DIR)
 
 contracts: $(CONTRACTS_DIR)
 	@$(PYTHON) ../../../scripts/builder.py --versions $(VERSIONS_DIR) --properties $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)

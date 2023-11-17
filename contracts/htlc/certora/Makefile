@@ -15,8 +15,8 @@ METHODS_FILE = methods.spec
 
 .PHONY = run clean specs
 
-run: clean contracts specs directories 
-	@$(PYTHON) ../../../scripts/run_certora.py --input $(CONTRACTS_DIR) --spec $(SPEC_DIR) --output $(BUILD_DIR)
+run: clean_specs contracts specs directories 
+	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(CONTRACTS_DIR) --specs $(SPEC_DIR) --output $(BUILD_DIR)
 
 contracts: $(CONTRACTS_DIR)
 	@$(PYTHON) ../../../scripts/injector.py --base $(VERSIONS_DIR) --inject $(GETTER_FILE) --output $(CONTRACTS_DIR)
