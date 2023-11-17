@@ -12,17 +12,20 @@ more precise verification techniques.
 
 ## Contracts
 
+> We are currently updating the contracts to the standard described in the "[extending the benchmark](#extending-the-benchmark)" section. Up-to-date contracts are marked with :white_check_mark:.
+
 The benchmark currently comprises several versions (correct or bugged) of the following use cases:
-- [Zero-token Bet](contracts/zerotoken_bet/)
+- [Zero-token Bet](contracts/zerotoken_bet/) :white_check_mark:
 - [Simple Transfer](contracts/simple_transfer/)
 - [Token Transfer](contracts/token_transfer/)
+- [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
 - [Bank](contracts/bank/)
 - [Lottery](contracts/lottery/)
 - [Escrow](contracts/escrow/)
 - [Vesting Wallet](contracts/vesting_wallet/)
 - [Vault](contracts/vault/)
 - [Crowdfund](contracts/crowdfund/)
-- [Hash Timed Locked Contract](contracts/htlc/)
+- [Hash Timed Locked Contract](contracts/htlc/) :white_check_mark:
 - [Constant-product AMM](contracts/tinyamm/)
 - [Payment Splitter](contracts/payment_splitter/)
 - [Social Recovery Wallet](contracts/social_recovery_wallet/)
