@@ -1,0 +1,12 @@
+{
+    "name": "Bank",
+    "specification": "The Bank contract is designed to accepts deposits and withdrawals from any address. When a deposit is made, the corresponding amount is added to the account balance of the depositing address. These balances are maintained using a mapping function within the contract. To withdraw funds, a depositor can call the withdraw function of the Bank contract with a specified amount. The contract verifies that the depositor has sufficient funds in their account and then initiates a transfer of the specified amount to the depositor`s address.",
+    "properties": [
+        "after a deposit, the total balance of the contract is still greater than or equal to the balance of the account that made the deposit.",
+        "after a deposit, if the amount deposited is greater than 0, the balance of the address who made the deposit is increased.",
+        " the only way to decrease the balance of the contract is by calling `withdraw()`.",
+        "after a withdrawal, the balance of `msg.sender` is decreased by `amount`.",
+        "`withdraw()` does not revert if the sender calls it with an `amount` value less than or equal to their balance in the bank contract.",
+        "a user cannot withdraw more than what is currently in their bank balance."
+    ]
+}
