@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
 
+
+/// @custom:version conforming to specification.
 contract Crowdfund {
 
     uint end_donate;    // last block in which users can donate
@@ -41,14 +43,5 @@ contract Crowdfund {
 
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
-    }
-
-    function invariant() public {
-        require(block.number > end_donate);
-
-        _prevBalance = _balance;
-        _balance = address(this).balance;
-
-        assert(!(_prevBalance != 0) || _prevBalance >= _balance);
     }
 }
