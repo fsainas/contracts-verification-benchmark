@@ -31,6 +31,10 @@ def gen_from_dict(data):
     cols = sorted(set([c for c, _ in data.keys()]))
     rows = sorted(set([r for _, r in data.keys()]))
 
+    if not rows:
+        print("\nEmpty cm.csv file!\n", file=sys.stderr)
+        sys.exit(1)
+
     max_c_length = max([len(c) for c in cols])
     max_r_length = max([len(r) for r in rows])
 
@@ -95,6 +99,7 @@ def gen_from_csv(input_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    # cm.csv
     parser.add_argument(
             '--input',
             '-i',
