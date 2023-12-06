@@ -1,0 +1,12 @@
+{
+    "name": "Escrow",
+    "specification": "This contract allows a buyer to make a deposit and indicate a seller. The buyer and seller can choose a payment address, and if choices match, the seller can redeem the funds. If they do not match, the escrow system will arbitrate and choose the correct address between the two. If the seller does not choose an address, the buyer can redeem with a refund. The contract operates in five phases: Join, Choose, Redeem, Arbitrate, End . Each phase has a set of callable functions.",
+    "properties": [
+        " fee does not exceed deposit.",
+        " if the current phase is Redeem the previous one is Choose.",
+        " if the current phase is Arbitrate the previouse one is Redeem.",
+        " if the current phase is End, the previous one is Arbitrate, Redeem or Choose.",
+        " If `phase` is End and `escrow_choice` is not `address(0)` then `redeem_arbitrated()` has modified the balance of the contract.",
+        "The `msg.sender` can only be `escrow`, `buyer` or `seller` for all functions except `redeem_arbitrated()`."
+    ]
+}

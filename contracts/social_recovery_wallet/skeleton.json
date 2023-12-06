@@ -1,0 +1,11 @@
+{
+    "name": "Social Recovery Wallet\n\nThis is a simplified version of [this](https://github.com/verumlotus/social-recovery-wallet/blob/main/src/Wallet.sol) contract by [@verumlotus](https://github.com/verumlotus).\n\nThe concept was popularized by [this](https://vitalik.ca/general/2021/01/11/recovery.html) article by Vitalik Buterin.\n\n",
+    "specification": "This wallet can be used by the owner to make transactions by calling `the executeExternalTx()` function, by provinding the desired recipient contract/externally owned account (EOA), an ether value, and arbitrary data.\n\nIn case of lost private key, a recovery process can be initiated by a guardian. The guardian first calls `initiateRecovery()` with the address of the new owner, followed by a threshold number of guardians calling `supportRecovery()` with the new owner's address. Finally, any guardian can call `executeRecovery()` to change the wallet's owner.\n\nAdditionally, owners have the ability to manage guardians by removing compromised or malicious guardians. The owner initiates the removal process by calling `initiateGuardianRemoval()` with the hash of the guardian's address, which queues the guardian for removal after a 3-day delay. The owner then calls `executeGuardianRemoval()` after the delay, providing the hash of a new guardian's address to finalize the removal and add the new guardian. Alternatively, the owner can call `cancelGuardianRemoval()` to restore the guardian state.",
+    "properties": [
+        " the first owner is always the owner, in other words: the owner cannot change (should fail).",
+        " the recovery can never happen (should fail).",
+        " if an address `addr` has participated in a recovery, then `addr` is a guardian. Should fail in v1 because guardians can be removed.",
+        "if number of guardian greater than or equal to the threshold has participated in the same recovery round, and selected the same new owner, then `executeRecovery()` will succeed and `owner == newOwner`.",
+        "`executeRecovery()` will fail if not enough guardians have joined the recovery process."
+    ]
+}
