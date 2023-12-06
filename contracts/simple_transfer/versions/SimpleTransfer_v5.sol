@@ -2,16 +2,26 @@
 pragma solidity >= 0.8.2;
 import "lib/ReentrancyGuard.sol";
 
+/// @custom:version `withdraw` requires a balance of at least `amount+1` instead of `amount`.
 contract SimpleTransfer is ReentrancyGuard {
 
+    // ghost variables p1
+    uint _sent;
+    uint _deposited;
+
     constructor () payable {
+        // p1
+        _deposited = address(this).balance;
     }
 
-    // v5
     function withdraw(uint amount) public nonReentrant {
         require(amount <= address(this).balance + 1);
 
-	(bool succ,) = msg.sender.call{value: amount}("");
+        // p1
+        _sent += amount;
+
+	    (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);
     }
+
 }
