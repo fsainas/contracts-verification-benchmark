@@ -29,6 +29,9 @@ contract Wallet is ReentrancyGuard {
     // ghost variables
     address _first_owner;
     
+    // ghost variables p2
+    bool _recovered;
+    
     /************************************************
      *  MODIFIERS 
     ***********************************************/
@@ -119,6 +122,9 @@ contract Wallet is ReentrancyGuard {
             // set field to true in storage, not memory
             guardianToRecovery[guardianList[i]].usedInExecuteRecovery = true;
         }
+
+	 //p2
+	 _recovered = true;
 
 
         inRecovery = false;
