@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 pragma solidity >= 0.8.2;
-import "lib/ReentrancyGuard.sol";
+import "./lib/ReentrancyGuard.sol";
 
 /// @custom:version `withdraw` transfers to `address(0)` instead of `msg.sender`.
 contract SimpleTransfer is ReentrancyGuard {
