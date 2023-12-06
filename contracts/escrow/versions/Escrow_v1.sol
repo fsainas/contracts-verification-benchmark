@@ -30,7 +30,7 @@ contract Escrow {
     
     // ghost variables p5
     uint _balance;
-    uint _init_deposit_2;    
+    //uint _init_deposit;    
     
     // ghost variable p6
     address _msg_sender;
@@ -83,6 +83,7 @@ contract Escrow {
         seller = seller_;
         deposit = msg.value;
         //p1
+        //p5
         _init_deposit = deposit;
 
         phase = Phase.CHOOSE;
@@ -90,7 +91,6 @@ contract Escrow {
         //p2
         _prev_phase = _current_phase;
         _current_phase = phase;      
-        
         
         //p6
         _msg_sender = msg.sender; 
