@@ -84,8 +84,10 @@ def run_certora(contract_path, spec_path):
         sys.exit(1)
 
     if no_errors_found(log.stdout):
+        print(contract_path + ": " + utils.STRONG_POSITIVE)
         return (utils.STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
     else:
+        print(contract_path + ": " + utils.STRONG_NEGATIVE)
         return (utils.STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
 
 
