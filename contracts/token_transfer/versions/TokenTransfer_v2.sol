@@ -4,7 +4,6 @@ pragma solidity >= 0.8.2;
 import "./lib/IERC20.sol";
 import "./lib/SafeERC20.sol";
 
-
 /// @custom:version safe IERC20 interactions by using [SafeERC20.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.3/contracts/token/ERC20/utils/SafeERC20.sol) (OpenZeppelin)
 contract TokenTransfer {
     using SafeERC20 for IERC20;
