@@ -1,12 +1,11 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity >= 0.8.2;
 
-
 /// @custom:version no `amount <= balances[msg.sender]` check and `balances[msg.sender]` is decremented by `amount - 1` in `withdraw()`
 contract Bank {
     mapping (address => uint) balances;
 
-    receive() external payable {
+    function deposit() public payable {
         balances[msg.sender] += msg.value;
     }
 
