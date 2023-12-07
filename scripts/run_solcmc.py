@@ -62,7 +62,7 @@ def run_solcmc(contract_path, timeout):
     command = COMMAND_TEMPLATE.substitute(params)
     print(command)
     log = subprocess.run(command.split(), capture_output=True, text=True)
-
+    
     if has_error(log.stderr):
         print(log.stderr, file=sys.stderr)
         if has_source_error(log.stderr):
@@ -71,10 +71,14 @@ def run_solcmc(contract_path, timeout):
         sys.exit(1)
 
     if is_timeout_or_unknown(log.stderr):
+        print(contract_path + ": " + utils.WEAK_NEGATIVE + 
+              " (timeout)")
         return (utils.WEAK_NEGATIVE, log.stderr)
     elif has_assertion_warning(log.stderr):
+        print(contract_path + ": " + utils.STRONG_NEGATIVE)
         return (utils.STRONG_NEGATIVE, log.stderr)
     else:
+        print(contract_path + ": " + utils.STRONG_POSITIVE)
         return (utils.STRONG_POSITIVE, log.stderr)
 
 
