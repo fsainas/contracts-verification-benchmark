@@ -20,7 +20,7 @@ import re
 THREADS = 6     # n of parallel executions
 
 COMMAND_TEMPLATE = Template(
-    'certoraRun $contract_path:$name --verify $name:$spec_path'
+    'certoraRun $contract_path:$name --verify $name:$spec_path --wait_for_results'
 )
 
 
@@ -84,10 +84,10 @@ def run_certora(contract_path, spec_path):
         sys.exit(1)
 
     if no_errors_found(log.stdout):
-        print(contract_path + ": " + utils.STRONG_POSITIVE)
+        print(contract_path + ", " + spec_path + ": " + utils.STRONG_POSITIVE)
         return (utils.STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
     else:
-        print(contract_path + ": " + utils.STRONG_NEGATIVE)
+        print(contract_path + ", " + spec_path + ": " + utils.STRONG_NEGATIVE)
         return (utils.STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
 
 
