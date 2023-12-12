@@ -8,20 +8,20 @@ import logging
 import argparse
 
 PLAIN_README_TEMPLATE = Template(
-    '''
-    # $name
-    ## Specification
-    $specification
+'''
+# $name
+## Specification
+$specification
 
-    ## Properties
-    $properties
+## Properties
+$properties
 
-    ## Versions
-    $versions
+## Versions
+$versions
 
-    ## Ground truth
-    $ground_truth
-    '''
+## Ground truth
+$ground_truth
+'''
 )
 
 
