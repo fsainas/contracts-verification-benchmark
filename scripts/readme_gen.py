@@ -1,41 +1,47 @@
 import json
 from string import Template
 from os import listdir
-from mdtable_gen import gen_from_csv 
+from mdtable_gen import gen_from_csv
 import re
 import sys
 import logging
 import argparse
 
 PLAIN_README_TEMPLATE = Template(
-'''# $name
-## Specification
-$specification
+    '''
+    # $name
+    ## Specification
+    $specification
 
-## Properties
-$properties
+    ## Properties
+    $properties
 
-## Versions
-$versions
+    ## Versions
+    $versions
 
-## Ground truth
-$ground_truth'''
+    ## Ground truth
+    $ground_truth
+    '''
 )
+
 
 def md_property_list(properties):
     return '\n'.join(
-        f'- **p{i+1}**: {p}' for i,p in enumerate(properties)
+        f'- **p{i+1}**: {p}' for i, p in enumerate(properties)
     )
+
 
 def md_version_list(versions):
     return '\n'.join(
-        f'- **v{i+1}**: {p}' for i,p in enumerate(versions)
+        f'- **v{i+1}**: {p}' for i, p in enumerate(versions)
     )
+
 
 def version_files(versions_dir):
     return sorted(
         f for f in listdir(versions_dir) if f.endswith('.sol')
     )
+
 
 def get_versions(versions_dir):
     # could use `solc --devdoc -o . {fname}`
@@ -65,7 +71,6 @@ def readme_gen(usecase_dir):
               file=sys.stderr)
         sys.exit(1)
 
-
     readme = {}
     readme['name'] = skeleton['name']
     readme['specification'] = skeleton['specification']
@@ -75,10 +80,11 @@ def readme_gen(usecase_dir):
 
     return PLAIN_README_TEMPLATE.substitute(readme)
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--usecase_dir', 
-                        '-d', 
+    parser.add_argument('--usecase_dir',
+                        '-d',
                         help='Usercase directory',
                         required=True)
 

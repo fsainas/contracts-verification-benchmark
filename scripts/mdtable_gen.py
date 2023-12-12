@@ -28,8 +28,9 @@ def gen_from_dict(data):
         str: markdown table
     """
 
-    cols = sorted(set([c for c, _ in data.keys()]))
-    rows = sorted(set([r for _, r in data.keys()]))
+    key_f = lambda x: int(x[1:])     # e.g. p1 -> 1
+    cols = sorted(set([c for c, _ in data.keys()]), key=key_f)
+    rows = sorted(set([r for _, r in data.keys()]), key=key_f)
 
     if not rows:
         print("\nEmpty cm.csv file!\n", file=sys.stderr)
@@ -63,7 +64,7 @@ def gen_from_dict(data):
     for r in rows:
         row_str = "| **" + r + "** |"
         for c in cols:
-            d = data[(c,r)]
+            d = data[(c, r)]
             if d is not None:
                 row_str += " " + d + " " * (cell_width-len(d)-1) + "|"
             else:
@@ -74,7 +75,7 @@ def gen_from_dict(data):
     # Combine everything into a Markdown table
     mdtable = "\n".join([header, separator] + table_rows)
 
-    return mdtable 
+    return mdtable
 
 
 def gen_from_csv(input_file):
@@ -90,7 +91,7 @@ def gen_from_csv(input_file):
 
         for row in csv_reader:
             c, r, d = row[0], row[1], row[2]
-            data.update({(c,r): d})
+            data.update({(c, r): d})
 
         mdtable = gen_from_dict(data)
 
