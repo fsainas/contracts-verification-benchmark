@@ -1,0 +1,127 @@
+property,version,truth,footnote-md
+p1,v1,1,
+p1,v2,1,
+p1,v3,1,
+p1,v4,1,
+p1,v5,1,
+p1,v6,1,
+p1,v7,1,
+p2,v1,1,
+p2,v2,1,
+p2,v3,0,balance entry modified by one less than the withdrawn amount
+p2,v4,1,
+p2,v5,1,
+p2,v6,1,
+p2,v7,1,
+p3,v1,0,reverts if overflow
+p3,v2,0,
+p3,v3,0,
+p3,v4,0,
+p3,v5,0,
+p3,v6,0,
+p3,v7,1,
+p4,v1,1,
+p4,v2,1,
+p4,v3,1,
+p4,v4,1,
+p4,v5,1,
+p4,v6,0,will revert if inactive for 10 rounds
+p4,v7,0,will revert if 100 rounds have elapsed
+p5,v1,1,in all versions  parameters are uints
+p5,v2,1,
+p5,v3,1,
+p5,v4,1,
+p5,v5,1,
+p5,v6,1,
+p5,v7,1,
+p6,v1,1,in all versions parameters are uints
+p6,v2,1,
+p6,v3,1,
+p6,v4,1,
+p6,v5,1,
+p6,v6,1,
+p6,v7,1,
+p7,v1,1,contract_balance is a uint
+p7,v2,1,
+p7,v3,1,
+p7,v4,1,
+p7,v5,1,
+p7,v6,1,
+p7,v7,1,
+p8,v1,1,balance is a map to uints
+p8,v2,1,
+p8,v3,1,
+p8,v4,1,
+p8,v5,1,
+p8,v6,1,
+p8,v7,1,
+p9,v1,0,only if nobody else has deposited 
+p9,v2,0,
+p9,v3,0,
+p9,v4,0,the owner cannot increase their balance
+p9,v5,0,deposit bounded: requires multiple transactions
+p9,v6,0,
+p9,v7,0,
+p10,v1,0,balance may be at MAX_UINT
+p10,v2,0,
+p10,v3,0,
+p10,v4,0,
+p10,v5,0,
+p10,v6,0,
+p10,v7,0,
+p11,v1,1,requires inductive reasoning about the sum
+p11,v2,1,
+p11,v3,0,balance and contract_balance are modified incorrectly in withdraw
+p11,v4,1,
+p11,v5,1,
+p11,v6,1,
+p11,v7,1,
+p12,v1,1,
+p12,v2,1,
+p12,v3,0,balance and contract_balance are modified incorrectly in withdraw
+p12,v4,1,
+p12,v5,1,
+p12,v6,1,
+p12,v7,1,
+p13,v1,1,
+p13,v2,1,
+p13,v3,0,balance modified incorrectly in withdraw
+p13,v4,1,
+p13,v5,1,
+p13,v6,1,
+p13,v7,1,
+p14,v1,1,
+p14,v2,1,
+p14,v3,1,
+p14,v4,1,
+p14,v5,0,have to withdraw 100 ETH at a time
+p14,v6,0,requires two transactions in general: one to wakeup the contract and one to withdraw
+p14,v7,0,after 100 blocks it is impossible to withdraw
+p15,v1,1,
+p15,v2,1,
+p15,v3,1,
+p15,v4,1,
+p15,v5,1,
+p15,v7,1,
+p15,v6,0,after 100 blocks it is impossible to withdraw
+p16,v1,1,
+p16,v2,1,
+p16,v3,0,users can withdraw more than deposited
+p16,v4,1,
+p16,v5,1,
+p16,v6,1,
+p16,v7,1,
+p17,v1,1,
+p17,v2,1,
+p17,v3,0,the incorrect balance change can make it impossible for other users to withdraw
+p17,v4,1,
+p17,v5,1,
+p17,v6,0,another user may wake up the contract
+p17,v7,1,
+p18,v1,1,
+p18,v2,1,
+p18,v3,0,the incorrect balance change can make it impossible for other users to withdraw
+p18,v4,1,
+p18,v5,1,
+p18,v6,0,another user may wake up the contract
+p18,v7,1,
