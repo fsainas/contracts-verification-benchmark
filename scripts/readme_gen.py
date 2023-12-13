@@ -48,8 +48,15 @@ def get_versions(versions_dir):
     # but it creates a file for each contract which is harder to parse.
     versions = []
     for fname in version_files(versions_dir):
-        with open(versions_dir + fname) as f:
-            content = f.read()
+        try:
+            with open(versions_dir + fname) as f:
+                content = f.read()
+        except FileNotFoundError as e:
+            print("\n[Error]: README generation:" +
+                  fname + " not found.\n" +
+                  str(e),
+                  file=sys.stderr)
+            sys.exit(1)
 
         res = re.search('/// @custom:version (.*)', content)
         if res:
@@ -71,12 +78,19 @@ def readme_gen(usecase_dir):
               file=sys.stderr)
         sys.exit(1)
 
-    readme = {}
-    readme['name'] = skeleton['name']
-    readme['specification'] = skeleton['specification']
-    readme['properties'] = md_property_list(skeleton['properties'])
-    readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
-    readme['ground_truth'] = gen_from_csv(f'{usecase_dir}/ground-truth.csv')
+    try:
+        readme = {}
+        readme['name'] = skeleton['name']
+        readme['specification'] = skeleton['specification']
+        readme['properties'] = md_property_list(skeleton['properties'])
+        readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
+        readme['ground_truth'] = gen_from_csv(f'{usecase_dir}/ground-truth.csv')
+    except IndexError as e:
+        print("\n[Error]: README generation:" +
+              " Empty line in ground-truth.csv.\n",
+              file=sys.stderr)
+        sys.exit(1)
+
 
     return PLAIN_README_TEMPLATE.substitute(readme)
 
