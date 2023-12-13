@@ -87,7 +87,7 @@ def readme_gen(usecase_dir):
         readme['ground_truth'] = gen_from_csv(f'{usecase_dir}/ground-truth.csv')
     except IndexError as e:
         print("\n[Error]: README generation:" +
-              " Empty line in ground-truth.csv.\n",
+              " Empty line or missing values in ground-truth.csv.\n",
               file=sys.stderr)
         sys.exit(1)
 
