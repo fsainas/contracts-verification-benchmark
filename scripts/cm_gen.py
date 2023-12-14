@@ -6,50 +6,52 @@ import sys
 CM_HEADER = ["property", "version", "result"]
 
 
-def get_result(t, r):
-    if t == 0:
-        if r[0] == 'N':
-            return 'T' + r  # TN
+def get_result(gt: int, out: str) -> str:
+    if gt == 0:
+        if out[0] == 'N':       # e.g 'N!'[0]
+            return 'T' + out    # TN
         else:
-            return 'F' + r  # FP
+            return 'F' + out    # FP
     else:
-        if r[0] == 'N':
-            return 'F' + r  # FN
+        if out[0] == 'N':
+            return 'F' + out    # FN
         else:
-            return 'T' + r  # TP
+            return 'T' + out    # TP
 
 
-def gen(ground_truth_csv, results_csv):
-    rows = [CM_HEADER]
-    truths = {}     # (p,v): truth
+def gen(ground_truth_csv: str, out_csv: str) -> list[str]:
+    cm_rows = [CM_HEADER]
+    outputs = {}    # (p,v): output
+
+    # get results
+    with open(out_csv, 'r') as file:
+        out_reader = csv.reader(file)
+        next(out_reader)    # skip header
+
+        for row in out_reader:
+            p, v, out = row[0], row[1], row[2]
+            outputs.update({(p,v): out})
     
-    with open(ground_truth_csv, 'r') as gt:
-        gt_reader = csv.reader(gt)
+    with open(ground_truth_csv, 'r') as file:
+        gt_reader = csv.reader(file)
+        next(gt_reader)     # skip header
 
-        next(gt_reader)
-
+        # build confusion matrix
         for row in gt_reader:
-            p, v, t = row[0], row[1], row[2]
-            truths.update({(p,v): t})
+            p, v, gt = row[0], row[1], int(row[2])
 
-    with open(results_csv, 'r') as res:
-        res_reader = csv.reader(res)
+            if (p,v) in outputs:
+                out = outputs[(p,v)]
+                cm_rows.append([p, v, get_result(gt, out)])
+                del outputs[(p,v)]
+            else:
+                cm_rows.append([p, v, 'ND'])
+    
+    for p,v in outputs.keys():
+        print(f'\n[WARNING]: missing {p}-{v} ground truth',
+              file=sys.stderr)
 
-        next(res_reader)
-
-        for row in res_reader:
-            p, v, r = row[0], row[1], row[2]
-            try:
-                rows.append([p, v, get_result(int(truths[(p,v)]), r)])
-            except KeyError as e:
-                print("\n[Error]: cm_gen.py:" +
-                      " Missing lines in ground-truth.csv:",
-                      e,
-                      file=sys.stderr)
-                sys.exit(1)
-
-
-    return rows
+    return cm_rows
 
 
 if __name__ == "__main__":
