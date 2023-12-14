@@ -142,11 +142,6 @@ SolCMC directories contain:
 - `Makefile`: to run solcmc experiments and manage contracts building.
 - Property files.
 
-Property files adhere to the following naming conventions:
-`p<property_number>.sol` or `p<property_number>_v<version_number>.sol` if the
-property is associated with a specific contract version. The tool automatically
-handles the matching of properties and versions.
-
 An example of a property file:
 
 ```
@@ -176,11 +171,6 @@ Certora directories contain:
 - `methods.spec`: methods declaration to use in certora specifications.
 - Specification files.
 
-Similarly to SolCMC property files, certora specification files adhere to the
-following naming convetions: `p<property_number>.spec` or
-`p<property_number>_v<version_number>.spec` if the property is associated with
-a specific contract version.
-
 An example of a specification file:
 
 ```
@@ -197,5 +187,17 @@ rule P1 {
     assert x != y;
 }
 ```
+
+### Version specifc properties
+
+Property files must follow the specified naming conventions:
+
+- For general properties, the file should be named as `p<property_number>.sol`.
+- If the property is associated with a specific contract version, use the
+  format `p<property_number>_v<version_number>.sol`.
+
+The tool manages the matching of properties and versions. It prioritizes
+version-specific properties; if a version-specific definition of the property
+exists, the tool will use it. Otherwise, it will default to the generic one.
 
 [^1]: Use `make solcmc to=<int>` to set the solcmc timeout.
