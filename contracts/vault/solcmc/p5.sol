@@ -1,4 +1,3 @@
-       // p5
 function invariant() public view {
-        assert(owner != recovery);
+    assert(owner != recovery);
 }

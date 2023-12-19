@@ -2,13 +2,13 @@
     "name": "Vault",
     "specification": "Vaults are a security mechanism to prevent cryptocurrency from being immediately withdrawn by an adversary who has stolen the owner's private key. To create the vault, the owner specifies a recovery key (distinct from the primary owner key), which can be used to cancel a withdraw request, and a wait time that has to elapse between a withdraw request and the actual currency transfer to the chosen recipient. Once the contract has been created, anyone can deposit native cryptocurrency in the vault through an external transaction.\n\n The contract can be in one of two states: \n\n - IDLE: the vault is waiting for a withdraw request; \n\n- REQ: the owner has issued a withdraw request that has not been finalized yet. In this state, the owner can choose to **finalize** the request or to **cancel** it. Finalization can only happen after the wait time has passed since the request. During the wait time, the request can be cancelled by using the recovery key.",
     "properties": [
-        "`withdraw()` and `finalize()` can only be called with the owner key.",
-        "`cancel()` can only be called with the recovery key.",
+        "`withdraw()` and `finalize()` can only be called with the owner key.",
+        "`cancel()` can only be called with the recovery key.",
         "the current state and the previous state alternate between IDLE and REQ.",
         "if there is a withdraw request then the amount is positive and fully covered by the contract balance.",
         "the owner key is never equal to the recovery key.",
         "anyone can always send funds to the contract.",
         "a holder of both the owner and recovery key is able to eventually withdraw all their funds with probability 1 (for every fair trace).",
-        "a holder of the recovery key always has a window of at least `wait_time` blocks to stop any withdrawal."
+        "a holder of the recovery key always has a window of at least `wait_time` blocks to stop any withdrawal."
     ]
 }

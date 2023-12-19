@@ -4,7 +4,7 @@ pragma solidity >= 0.8.2;
 
 /// @custom:version require in `withdraw()` wrongly uses state variable instead of parameter.
 contract Vault {
-        enum States{IDLE, REQ}
+    enum States{IDLE, REQ}
 
     address owner;
     address recovery;
@@ -14,10 +14,6 @@ contract Vault {
     uint request_time;
     uint amount;
     States state;
-
-    // ghost variables
-    States _prev;
-    bool _used;
     
     // v3
     constructor (address payable recovery_, uint wait_time_) payable {
@@ -26,15 +22,11 @@ contract Vault {
         recovery = recovery_;
         wait_time = wait_time_;
         state = States.IDLE;
-	    _prev = States.IDLE;
     }
 
     receive() external payable { }
 
     function withdraw(address receiver_, uint amount_) public {
-        _used = true;
-        _prev = state;
-        
         require(state == States.IDLE);
         require(amount <= address(this).balance);   // ERROR: uses state variable instead of parameter
         require(msg.sender == owner);
@@ -46,9 +38,6 @@ contract Vault {
     }
 
     function finalize() public {
-        _used = true;	
-        _prev = state;
-        
         require(state == States.REQ);
         require(block.number >= request_time + wait_time);
         require(msg.sender == owner);
@@ -59,9 +48,6 @@ contract Vault {
     }
 
     function cancel() public {
-        _used = true;	
-        _prev = state;
-        
         require(state == States.REQ);
         require(msg.sender == recovery);
 

@@ -1,11 +1,8 @@
-    // p1
-    function invariant_withdraw(address receiver_, uint amount_) public {
-        withdraw(receiver_, amount_);
-        assert(msg.sender == owner);
-    }
-
-    // p1
-    function invariant_finalize() public {
+function invariant(address receiver, uint amount, bool b) public {
+    if (b) {
+        withdraw(receiver, amount);
+    } else {
         finalize();
-        assert(msg.sender == owner);
     }
+    assert(msg.sender == owner);
+}
