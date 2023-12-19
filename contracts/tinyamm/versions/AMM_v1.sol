@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-import "lib/IERC20.sol";
+import "./lib/IERC20.sol";
 
 contract AMM {
     IERC20 public immutable t0;
@@ -111,5 +111,8 @@ contract AMM {
         
         require(t0.balanceOf(address(this)) == r0);
         require(t1.balanceOf(address(this)) == r1);
+
+	// ghost code
+	_lastTx = Tx.Swap;	
     }
 }

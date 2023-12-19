@@ -1,3 +1,5 @@
+// P3: before the deadline, if B has at least 1 token and he has not joined the bet yet, then he can deposit 1 token in the contract
+
 invariant nonneg_and_sum2()
     getBalanceA()>=0 && getBalanceB()>=0 && getBalance()>=0 &&
     getBalanceA() + getBalanceB() + getBalance() == 2;

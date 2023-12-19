@@ -1,3 +1,5 @@
+// P4: if B has less than 1 token or he has already joined the bet yet, then he cannot deposit 1 token in the contract
+   
 invariant nonneg_and_sum2()
     getBalanceA()>=0 && getBalanceB()>=0 && getBalance()>=0 &&
     getBalanceA() + getBalanceB() + getBalance() == 2;
