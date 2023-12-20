@@ -1,3 +1,5 @@
+// the reserves are strictly positive if a deposit has been made
+
 function invariant() public view {
     // strangely, this gives a violation:
     // require (ever_deposited);
