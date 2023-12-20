@@ -1,5 +1,4 @@
-
-// if B has at less than 1 token or he has already joined the bet yet, then he cannot deposit 1 token in the contract
+// P4: if B has at less than 1 token or he has already joined the bet yet, then he cannot deposit 1 token in the contract
 
 function invariant() public {
     int old_balance_b = balance_b;

@@ -26,7 +26,7 @@ The benchmark currently comprises several versions (correct or bugged) of the fo
 - [Vault](contracts/vault/)
 - [Crowdfund](contracts/crowdfund/)
 - [Hash Timed Locked Contract](contracts/htlc/) :white_check_mark:
-- [Constant-product AMM](contracts/tinyamm/)
+- [Constant-product AMM](contracts/tinyamm/) :white_check_mark:
 - [Payment Splitter](contracts/payment_splitter/)
 - [Social Recovery Wallet](contracts/social_recovery_wallet/)
 
