@@ -1,0 +1,31 @@
+import os
+import sys
+import argparse
+import run_solcmc
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            '--contract',
+            '-c',
+            help='Contract file path.',
+            required=True
+    )
+    parser.add_argument(
+            '--timeout',
+            '-t',
+            help='Timeout time'
+    )
+    args = parser.parse_args()
+
+    contract = args.contract
+    if os.path.isdir(contract):
+        print("Contract file expected, but directory was provided: " +
+              contract, 
+              file=sys.stderr)
+        sys.exit(1)
+    timeout = args.timeout
+
+    (out, log) = run_solcmc.run_solcmc(contract, timeout)
+    print(log)
+    print("Result: " + out) 

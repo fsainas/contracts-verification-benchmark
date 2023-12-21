@@ -13,12 +13,18 @@ PYTHON = python
 GETTER_FILE = getters.sol
 METHODS_FILE = methods.spec
 
+contract = ""
+specs = ""
+
 .PHONY = run clean specs
 
 run: clean_specs contracts specs directories 
 	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(CONTRACTS_DIR) --specs $(SPEC_DIR) --output $(BUILD_DIR)
 
-contracts: $(CONTRACTS_DIR)
+one: clean_specs contracts specs directories 
+	@$(PYTHON) ../../../scripts/runc.py --contract $(contract) --specs $(specs)
+
+contracts: $(CONTRACTS_DIR) getters
 	@$(PYTHON) ../../../scripts/injector.py --base $(VERSIONS_DIR) --inject $(GETTER_FILE) --output $(CONTRACTS_DIR)
 
 specs: $(SPEC_DIR) 
@@ -26,6 +32,11 @@ specs: $(SPEC_DIR)
 		echo "Processing $$file"; \
 		cat $(METHODS_FILE) $$file >> $(SPEC_DIR)/$$file; \
 	done;
+
+getters: 
+	@if ! [ -e $(GETTER_FILE) ] ; then \
+    	touch $(GETTER_FILE); \
+	fi;
 
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR) $(SPEC_DIR)
 
