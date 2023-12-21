@@ -64,8 +64,15 @@ def run_certora(contract_path, spec_path):
 
     contract_name = utils.get_contract_name(contract_path)
 
+    if not os.path.isfile(contract_path): 
+        print("[ERROR]: " + contract_path + " not found", 
+              file=sys.stderr)
+        sys.exit(1)
+
     if not contract_name:
-        return
+        print("[ERROR]: Could not retrieve contract name: " + contract_path , 
+              file=sys.stderr)
+        sys.exit(1)
 
     params = {}
     params['contract_path'] = contract_path

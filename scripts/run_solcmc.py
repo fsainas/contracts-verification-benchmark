@@ -55,6 +55,11 @@ def run_solcmc(contract_path, timeout):
     Returns:
         tuple: (outcome, log)
     """
+    if not os.path.isfile(contract_path): 
+        print("[ERROR]: " + contract_path + " not found", 
+              file=sys.stderr)
+        sys.exit(1)
+
     params = {}
     params['contract_path'] = contract_path
     params['timeout'] = timeout
