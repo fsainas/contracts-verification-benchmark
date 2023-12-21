@@ -1,13 +1,16 @@
-rule P1 {
+rule P1_withdraw {
     env e;
-    bool b;
+    address receiver;
+    uint amount;
 
-    if (b) {
-        address receiver;
-        uint amount;
-        withdraw@withrevert(e, receiver, amount);
-    } else {
-        finalize@withrevert(e);
-    }
-    assert(!lastReverted => e.msg.sender == getOwner());
+    withdraw@withrevert(e, receiver, amount);
+
+    assert(!lastReverted => e.msg.sender == currentContract.owner);
+}
+rule P1_finalize {
+    env e;
+
+    finalize@withrevert(e);
+
+    assert(!lastReverted => e.msg.sender == currentContract.owner);
 }

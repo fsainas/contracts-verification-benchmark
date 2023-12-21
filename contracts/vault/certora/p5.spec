@@ -1,4 +1,4 @@
-invariant P4()
-    getOwner() != getRecovery();
+invariant P5()
+    currentContract.owner != currentContract.recovery;
 
 

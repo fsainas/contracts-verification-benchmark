@@ -3,5 +3,5 @@ rule P2 {
 
     cancel@withrevert(e);
     
-    assert(!lastReverted => e.msg.sender == getRecovery());
+    assert(!lastReverted => e.msg.sender == currentContract.recovery);
 }
