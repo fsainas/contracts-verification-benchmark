@@ -1,3 +1,11 @@
+"""
+Name: runc
+Description:
+    Run a single certora experiment.
+
+Usage:
+    python runc.py -c <file_or_dir> -s <spec_file> 
+"""
 import os
 import argparse
 import run_certora

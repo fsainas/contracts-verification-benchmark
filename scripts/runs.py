@@ -1,3 +1,11 @@
+"""
+Name: runc
+Description:
+    Run a single solcmc experiment.
+
+Usage:
+    python runc.py -c <file_or_dir> -t <timeout> 
+"""
 import os
 import sys
 import argparse
