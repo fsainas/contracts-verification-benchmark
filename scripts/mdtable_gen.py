@@ -90,6 +90,8 @@ def gen_from_csv(input_file):
         data = {}      # (c,r): data
 
         for row in csv_reader:
+            if row[0] == '#':
+                continue;
             c, r, d = row[0], row[1], row[2]
             data.update({(c, r): d})
 
