@@ -22,7 +22,7 @@ The benchmark currently comprises several versions (correct or bugged) of the fo
 - [Bank](contracts/bank/) :white_check_mark:
 - [Lottery](contracts/lottery/)
 - [Escrow](contracts/escrow/)
-- [Vesting Wallet](contracts/vesting_wallet/)
+- [Vesting Wallet](contracts/vesting_wallet/) :white_check_mark:
 - [Vault](contracts/vault/)
 - [Crowdfund](contracts/crowdfund/)
 - [Hash Timed Locked Contract](contracts/htlc/) :white_check_mark:
@@ -127,8 +127,8 @@ NatSpec format and the `@custom:version` tag:
 The Makefile defines three commands:
 1. `make plain`: generates the README without experiment results. It utilizes
    `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
-1. `make solcmc`[^1]/`make certora`: call the Makefile of the tool specified to run
-   experiments, results are written in the README.
+1. `make solcmc`: run the SolCMC experiments. By default, no timeout is set, so this command may diverge. Use `make solcmc to=<int>` to set a timeout for each query in milliseconds.
+1. `make certora`: runs the Certora experiments; results are written in the README.
 1. `make all`: runs experiments with all verification tools and generates the
    complete README.
 1. `make clean`: removes build directories from verification tool directories.
@@ -199,5 +199,3 @@ Property files must follow the specified naming conventions:
 The tool manages the matching of properties and versions. It prioritizes
 version-specific properties; if a version-specific definition of the property
 exists, the tool will use it. Otherwise, it will default to the generic one.
-
-[^1]: Use `make solcmc to=<int>` to set the solcmc timeout.
