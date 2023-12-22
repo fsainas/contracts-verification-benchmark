@@ -77,7 +77,7 @@ def run_solcmc(contract_path, timeout):
 
     if is_timeout_or_unknown(log.stderr):
         print(contract_path + ": " + utils.WEAK_NEGATIVE + 
-              " (timeout)")
+              " (unknown)")
         return (utils.WEAK_NEGATIVE, log.stderr)
     elif has_assertion_warning(log.stderr):
         print(contract_path + ": " + utils.STRONG_NEGATIVE)
