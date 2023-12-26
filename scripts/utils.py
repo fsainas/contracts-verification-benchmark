@@ -20,6 +20,17 @@ def write_csv(path, rows):
         csv.writer(file).writerows(rows)
 
 
+def remove_comments(file_content):
+    # Remove single-line comments
+    file_content = re.sub(r'//.*\n', '', file_content)
+    
+    # Remove multi-line comments
+    file_content = re.sub(r'/\*(.|\n)*?\*/', '', file_content)
+    
+    return file_content
+
+
+
 def get_contract_name(contract_path):
     """
     Extracts the contract name from a contract path.
@@ -34,6 +45,8 @@ def get_contract_name(contract_path):
 
     with open(contract_path, 'r') as contract_file:
         contract_code = contract_file.read()
+
+    contract_code = remove_comments(contract_code)
 
     matches = re.findall(r'contract\s+([^ ]+)', contract_code)
 
