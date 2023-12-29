@@ -57,7 +57,7 @@ guarantees the correctness of the output.
 Following our [methodological notes](methodology/), we map the outputs of the 
 verification tools according to the following table:
 
-| Suffix  | SolCMC output           | Certora ouput  |
+| Suffix  | SolCMC output           | Certora output |
 |---------|-------------------------|----------------|
 | P       |                         | Satisfy green  |
 | P!      | Property is valid       | Assert green   |
