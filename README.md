@@ -23,8 +23,8 @@ The benchmark currently comprises several versions (correct or bugged) of the fo
 - [Lottery](contracts/lottery/)
 - [Escrow](contracts/escrow/)
 - [Vesting Wallet](contracts/vesting_wallet/) :white_check_mark:
-- [Vault](contracts/vault/)
-- [Crowdfund](contracts/crowdfund/)
+- [Vault](contracts/vault/) :white_check_mark:
+- [Crowdfund](contracts/crowdfund/) :white_check_mark:
 - [Hash Timed Locked Contract](contracts/htlc/) :white_check_mark:
 - [Constant-product AMM](contracts/tinyamm/) :white_check_mark:
 - [Payment Splitter](contracts/payment_splitter/)

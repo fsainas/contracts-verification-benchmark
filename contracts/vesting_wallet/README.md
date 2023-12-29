@@ -11,12 +11,16 @@ The contract handles the maturation (vesting) of native cryptocurrency for a giv
 
 ## Versions
 - **v1**: from [OpenZeppelin] (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol).
+- **v2**: releasable funds is over-approximated.
 
 ## Ground truth
 |        | p1  | p2  | p3  | p4  |
 |--------|-----|-----|-----|-----|
 | **v1** | 1   | 1   | 1   | 1   |
+| **v2** | 0   | 1   | 1   | 1   |
 
+
+## Experiments
 
 ## Experiments
 
@@ -24,9 +28,11 @@ The contract handles the maturation (vesting) of native cryptocurrency for a giv
 |        | p1  | p2  | p3  | p4  |
 |--------|-----|-----|-----|-----|
 | **v1** | FN  | FN  | TP! | ND  |
+| **v2** | TN  | FN  | TP! | ND  |
 
 
 ### Certora
 |        | p1  | p2  | p3  | p4  |
 |--------|-----|-----|-----|-----|
 | **v1** | TP! | FN! | TP! | FN! |
+| **v2** | TN! | FN! | TP! | FN! |

@@ -2,7 +2,7 @@
 // OpenZeppelin Contracts (last updated v4.8.0) (finance/VestingWallet.sol)
 pragma solidity >= 0.8.2;
 
-/// @custom:version from [OpenZeppelin] (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol).
+/// @custom:version releasable funds is over-approximated.
 contract VestingWallet {
 
     uint256 private released;
@@ -22,7 +22,8 @@ contract VestingWallet {
     receive() external payable virtual {}
 
     function releasable() public view virtual returns (uint256) {
-        return vestedAmount(uint64(block.timestamp)) - released;
+        // v1: return vestedAmount(uint64(block.timestamp)) - released;
+        return vestedAmount(uint64(block.timestamp));
     }
 
     function release() public virtual {
