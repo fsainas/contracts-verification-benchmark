@@ -2,5 +2,7 @@
 
 function invariant() public view {
     // block.timestamp < start => releasable() == 0
-    assert(!(block.timestamp < start) || releasable() <= 0);
+    // assert(!(block.timestamp < start) || releasable() <= 0);
+    require(block.timestamp < start);
+    assert(releasable() <= 0);
 }

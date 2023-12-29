@@ -1,4 +1,2 @@
-rule P1 {
-    env e;
-    assert releasable(e) <= getBalance();
-}
+invariant P1(env e)
+    releasable(e) <= getBalance();

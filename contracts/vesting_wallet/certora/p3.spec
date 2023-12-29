@@ -1,6 +1,9 @@
 rule P3 {
     env e;
-    mathint start = getStart();
+
+    mathint start = currentContract.start;
     mathint current_timestamp = e.block.timestamp;
-    assert current_timestamp < start => releasable(e) <= 0;
+    
+    require current_timestamp < start;
+    assert releasable(e) <= 0;
 }
