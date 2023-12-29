@@ -107,11 +107,12 @@ defined in natural language:
 This file defines the ground truth for the corresponding use case. Lines of the
 csv have the form:
 ```
-property,version,sat
+property,version,sat,footnote
 ```
 where `sat` is 1 when the property holds on the given version, and 0 when it
-does not hold. The ground truth is constructed manually, and (in some cases)
-confirmed by the verification tools.
+does not hold. The ground truth is established manually and, in some cases,
+confirmed by the verification tools. Furthermore, there is the option to append
+footnotes, which will be displayed in the readme file of the use case.
 
 #### Versions Directory
 
