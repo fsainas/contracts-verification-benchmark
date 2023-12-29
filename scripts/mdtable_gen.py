@@ -73,7 +73,7 @@ def gen_from_dict(data):
         table_rows.append(row_str)
 
     # Combine everything into a Markdown table
-    mdtable = "\n".join([header, separator] + table_rows)
+    mdtable = "\n".join([header, separator] + table_rows) + "\n"
 
     return mdtable
 

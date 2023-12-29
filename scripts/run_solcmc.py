@@ -114,7 +114,7 @@ def run_all_solcmc(contracts_dir, timeout, logs_dir):
     inputs = []
 
     for file in os.listdir(contracts_dir):
-        if not os.path.isdir(contracts_dir + file):     # lib/ is ignored
+        if file.endswith('.sol'):     
             id = '_'.join(file.split('_')[-2:]).split('.sol')[0]
             inputs.append((id, contracts_dir + file, timeout, logs_dir))
 
