@@ -34,13 +34,6 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 | **v2** | 1   | 1   | 0   | 0   | 0   | 0   | 0   | 1   | 1   |
 | **v3** | 1   | 1   | 0   | 0   | 1   | 1   | 1   | 0   | 0   |
 
-## Ground truth
-|        | p1  | p2  | p3  | p4  | p5  |
-|--------|-----|-----|-----|-----|-----|
-| **v1** | 1   | 1   | 1   | 1   | 1   |
-| **v2** | 1   | 1   | 1   | 1   | 0   |
-| **v3** | 1   | 1   | 1   | 0   | 1   |
-
 
 ## Experiments
 
