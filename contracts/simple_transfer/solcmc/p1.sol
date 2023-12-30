@@ -1,3 +1,3 @@
 function invariant() public view {
-    assert(_sent <= _deposited);
+    assert(sent <= initial_deposit);
 }

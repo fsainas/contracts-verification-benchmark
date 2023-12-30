@@ -6,8 +6,5 @@ rule P4 {
     require amount <= before;
 
     withdraw@withrevert(e, amount);
-
-    uint after = getAddressBalance(e.msg.sender);
-    
     assert !lastReverted;
 }

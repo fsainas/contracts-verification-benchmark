@@ -2,9 +2,9 @@
     "name": "Simple Transfer",
     "specification": "The contract has an initial balance, which consists of the amount of ETH paid to the constructor, plus the balance of the address of the contract before deployment. The contract has a `withdraw` function that transfers an `amount` of ETH (specified as a parameter) to the caller.",
     "properties": [
-        "the overall sent amount does not exceed the initial deposit. This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `self-destruct`.",
+        "the overall withdrawn amount does not exceed the initial deposit. This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `self-destruct`.",
         "the contract balance is decreased by the `amount` after a successful `withdraw(amount)`.",
-        "after a successful transaction `withdraw(amount)`, the balance of the transaction sender is increased by `amount` ETH.",
+        "after a successful `withdraw(amount)`, the balance of the transaction sender is increased by `amount` ETH.",
         "a transaction `withdraw(amount)` is not reverted whenever the `amount` does not exceed the contract balance.",
         "any user at any time can obtain the full balance of the contract."
     ]

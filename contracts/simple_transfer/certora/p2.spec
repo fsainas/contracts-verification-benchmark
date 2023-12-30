@@ -3,9 +3,10 @@ rule P2 {
     uint amount;
 
     mathint before = getBalance();
-    require before == amount + 1;
+    require before >= amount;
+    
     withdraw(e, amount);
+    
     mathint after = getBalance();
-
     assert before == after + amount;
 }
