@@ -20,9 +20,10 @@ DEFAULT_TIMEOUT = 0
 THREADS = 6
 
 COMMAND_TEMPLATE = Template(
+        'timeout $timeout ' + 
         'solc $contract_path ' +
         '--model-checker-engine chc ' +
-        '--model-checker-timeout $timeout ' +
+        #'--model-checker-timeout $timeout ' +
         '--model-checker-targets assert ' +
         '--model-checker-show-unproved'
 )
@@ -75,16 +76,23 @@ def run_solcmc(contract_path, timeout):
                   "e.g. './lib/lib.sol'.\n")
         sys.exit(1)
 
+    # GNU coreutils timeout
+    if (not log.stderr) and (not log.stdout):
+        print(contract_path + ": " + utils.WEAK_NEGATIVE + 
+              " (timeout)")
+        return (utils.WEAK_NEGATIVE, log.stderr)
+
     if is_timeout_or_unknown(log.stderr):
         print(contract_path + ": " + utils.WEAK_NEGATIVE + 
               " (unknown)")
         return (utils.WEAK_NEGATIVE, log.stderr)
-    elif has_assertion_warning(log.stderr):
+
+    if has_assertion_warning(log.stderr):
         print(contract_path + ": " + utils.STRONG_NEGATIVE)
         return (utils.STRONG_NEGATIVE, log.stderr)
-    else:
-        print(contract_path + ": " + utils.STRONG_POSITIVE)
-        return (utils.STRONG_POSITIVE, log.stderr)
+
+    print(contract_path + ": " + utils.STRONG_POSITIVE)
+    return (utils.STRONG_POSITIVE, log.stderr)
 
 
 def run_solcmc_parallel(id, contract_path, timeout, logs_dir):

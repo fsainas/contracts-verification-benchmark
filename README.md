@@ -128,7 +128,7 @@ NatSpec format and the `@custom:version` tag:
 The Makefile defines three commands:
 1. `make plain`: generates the README without experiment results. It utilizes
    `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
-1. `make solcmc`: run the SolCMC experiments. By default, no timeout is set, so this command may diverge. Use `make solcmc to=<int>` to set a timeout for each query in milliseconds.
+1. `make solcmc`: run the SolCMC experiments. By default, no timeout is set, so this command may diverge. Use `make solcmc to=<int>` to set a timeout for each query in seconds.
 1. `make certora`: runs the Certora experiments; results are written in the README.
 1. `make all`: runs experiments with all verification tools and generates the
    complete README.
