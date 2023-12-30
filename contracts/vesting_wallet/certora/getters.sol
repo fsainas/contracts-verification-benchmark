@@ -2,6 +2,10 @@ function getBalance() public view returns (uint256) {
     return address(this).balance;
 }
 
+function getBalanceBeneficiary() public view returns (uint256) {
+    return beneficiary.balance;
+}
+
 function getDuration() public view returns (uint64) {
     return duration;
 }

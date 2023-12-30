@@ -1,3 +1,5 @@
+/// @custom:negate
+
 rule P3 {
     env e1;
     address addr1;
