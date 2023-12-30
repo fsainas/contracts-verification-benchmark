@@ -1,12 +1,13 @@
 rule P2 {
     env e;
     uint amount;
+    mathint mi_amount = amount;
 
     mathint before = getBalance();
-    require before >= amount;
+    require before >= mi_amount;
     
     withdraw(e, amount);
     
     mathint after = getBalance();
-    assert before == after + amount;
+    assert before == after + mi_amount;
 }

@@ -1,2 +1,2 @@
-invariant P1(env e)
-    currentContract.sent <= currentContract.initial_deposit;
+invariant P1()
+    getSent() <= getInitialDeposit();
