@@ -95,10 +95,10 @@ defined in natural language:
 {
     "name": "Simple Transfer",
     "specification": "The contract has an initial balance...",
-    "properties": [
-        "the overall sent amount does not exceed the initial deposit.",
+    "properties": {
+        "sent_a": "the overall sent amount does not exceed the initial deposit.",
         ... 
-    ]
+    }
 }
 ```
 
@@ -125,7 +125,7 @@ NatSpec format and the `@custom:version` tag:
 
 #### Makefile
 
-The Makefile defines three commands:
+The Makefile defines the following commands:
 1. `make plain`: generates the README without experiment results. It utilizes
    `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
 1. `make solcmc`: run the SolCMC experiments. By default, no timeout is set, so this command may diverge. Use `make solcmc to=<int>` to set a timeout for each query in seconds.
