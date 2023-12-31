@@ -101,6 +101,14 @@ defined in natural language:
     }
 }
 ```
+You can store specifications in a separate file, use the following syntax to
+indicate the path:
+
+```
+"specification": "file:<relative_path>",
+```
+Here, the file path is relative to the path of the use case (e.g.
+`simple_transfer/spec.md` would be `file:spec.md`).
 
 #### ground-truth.csv
 
