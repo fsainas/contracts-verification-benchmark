@@ -97,9 +97,18 @@ def gen_from_csv(input_file):
         data = {}      # (c,r): (data, footnote)
 
         for row in csv_reader:
-            if row[0] == '#':
-                continue;
-            c, r, d= row[0], row[1], row[2]
+            if not row or row[0] == '#':
+                continue
+
+            c, r, d = row[0], row[1], row[2]
+
+            if len(c) == 0 or len(r) == 0 or len(d) == 0:
+                print("\n[Error]: missing values in " +
+                      input_file + '\n' +
+                      "-> " + ','.join(row),
+                      file=sys.stderr)
+                sys.exit(1)
+
             fn = row[3] if len(row) == 4 else ''    # footnote
 
             data.update({(c, r): (d, fn)})
