@@ -48,7 +48,7 @@ def get_properties(spec_path):
         list: The list of property names.
     """
     return (
-            glob.glob(f'{spec_path}/p*.spec')
+            glob.glob(f'{spec_path}/*.spec')
             if os.path.isdir(spec_path)
             else [spec_path]
     )
@@ -117,18 +117,18 @@ def run_all_certora(contracts_dir, spec_path, logs_dir):
         log_dir (str): Log directory path.
 
     Returns:
-        dict: {p*_v*: outcome}
+        dict: {key_v*: outcome}
     """
     outcomes = {}
 
     specs = get_properties(spec_path)   # list of paths
 
     # Specific properties
-    bounded_properties_paths = list(filter(
-            lambda x: re.search("p.*_v.*", x),
+    bound_properties_paths = list(filter(
+            lambda x: re.search(".*_v.*", x),
             specs))
-    unbounded_properties_paths = list(
-            set(specs) - set(bounded_properties_paths))
+    unbound_properties_paths = list(
+            set(specs) - set(bound_properties_paths))
 
     inputs = []     # inputs for run_certora_parallel()
 
@@ -138,21 +138,21 @@ def run_all_certora(contracts_dir, spec_path, logs_dir):
             # Extract base id from base path (e.g. v1)
             v_id = v_path.split('/')[-1].split('_')[-1].split('.')[0]
 
-            v_bounded = list(filter(
-                    lambda x: re.search(f'p.*_{v_id}.*', x),
-                    bounded_properties_paths))
+            v_bound = list(filter(
+                    lambda x: re.search(f'.*_{v_id}.*', x),
+                    bound_properties_paths))
 
-            v_unbounded = unbounded_properties_paths
+            v_unbound = unbound_properties_paths
 
-            for bp_path in v_bounded:
+            for bp_path in v_bound:
                 p_id = bp_path.split('/')[-1].split('_')[0]     # ../p1_v1.sol -> p1
-                # Remove bounded properties from the unbounded variants
-                v_unbounded = list(filter(
+                # Remove bound properties from the unbound variants
+                v_unbound = list(filter(
                         lambda x: not re.search(f'{p_id}', x),
-                        v_unbounded
+                        v_unbound
                         ))
 
-            v_properties_paths = v_bounded + v_unbounded
+            v_properties_paths = v_bound + v_unbound
 
             for s_path in v_properties_paths:
                 id = (  # e.g. p1_v1

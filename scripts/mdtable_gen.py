@@ -28,9 +28,8 @@ def gen_from_dict(data):
         str: markdown table
     """
 
-    key_f = lambda x: int(x[1:])     # e.g. p1 -> 1
-    cols_ids = sorted(set([c for c, _ in data.keys()]), key=key_f)
-    rows_ids = sorted(set([r for _, r in data.keys()]), key=key_f)
+    cols_ids = sorted(set([c for c, _ in data.keys()]))
+    rows_ids = sorted(set([r for _, r in data.keys()]))
 
     if not rows_ids:
         print("\nEmpty cm.csv file!\n", file=sys.stderr)

@@ -1,3 +1,3 @@
 function invariant() public {
-    assert(x == x);
+    assert(x == 1);
 }

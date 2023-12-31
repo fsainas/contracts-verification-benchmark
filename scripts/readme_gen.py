@@ -23,11 +23,17 @@ $ground_truth'''
 )
 
 
-def md_property_list(properties):
-    return '\n'.join(
-        f'- **p{i+1}**: {p}' for i, p in enumerate(properties)
-    )
+def md_property_list(properties: dict) -> str:
+    """
+    Generates the markdown list of properties.
 
+    Args:
+        properties (dict): {id: description}
+    """
+    return '\n'.join(
+        f'- **{id}**: {properties[id]}' for id in sorted(properties.keys())
+    )
+    
 
 def md_version_list(versions):
     return '\n'.join(
@@ -76,6 +82,24 @@ def readme_gen(usecase_dir):
               file=sys.stderr)
         sys.exit(1)
 
+    # Check properties formatting
+    if not isinstance(skeleton['properties'], dict): 
+        print("\n[Error]: README generation: " +
+              "Bad formatting of properties in skeleton.json.\n",
+              file=sys.stderr)
+        sys.exit(1)
+
+    # Pattern for allowed characters in keys
+    key_pattern = re.compile(r'^[a-zA-Z0-9_-]+$')
+
+    # Check each key against the pattern
+    for key in skeleton['properties'].keys():
+        if not key_pattern.match(key):
+            print("\n[Error]: README generation: " +
+                  f"Key '{key}' does not match the pattern [a-zA-Z0-9_-]+",
+                  file=sys.stderr)
+            sys.exit(1)
+
     try:
         readme = {}
         readme['name'] = skeleton['name']
@@ -83,12 +107,11 @@ def readme_gen(usecase_dir):
         readme['properties'] = md_property_list(skeleton['properties'])
         readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
         readme['ground_truth'] = gen_from_csv(f'{usecase_dir}/ground-truth.csv')
-    except IndexError as e:
+    except IndexError:
         print("\n[Error]: README generation:" +
               " Empty line or missing values in ground-truth.csv.\n",
               file=sys.stderr)
         sys.exit(1)
-
 
     return PLAIN_README_TEMPLATE.substitute(readme)
 

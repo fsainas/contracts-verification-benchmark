@@ -27,7 +27,7 @@ all: plain solcmc certora
 certora: $(CERTORA_TABLE)
 
 $(CERTORA_TABLE): $(CERTORA_CM)
-	@echo "Generating Cerotra results table ($(CERTORA_TABLE))..."
+	@echo "Generating Certora results table ($(CERTORA_TABLE))..."
 	@echo "### Certora" > $(CERTORA_TABLE)
 	@$(PYTHON) ../../scripts/mdtable_gen.py --input $(CERTORA_CM) >> $(CERTORA_TABLE)
 

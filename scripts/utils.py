@@ -30,7 +30,6 @@ def remove_comments(file_content):
     return file_content
 
 
-
 def get_contract_name(contract_path):
     """
     Extracts the contract name from a contract path.

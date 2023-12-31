@@ -24,11 +24,11 @@ def build_contracts(versions_paths: list, properties_paths: list) -> dict:
     """
 
     # Specific properties
-    bounded_properties_paths = list(filter(
-            lambda x: re.search("p.*_v.*", x),
+    bound_properties_paths = list(filter(
+            lambda x: re.search(".*_v.*", x),
             properties_paths))
-    unbounded_properties_paths = list(
-            set(properties_paths) - set(bounded_properties_paths))
+    unbound_properties_paths = list(
+            set(properties_paths) - set(bound_properties_paths))
 
     contracts = {}
 
@@ -36,21 +36,21 @@ def build_contracts(versions_paths: list, properties_paths: list) -> dict:
         # Extract base id from base path (e.g. v1)
         v_id = v_path.split('/')[-1].split('_')[-1].split('.')[0]
 
-        v_bounded = list(filter(
-                lambda x: re.search(f'p.*_{v_id}.*', x), 
-                bounded_properties_paths))
+        v_bound = list(filter(
+                lambda x: re.search(f'.*_{v_id}.*', x), 
+                bound_properties_paths))
         
-        v_unbounded = unbounded_properties_paths
+        v_unbound = unbound_properties_paths
 
-        for bp_path in v_bounded:
+        for bp_path in v_bound:
             p_id = bp_path.split('/')[-1].split('_')[0]     # ../p1_v1.sol -> p1
-            # Remove bounded properties from the unbounded variants
-            v_unbounded = list(filter(
+            # Remove bound properties from the unbound variants
+            v_unbound = list(filter(
                     lambda x: not re.search(f'{p_id}', x),
-                    v_unbounded
+                    v_unbound
                     ))
 
-        v_properties_paths = v_bounded + v_unbounded
+        v_properties_paths = v_bound + v_unbound
 
         contracts.update(injector.inject_product([v_path], v_properties_paths))
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     )
 
     properties_paths = (
-            glob.glob(f'{args.properties}/p*.sol')
+            glob.glob(f'{args.properties}/*.sol')
             if os.path.isdir(args.properties)
             else [args.properties]
     )
