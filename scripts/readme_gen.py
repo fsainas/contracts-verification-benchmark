@@ -1,7 +1,7 @@
 import json
 from string import Template
 from os import listdir
-from mdtable_gen import gen_from_csv
+import mdtable_gen
 import re
 import sys
 import logging
@@ -33,7 +33,7 @@ def md_property_list(properties: dict) -> str:
     return '\n'.join(
         f'- **{id}**: {properties[id]}' for id in sorted(properties.keys())
     )
-    
+
 
 def md_version_list(versions):
     return '\n'.join(
@@ -83,7 +83,7 @@ def readme_gen(usecase_dir):
         sys.exit(1)
 
     # Check properties formatting
-    if not isinstance(skeleton['properties'], dict): 
+    if not isinstance(skeleton['properties'], dict):
         print("\n[Error]: README generation: " +
               "Bad formatting of properties in skeleton.json.\n",
               file=sys.stderr)
@@ -100,18 +100,28 @@ def readme_gen(usecase_dir):
                   file=sys.stderr)
             sys.exit(1)
 
-    try:
-        readme = {}
-        readme['name'] = skeleton['name']
-        readme['specification'] = skeleton['specification']
-        readme['properties'] = md_property_list(skeleton['properties'])
-        readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
-        readme['ground_truth'] = gen_from_csv(f'{usecase_dir}/ground-truth.csv')
-    except IndexError:
-        print("\n[Error]: README generation:" +
-              " Empty line or missing values in ground-truth.csv.\n",
-              file=sys.stderr)
-        sys.exit(1)
+    # Allow specification in a separate file (file:filename.md)
+    specification = ''
+    if skeleton['specification'].startswith('file:'):
+        spec_file_name = skeleton['specification'][len('file:'):]
+
+        try:
+            with open(f'{usecase_dir}/{spec_file_name}') as f:
+                specification = f.read()
+        except FileNotFoundError as e:
+            print("\n[Error]: README generation:" +
+                  str(e),
+                  file=sys.stderr)
+            sys.exit(1)
+    else:
+        specification = skeleton['specification']
+
+    readme = {}
+    readme['name'] = skeleton['name']
+    readme['specification'] = specification
+    readme['properties'] = md_property_list(skeleton['properties'])
+    readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
+    readme['ground_truth'] = mdtable_gen.gen_from_csv(f'{usecase_dir}/ground-truth.csv')
 
     return PLAIN_README_TEMPLATE.substitute(readme)
 
