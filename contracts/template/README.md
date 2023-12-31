@@ -19,3 +19,16 @@ Usecase specification.
 [^1]: Footnote foo-v1
 
 ## Experiments
+### SolCMC
+|        | bar   | foo   |
+|--------|-------|-------|
+| **v1** | ND    | TP!   |
+| **v2** | TP!   | TP!   |
+ 
+
+### Certora
+|        | bar   | foo   |
+|--------|-------|-------|
+| **v1** | ND    | FN!   |
+| **v2** | ND    | FN!   |
+ 
