@@ -21,7 +21,7 @@ The benchmark currently comprises several versions (correct or bugged) of the fo
 - [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
 - [Bank](contracts/bank/) :white_check_mark:
 - [Lottery](contracts/lottery/)
-- [Escrow](contracts/escrow/)
+- [Escrow](contracts/escrow/) :white_check_mark:
 - [Vesting Wallet](contracts/vesting_wallet/) :white_check_mark:
 - [Vault](contracts/vault/) :white_check_mark:
 - [Crowdfund](contracts/crowdfund/) :white_check_mark:

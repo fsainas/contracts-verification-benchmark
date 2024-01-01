@@ -12,7 +12,7 @@ contract Escrow {
 
     address buyer;
     address seller;
-    address escrow;
+    address immutable escrow;
 
     uint deposit;       // buyer's deposit
 
@@ -47,7 +47,7 @@ contract Escrow {
 
         phase = Phase.JOIN;
         
-        //p2
+        // ghost code p2
         _prev_phase = phase;
         _current_phase = phase;        
     }
