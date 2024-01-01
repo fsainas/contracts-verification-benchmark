@@ -6,7 +6,7 @@ CONTRACTS_DIR = $(BUILD_DIR)/contracts
 LOGS_DIR = $(BUILD_DIR)/logs
 LIB_DIR = $(CONTRACTS_DIR)/lib
 SPEC_DIR = $(BUILD_DIR)/specs
-SPEC_FILES = $(wildcard $(PROPERTIES_DIR)/p*.spec)
+SPEC_FILES = $(wildcard $(PROPERTIES_DIR)/*.spec)
 
 PYTHON = python
 
@@ -29,8 +29,10 @@ contracts: $(CONTRACTS_DIR) getters
 
 specs: $(SPEC_DIR) 
 	@for file in $(SPEC_FILES); do \
-		echo "Processing $$file"; \
-		cat $(METHODS_FILE) $$file >> $(SPEC_DIR)/$$file; \
+		if [ "$$file" != $(PROPERTIES_DIR)/"methods.spec" ]; then \
+			echo "Processing $$file"; \
+			cat $(METHODS_FILE) $$file >> $(SPEC_DIR)/$$file; \
+		fi \
 	done;
 
 getters: 

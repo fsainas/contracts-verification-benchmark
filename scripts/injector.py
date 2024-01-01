@@ -16,7 +16,7 @@ import os
 
 def inject_code(base_file: str, to_inject_file: str) -> str:
     """
-    Injects code from a to-inject file into a base file.
+    Injects code of a to-inject file before the last bracket of a base file.
 
     Returns:
         str: updated_file

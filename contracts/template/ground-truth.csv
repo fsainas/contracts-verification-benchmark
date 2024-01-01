@@ -1,3 +1,5 @@
 property,version,truth,footnote-md
-p1,v1,1,Footnote p1-v1
-p2,v1,0,
+foo,v1,1,Footnote foo-v1
+foo,v2,1,
+bar,v1,1,
+bar,v2,1,

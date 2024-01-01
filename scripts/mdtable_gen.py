@@ -28,9 +28,8 @@ def gen_from_dict(data):
         str: markdown table
     """
 
-    key_f = lambda x: int(x[1:])     # e.g. p1 -> 1
-    cols_ids = sorted(set([c for c, _ in data.keys()]), key=key_f)
-    rows_ids = sorted(set([r for _, r in data.keys()]), key=key_f)
+    cols_ids = sorted(set([c for c, _ in data.keys()]))
+    rows_ids = sorted(set([r for _, r in data.keys()]))
 
     if not rows_ids:
         print("\nEmpty cm.csv file!\n", file=sys.stderr)
@@ -98,9 +97,18 @@ def gen_from_csv(input_file):
         data = {}      # (c,r): (data, footnote)
 
         for row in csv_reader:
-            if row[0] == '#':
-                continue;
-            c, r, d= row[0], row[1], row[2]
+            if not row or row[0] == '#':
+                continue
+
+            c, r, d = row[0], row[1], row[2]
+
+            if len(c) == 0 or len(r) == 0 or len(d) == 0:
+                print("\n[Error]: missing values in " +
+                      input_file + '\n' +
+                      "-> " + ','.join(row),
+                      file=sys.stderr)
+                sys.exit(1)
+
             fn = row[3] if len(row) == 4 else ''    # footnote
 
             data.update({(c, r): (d, fn)})

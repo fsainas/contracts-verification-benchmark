@@ -3,28 +3,32 @@
 Usecase specification.
 
 ## Properties
-- **p1**: x is equal to x
-- **p2**: property 2
+- **bar**: x is not equal to another value
+- **foo**: x is equal to the initial value
 
 ## Versions
-- **v1**: *version description*
+- **v1**: version 1
+- **v2**: version 2
 
 ## Ground truth
-|        | p1    | p2    |
+|        | bar   | foo   |
 |--------|-------|-------|
-| **v1** | 1[^1] | 0     |
+| **v1** | 1     | 1[^1] |
+| **v2** | 1     | 1     |
  
-[^1]: Footnote p1-v1
+[^1]: Footnote foo-v1
 
 ## Experiments
 ### SolCMC
-|        | p1    | p2    |
+|        | bar   | foo   |
 |--------|-------|-------|
-| **v1** | TP!   | ND    |
+| **v1** | ND    | TP!   |
+| **v2** | TP!   | TP!   |
  
 
 ### Certora
-|        | p1    | p2    |
+|        | bar   | foo   |
 |--------|-------|-------|
-| **v1** | TP!   | ND    |
+| **v1** | ND    | FN!   |
+| **v2** | ND    | FN!   |
  

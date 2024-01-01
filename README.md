@@ -95,12 +95,20 @@ defined in natural language:
 {
     "name": "Simple Transfer",
     "specification": "The contract has an initial balance...",
-    "properties": [
-        "the overall sent amount does not exceed the initial deposit.",
+    "properties": {
+        "sent_a": "the overall sent amount does not exceed the initial deposit.",
         ... 
-    ]
+    }
 }
 ```
+You can store specifications in a separate file, use the following syntax to
+indicate the path:
+
+```
+"specification": "file:<relative_path>",
+```
+Here, the file path is relative to the path of the use case (e.g.
+`simple_transfer/spec.md` would be `file:spec.md`).
 
 #### ground-truth.csv
 
@@ -125,7 +133,7 @@ NatSpec format and the `@custom:version` tag:
 
 #### Makefile
 
-The Makefile defines three commands:
+The Makefile defines the following commands:
 1. `make plain`: generates the README without experiment results. It utilizes
    `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
 1. `make solcmc`: run the SolCMC experiments. By default, no timeout is set, so this command may diverge. Use `make solcmc to=<int>` to set a timeout for each query in seconds.
