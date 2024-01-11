@@ -92,11 +92,19 @@ def gen_from_csv(input_file):
     with open(input_file, 'r') as f:
         csv_reader = csv.reader(f)
 
-        next(csv_reader)
+        first_row = next(csv_reader)
+
+        if not first_row:
+            print("\n[Error]: empty file: " +
+                  input_file + '\n' +
+                  "-> " + ','.join(row),
+                  file=sys.stderr)
+            sys.exit(1)
 
         data = {}      # (c,r): (data, footnote)
 
         for row in csv_reader:
+            # skip blank lines or comments
             if not row or row[0] == '#':
                 continue
 

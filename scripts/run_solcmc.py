@@ -23,7 +23,7 @@ COMMAND_TEMPLATE = Template(
         'timeout $timeout ' + 
         'solc $contract_path ' +
         '--model-checker-engine chc ' +
-        #'--model-checker-timeout $timeout ' +
+        '--model-checker-timeout $timeout ' +
         '--model-checker-targets assert ' +
         '--model-checker-show-unproved'
 )

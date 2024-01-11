@@ -38,8 +38,10 @@ def gen(ground_truth_csv: str, out_csv: str) -> list[str]:
 
         # build confusion matrix
         for row in gt_reader:
-            if row[0] == '#':
-                continue;
+            # skip blank lines or comments
+            if not row or row[0] == '#':
+                continue
+
             p, v, gt = row[0], row[1], int(row[2])
 
             if (p,v) in outputs:
