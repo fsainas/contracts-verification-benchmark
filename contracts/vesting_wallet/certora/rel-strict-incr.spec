@@ -1,6 +1,6 @@
 rule P8 {
-    mathint start = currentContract.start;
-    mathint duration = currentContract.duration;
+    mathint start = getStart();
+    mathint duration = getDuration();
     
     env e1;
     
