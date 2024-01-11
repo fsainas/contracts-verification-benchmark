@@ -16,11 +16,13 @@ more precise verification techniques.
 
 The benchmark currently comprises several versions (correct or bugged) of the following use cases:
 - [Zero-token Bet](contracts/zerotoken_bet/) :white_check_mark:
+- [Zero-token Bank](contracts/zerotoken_bank/) :white_check_mark:
 - [Simple Transfer](contracts/simple_transfer/) :white_check_mark:
 - [Token Transfer](contracts/token_transfer/) :white_check_mark:
 - [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
 - [Bank](contracts/bank/) :white_check_mark:
 - [Lottery](contracts/lottery/)
+- [HTLC](contracts/htlc/)
 - [Escrow](contracts/escrow/)
 - [Vesting Wallet](contracts/vesting_wallet/) :white_check_mark:
 - [Vault](contracts/vault/) :white_check_mark:
