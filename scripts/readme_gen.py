@@ -89,14 +89,14 @@ def readme_gen(usecase_dir):
               file=sys.stderr)
         sys.exit(1)
 
-    # Pattern for allowed characters in keys
-    key_pattern = re.compile(r'^[a-zA-Z0-9_-]+$')
+    # Pattern for allowed characters in property ids
+    id_pattern = re.compile(r'^[a-zA-Z0-9-]+$')
 
     # Check each key against the pattern
-    for key in skeleton['properties'].keys():
-        if not key_pattern.match(key):
+    for id in skeleton['properties'].keys():
+        if not id_pattern.match(id):
             print("\n[Error]: README generation: " +
-                  f"Key '{key}' does not match the pattern [a-zA-Z0-9_-]+",
+                  f"Invalid characters in property ID '{id}'. Only alphanumeric characters and '-' are allowed.",
                   file=sys.stderr)
             sys.exit(1)
 
