@@ -16,6 +16,7 @@ more precise verification techniques.
 
 The benchmark currently comprises several versions (correct or bugged) of the following use cases:
 - [Zero-token Bet](contracts/zerotoken_bet/) :white_check_mark:
+- [Zero-token Bank](contracts/zerotoken_bank/) :white_check_mark:
 - [Simple Transfer](contracts/simple_transfer/) :white_check_mark:
 - [Token Transfer](contracts/token_transfer/) :white_check_mark:
 - [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
@@ -67,8 +68,7 @@ verification tools according to the following table:
 
 ## Extending the benchmark
 
-In the `contracts/` directory, run the following command to initialize a new
-use case:
+In the `contracts/` directory, run the following command to initialize a new use case:
 
 ```
 $ make init name=<usecase-name>
@@ -84,8 +84,7 @@ Each use case directory must include the following files:
 - `Makefile`
 - A directory for every verification tool used
 
-Find a minimal example in [`contracts/template/`](contracts/template)
-directory.
+Find a minimal example in [`contracts/template/`](contracts/template) directory.
 
 #### skeleton.json
 
@@ -134,12 +133,10 @@ NatSpec format and the `@custom:version` tag:
 #### Makefile
 
 The Makefile defines the following commands:
-1. `make plain`: generates the README without experiment results. It utilizes
-   `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
-1. `make solcmc`: run the SolCMC experiments. By default, no timeout is set, so this command may diverge. Use `make solcmc to=<int>` to set a timeout for each query in seconds.
+1. `make plain`: generates the README without experiment results. It utilizes `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
+1. `make solcmc`: run the SolCMC experiments. By default, the timeout is set to 10 minutes. Use `make solcmc to=<int>` to set a different timeout for each query in seconds.
 1. `make certora`: runs the Certora experiments; results are written in the README.
-1. `make all`: runs experiments with all verification tools and generates the
-   complete README.
+1. `make all`: runs experiments with all verification tools and generates the complete README.
 1. `make clean`: removes build directories from verification tool directories.
 1. `make cleanr`: removes the readme file.
 

@@ -2,7 +2,7 @@ function getBalance() public view returns (uint256) {
     return address(this).balance;
 }
 
-function getBalanceBeneficiary() public view returns (uint256) {
+function getBeneficiaryBalance() public view returns (uint256) {
     return beneficiary.balance;
 }
 
