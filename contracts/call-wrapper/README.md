@@ -3,8 +3,8 @@
 The contract acts as a wrapper to Solidity's `call` function.
 
 ## Properties
-- **ubal**: the contract balance is unchanged after a call to `callwrap`.
-- **ustor**: the contract storage is unchanged after a call to `callwrap`.
+- **bal**: the contract balance is unchanged after a call to `callwrap`.
+- **stor**: the contract storage is unchanged after a call to `callwrap`.
 
 ## Versions
 - **v1**: reentrant `callwrap`.
