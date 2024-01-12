@@ -12,7 +12,7 @@ contract Escrow {
 
     address buyer;
     address seller;
-    address escrow;
+    address immutable escrow;
 
     uint deposit;       // buyer's deposit
 

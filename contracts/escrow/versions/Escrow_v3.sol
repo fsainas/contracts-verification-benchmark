@@ -13,7 +13,7 @@ contract Escrow is ReentrancyGuard {
 
     address buyer;
     address seller;
-    address escrow;
+    address immutable escrow;
 
     uint deposit;       // buyer's deposit
 

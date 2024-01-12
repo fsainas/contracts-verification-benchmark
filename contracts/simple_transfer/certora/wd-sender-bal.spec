@@ -1,4 +1,4 @@
-rule P3 {
+rule wd_sender_bal {
     env e;
     uint amount;
 

@@ -1,4 +1,4 @@
-rule P2 {
+rule wd_contract_bal {
     env e;
     uint amount;
     mathint mi_amount = amount;
