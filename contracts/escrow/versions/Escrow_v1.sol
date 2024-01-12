@@ -82,17 +82,18 @@ contract Escrow {
         buyer = msg.sender;
         seller = seller_;
         deposit = msg.value;
-        //p1
-        //p5
+
+        // ghost code p1
+        // ghost code p5
         _init_deposit = deposit;
 
         phase = Phase.CHOOSE;
         
-        //p2
+        //ghost code p2
         _prev_phase = _current_phase;
         _current_phase = phase;      
         
-        //p6
+        // ghost code p6
         _msg_sender = msg.sender; 
     }
 
@@ -101,6 +102,7 @@ contract Escrow {
         *****************/
     function choose(address choice) public phaseChoice {
 
+        // seller has not chosen yet
         if (msg.sender == seller && seller_choice == address(0)) {
             seller_choice = choice;
             if (buyer_choice != address(0)) {
@@ -111,6 +113,7 @@ contract Escrow {
                 //p6
                 _msg_sender = msg.sender;
             }
+        // buyer has not chosen yet    
         } else if (msg.sender == buyer && buyer_choice == address(0)) {
             buyer_choice = choice;
             if (seller_choice != address(0)) {

@@ -1,4 +1,4 @@
-rule P4 {
+rule wd_not_revert {
     env e;
     uint amount;
 
