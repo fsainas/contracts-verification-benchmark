@@ -4,7 +4,7 @@ The contract has an initial balance, which consists of the amount of ETH paid to
 
 ## Properties
 - **always-deplatable**: any user at any time can obtain the full balance of the contract.
-- **rel-le-init-bal**: the overall withdrawn amount does not exceed the initial deposit. This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `self-destruct`.
+- **rel-le-init-bal**: the overall withdrawn amount does not exceed the initial deposit.
 - **wd-contract-bal**: the contract balance is decreased by the `amount` after a successful `withdraw(amount)`.
 - **wd-not-revert**: a transaction `withdraw(amount)` is not reverted whenever the `amount` does not exceed the contract balance.
 - **wd-sender-bal**: after a successful `withdraw(amount)`, the balance of the transaction sender is increased by `amount` ETH.
@@ -19,12 +19,15 @@ The contract has an initial balance, which consists of the amount of ETH paid to
 ## Ground truth
 |        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | 1                 | 0                 | 0                 | 0                 | 0                 |
+| **v1** | 1                 | 0[^1]             | 0                 | 0                 | 0                 |
 | **v2** | 1                 | 0                 | 1                 | 0                 | 1                 |
 | **v3** | 0                 | 0                 | 1                 | 1                 | 0                 |
 | **v4** | 0                 | 0                 | 0                 | 0                 | 0                 |
 | **v5** | 0                 | 0                 | 1                 | 0                 | 1                 |
  
+[^1]: This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `self-destruct`.
+
+## Experiments
 
 ## Experiments
 

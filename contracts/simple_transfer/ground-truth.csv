@@ -1,5 +1,5 @@
 property,version,truth,footnote-md
-rel-le-init-bal,v1,0,
+rel-le-init-bal,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `self-destruct`".
 rel-le-init-bal,v2,0,
 rel-le-init-bal,v3,0,
 rel-le-init-bal,v4,0,
