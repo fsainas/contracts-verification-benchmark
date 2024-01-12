@@ -29,8 +29,6 @@ The contract has an initial balance, which consists of the amount of ETH paid to
 
 ## Experiments
 
-## Experiments
-
 ### SolCMC
 |        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|
