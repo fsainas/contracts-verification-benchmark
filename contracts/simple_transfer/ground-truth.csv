@@ -4,7 +4,7 @@ rel-le-init-bal,v2,0,
 rel-le-init-bal,v3,0,
 rel-le-init-bal,v4,0,
 rel-le-init-bal,v5,0,
-wd-contract-bal,v1,0,
+wd-contract-bal,v1,0,"A reentrant call to `withdraw` can remove more ETH than that specified in `amount`."
 wd-contract-bal,v2,1,
 wd-contract-bal,v3,1,
 wd-contract-bal,v4,0,
