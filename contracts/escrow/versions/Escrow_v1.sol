@@ -4,212 +4,66 @@ pragma solidity >= 0.8.2;
 /// @custom:version conformant to specification.
 
 contract Escrow {
-   enum Phase {JOIN, CHOOSE, REDEEM, ARBITR, END}
+   enum State {AGREE, DISPUTE, ARBITRATED, REDEEM, END}
 
-    Phase phase;
+    State state;
 
-    uint fee_rate;      // fee_rate == 20 -> 0.20%
-
-    address buyer;
-    address seller;
-    address immutable escrow;
-
+    address immutable buyer;
+    address immutable seller;
+    address immutable arbiter;
+    uint immutable fee;
+ 
+    modifier instate(State expected_state){         
+        require(state == expected_state);
+        _;
+    }
+ 
     uint deposit;       // buyer's deposit
+    address recipient;  // recipient agreed or chosen by the arbiter
 
-    address buyer_choice;       // recipient of the deposit
-    address seller_choice;      // recipient of the deposit
-    address escrow_choice;      // choice of the escrow
-
-    // ghost variables p1
-    uint _fee;
-    uint _init_deposit;
-    
-    // ghost variables p2
-    Phase _prev_phase;
-    Phase _current_phase;  
-    
-    // ghost variables p5
-    uint _balance;
-    //uint _init_deposit;    
-    
-    // ghost variable p6
-    address _msg_sender;
-    
-
-    constructor (
-        address escrow_, 
-        uint fee_rate_) {
-
-        require(fee_rate_ <= 10000);    // The fee cannot be more than the deposit
-
-        escrow = escrow_;
-        fee_rate = fee_rate_;
-
-        phase = Phase.JOIN;
-        
-        // ghost code p2
-        _prev_phase = phase;
-        _current_phase = phase;        
-    }
-
-    modifier phaseJoin() {
-        require(phase == Phase.JOIN);
-        _;
-    }
-    
-    modifier phaseChoice() {
-        require(phase == Phase.CHOOSE);
-        _;
-    }
-
-    modifier phaseRedeem() {
-        require(phase == Phase.REDEEM);
-        _;
-    }
-
-    modifier phaseArbitrate() {
-        require(phase == Phase.ARBITR);
-        _;
-    }
-
-    /*****************
-          Join Phase
-        *****************/
-    function join(address seller_) public payable phaseJoin {
-
-        require(msg.sender != seller_);
+    constructor (address seller_, address arbiter_, uint fee_) payable {
+        require (seller_ != address(0) && arbiter_ != address(0));
+        require(fee_ < msg.value);    // The fee cannot be more than the deposit
 
         buyer = msg.sender;
         seller = seller_;
-        deposit = msg.value;
-
-        // ghost code p1
-        // ghost code p5
-        _init_deposit = deposit;
-
-        phase = Phase.CHOOSE;
-        
-        //ghost code p2
-        _prev_phase = _current_phase;
-        _current_phase = phase;      
-        
-        // ghost code p6
-        _msg_sender = msg.sender; 
+        arbiter = arbiter_;
+        fee = fee_;
+        state = State.AGREE;
     }
 
-    /*****************
-         Choice Phase
-        *****************/
-    function choose(address choice) public phaseChoice {
-
-        // seller has not chosen yet
-        if (msg.sender == seller && seller_choice == address(0)) {
-            seller_choice = choice;
-            if (buyer_choice != address(0)) {
-                phase = Phase.REDEEM;
-                //p2
-                _prev_phase = _current_phase;
-                _current_phase = phase;
-                //p6
-                _msg_sender = msg.sender;
-            }
-        // buyer has not chosen yet    
-        } else if (msg.sender == buyer && buyer_choice == address(0)) {
-            buyer_choice = choice;
-            if (seller_choice != address(0)) {
-                phase = Phase.REDEEM;
-                //p2
-                _prev_phase = _current_phase;
-                _current_phase = phase;
-                //p6
-         	_msg_sender = msg.sender;               
-            }
-        }
+    function approve_payment() instate(State.AGREE) public {
+        require(msg.sender == buyer); 
+        state = State.REDEEM;
+        recipient = seller;      
     }
 
-    function refund() public phaseChoice {
-
-        require(msg.sender == buyer);
-        require(seller_choice == address(0));
-
-        phase = Phase.END;
-        //p2
-        _prev_phase = _current_phase;
-        _current_phase = phase;
-        
-        deposit = 0;
-        
-        //p6
-        _msg_sender = msg.sender;
-
-        (bool success,) = buyer.call{value: deposit}("");      
-        require(success);
-    }
- 
-    /*****************
-         Redeem Phase 
-        *****************/
-    
-    function redeem() public phaseRedeem {
-
+    function refund() instate(State.AGREE) public {
         require(msg.sender == seller);
-        require(buyer_choice == seller_choice);
-
-        phase = Phase.END;
-        //p2
-        _prev_phase = _current_phase;
-        _current_phase = phase;        
-
-        deposit = 0;
-        
-        //p6
-        _msg_sender = msg.sender;
-
-        (bool success,) = seller_choice.call{value: deposit}("");
-        require(success);
+        state = State.REDEEM;
+        recipient = buyer;
     }
 
-    function arbitrate(address escrow_choice_) public phaseRedeem {
+    function open_dispute() instate(State.AGREE) public {
+        require(msg.sender == buyer || msg.sender == seller);
+        state = State.DISPUTE;
+    }
 
-        require(msg.sender == escrow);
-        require(escrow_choice_ == buyer_choice || escrow_choice_ == seller_choice);
-        
-        escrow_choice = escrow_choice_;
-
-        phase = Phase.ARBITR;
-        //p2
-        _prev_phase = _current_phase;
-        _current_phase = phase;        
-        
-        //p6
-        _msg_sender = msg.sender;
-
-        uint fee = deposit * (fee_rate / 10000);
-        //p1
-        _fee = fee;
-        
+    function arbitrate(address dst) instate(State.DISPUTE) public {
+        require(msg.sender == arbiter);
+        require(dst == buyer || dst == seller);
+    
+        recipient = dst;
+        state = State.REDEEM;
         deposit -= fee;
 
-        (bool success,) = escrow.call{value: fee}("");
+        (bool success,) = arbiter.call{value: fee}("");
         require(success);
     }
 
-    /*****************
-         Arbitrate Phase
-        *****************/
-
-    function redeem_arbitrated() public phaseArbitrate {
-
-        require(escrow_choice != address(0));
-
-        phase = Phase.END;
-        //p2
-        _prev_phase = _current_phase;
-        _current_phase = phase;
-
-        deposit = 0;
-
-        (bool success,) = escrow_choice.call{value: deposit}("");
+    function redeem() instate(State.REDEEM) public {
+        state = State.END;
+        (bool success,) = recipient.call{value: deposit}("");
         require(success);
     }
 }

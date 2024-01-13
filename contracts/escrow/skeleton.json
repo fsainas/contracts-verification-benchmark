@@ -1,12 +1,10 @@
 {
     "name": "Escrow",
-    "specification": "This contract involves three participants: a buyer, a seller and an escrow service. The constructor initializes the escrow address and its fee rate. After construction, the buyer must make a deposit and indicate the seller address. The buyer and seller can then asynchronously choose a payment address (in any order). If their choices match, then the seller can redeem the deposit. Otherwise, if they do not match, the escrow service will arbitrate and choose a recipient between the two. If the seller does not choose an address, the buyer can redeem with a refund. The contract operates in five phases: Join, Choose, Redeem, Arbitrate, End. Each phase has a set of callable functions.",
-    "properties": [
-        "the fee does not exceed the deposit.",
-        "if the current phase is Redeem the previous one is Choose.",
-        "if the current phase is Arbitrate the previouse one is Redeem.",
-        "if the current phase is End, the previous one is Arbitrate, Redeem or Choose.",
-        "if `phase` is End and `escrow_choice` is not `address(0)` then `redeem_arbitrated()` has modified the balance of the contract.",
-        "the `msg.sender` can only be `escrow`, `buyer` or `seller` for all functions except `redeem_arbitrated()`."
-    ]
+    "specification": "file:spec.md",
+    "properties": {
+        "auth-in-agree": "in the Agree state, only the buyer and the seller can perform actions.",
+        "dispute-if-agree": "in the Agree state, both the buyer and the seller can open a dispute.",
+        "dispute-onlyif-agree": "a dispute can be opened only in the Agree state.",
+        "no-send-in-agree": "in the Agree state, no one can redeem ETH."
+    }
 }

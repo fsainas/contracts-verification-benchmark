@@ -1,47 +1,37 @@
-# Escrow 
-
+# Escrow
 ## Specification
+This contract involves three participants: a buyer, a seller and an arbiter. At construction, the buyer provides a deposit in ETH, and it specifies the addresses of the seller and of the arbiter, and the fee that will be paid to the arbiter in case it is used to resolve a dispute. After construction, the contract operates in three states: Agree, Dispute, Redeem. 
 
-This contract allows a buyer to make a deposit and indicate a seller. The buyer
-and seller can choose a payment address, and if choices match, the seller can
-redeem the funds. If they do not match, the escrow system will arbitrate and
-choose the correct address between the two. If the seller does not choose an
-address, the buyer can redeem with a refund. The contract operates in five 
-phases: Join, Choose, Redeem, Arbitrate, End $\{J,C,R,A,E\}$. Each phase has a set of callable functions.
+In the Agree state, one of three things may happen: 
+- the buyer approves the payment to the seller; 
+- the seller issues a full refund to the buyer;
+- either the buyer or the seller open a dispute.
+
+In case a dispute is open, the arbiter takes the fee, and chooses whom between the buyer and the seller can redeem the residual funds. After the arbiter choice, the chosen recipient can redeem the funds.
 
 ## Properties
-
-- **p1**: fee does not exceed deposit
-- **p2**: if the current phase is Redeem the previous one is Choose
-- **p3**: if the current phase is Arbitrate the previouse one is Redeem
-- **p4**: if the current phase is End, the previous one is Arbitrate, Redeem or
-  Choose.
-- **p5**: If `phase` is End and `escrow_choice` is not `address(0)` then
-  `redeem_arbitrated()` has modified the balance of the contract.
-- **p6**: The `msg.sender` can only be `escrow`, `buyer` or `seller` for all
-  functions except `redeem_arbitrated()`;
+- **auth-in-agree**: in the Agree state, only the buyer and the seller can perform actions.
+- **dispute-if-agree**: in the Agree state, both the buyer and the seller can open a dispute.
+- **dispute-onlyif-agree**: a dispute can be opened only in the Agree state.
+- **no-send-in-agree**: in the Agree state, no one can redeem ETH.
 
 ## Versions
+- **v1**: conformant to specification.
 
-- **v1**: conformant to specification;
-- **v2**: removed `require(fee_rate < 10000)` from the constructor.
-- **v3**: contract is [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/security/ReentrancyGuard.sol)
-
-
+## Ground truth
+|        | auth-in-agree        | dispute-if-agree     | dispute-onlyif-agree | no-send-in-agree     |
+|--------|----------------------|----------------------|----------------------|----------------------|
+| **v1** | 1                    | 1                    | 1                    | 1                    |
+ 
 ## Experiments
 
 ### SolCMC
-
-|         | p1  | p2  | p3  | p4  | p5  | p6  |
-| ------- | --- | --- | --- | --- | --- | --- |
-| **v1**  | TP  | TP  | TP  | TP  | TP  | TP  |
-| **v2**  | TP  | TP  | TP  | TP  | TP  | TP  |
-| **v3**  | TP  | TP  | TP  | TP  | TP  | TP  |
+|        | auth-in-agree        | dispute-if-agree     | dispute-onlyif-agree | no-send-in-agree     |
+|--------|----------------------|----------------------|----------------------|----------------------|
+| **v1** | TP!                  | FN!                  | TP!                  | TP!                  |
 
 ### Certora
-
-|         | p1  | p2  | p3  | p4  | p5  | p6  |
-| ------- | --- | --- | --- | --- | --- | --- |
-| **v1**  |     | TP  | TP  | TP  | FN  | TP  |
-| **v2**  |     | TP  | TP  | TP  | FN  | TP  |
-| **v3**  |     | TP  | TP  | TP  | FN  | TP  |
+|        | auth-in-agree        | dispute-if-agree     | dispute-onlyif-agree | no-send-in-agree     |
+|--------|----------------------|----------------------|----------------------|----------------------|
+| **v1** | TP!                  | TP!                  | TP!                  | TP!                  |
+ 
