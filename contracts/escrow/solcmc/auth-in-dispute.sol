@@ -1,23 +1,14 @@
-function invariant_arbitrate(address dst) public {
+function invariant(uint f,address dst) public {
     require(state==State.DISPUTE);
-    arbitrate(dst);
-    assert(msg.sender == arbiter);
-}
-
-function invariant_approve_payment() public {
-    require(state==State.DISPUTE);
-    approve_payment();
-    assert(msg.sender == arbiter);
-}
-
-function invariant_refund() public {
-    require(state==State.DISPUTE);
-    refund();
-    assert(msg.sender == arbiter);
-}
-
-function invariant_open_dispute() public {
-    require(state==State.DISPUTE);
-    open_dispute();
+    if (f==0)
+        approve_payment();
+    else if (f==1)
+        refund();
+    else if (f==2)
+        open_dispute();
+    else if (f==3)
+        arbitrate(dst);
+    else
+        redeem();
     assert(msg.sender == arbiter);
 }

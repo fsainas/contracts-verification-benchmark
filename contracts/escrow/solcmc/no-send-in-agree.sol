@@ -1,23 +1,18 @@
-function invariant_approve_payment() public {
+function invariant(uint f,address dst) public {
     require(state==State.AGREE);
     uint prev_bal = address(this).balance;
-    approve_payment();
-    uint curr_bal = address(this).balance;
-    assert(prev_bal==curr_bal);
-}
+    
+    if (f==0)
+        approve_payment();
+    else if (f==1)
+        refund();
+    else if (f==2)
+        open_dispute();
+    else if (f==3)
+        arbitrate(dst);
+    else
+        redeem();
 
-function invariant_refund() public {
-    require(state==State.AGREE);
-    uint prev_bal = address(this).balance;
-    refund();
-    uint curr_bal = address(this).balance;
-    assert(prev_bal==curr_bal);
-}
-
-function invariant_open_dispute() public {
-    require(state==State.AGREE);
-    uint prev_bal = address(this).balance;
-    open_dispute();
     uint curr_bal = address(this).balance;
     assert(prev_bal==curr_bal);
 }

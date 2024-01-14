@@ -8,7 +8,7 @@
         "no-send-in-agree": "in the Agree state, no one can redeem ETH.",
         "auth-in-dispute": "in the Dispute state, only the arbiter can perform actions.",
         "arbitrate-send": "after a successful call to `arbitrate`, the arbiter receives `fee` ETH.",
-        "redeem-send": "after a successful call to `redeem`, either the buyer or the seller arbiter receives `deposit` ETH.",
+        "redeem-send": "after a successful call to `redeem`, either the buyer or the seller receives `deposit` ETH.",
         "recipient-buyer-or-seller": "the recipient of the `redeem` call must be either the buyer or the seller."
     }
 }
