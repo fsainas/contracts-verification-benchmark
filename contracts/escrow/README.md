@@ -33,10 +33,7 @@ In the Redeem state, the chosen recipient can `redeem` the whole contract balanc
 | **v1** | 1                         | 1                         | 1                         | 1                         | 1                         | 1                         | 1                         | 1                         |
 | **v2** | 1                         | 0                         | 1                         | 1                         | 1                         | 0                         | 1                         | 1                         |
  
-
-
 ## Experiments
-                   |
  
 ### SolCMC
 |        | arbitrate-send            | auth-in-agree             | auth-in-dispute           | dispute-if-agree          | dispute-onlyif-agree      | no-send-in-agree          | recipient-buyer-or-seller | redeem-send               |
