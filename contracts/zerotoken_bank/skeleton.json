@@ -1,6 +1,6 @@
 {
     "name": "Zero-token Bank",
-    "specification": "The ZeroTokenBank contract is designed to accepts deposits and withdrawals from any address. When a deposit is made, the corresponding amount is added to the account balance of the depositing address. These balances are maintained using a mapping function within the contract. To withdraw funds, a depositor can call the withdraw function of the Bank contract with a specified amount. The contract verifies that the depositor has sufficient funds in their account and then initiates a transfer of the specified amount to the depositor's address.",
+    "specification": "The ZeroTokenBank contract accepts deposits and withdrawals from any address. When a deposit is made, the corresponding amount is added to the account balance of the depositing address. These balances are maintained using a mapping within the contract. To withdraw funds, a user can call the withdraw function of the Bank contract with a specified amount. The contract verifies that the depositor has sufficient funds in their account and then initiates a transfer of the specified amount to the depositor's address.",
     "properties": [
         "after a successful `deposit(amount)`, the balance entry of `msg.sender` is increased by `amount`.",
         "after a successful `withdraw(amount)`, the balance entry of `msg.sender` is decreased by `amount`.",
