@@ -1,10 +1,11 @@
 {
     "name": "HTLC",
-    "specification": "The Hash Timed Locked Contract (HTLC) involves two users, the *committer* and the *verifier*, and it allows the committer to commit a secret and reveal it afterwards, within a given deadline. The commit is the SHA256 digest of the secret (a bitstring). At contract creation, the committer specifies the receiver of the collateral, in case the deposit is not revealed within the deadline. The deadline expires 1000 blocks after the block where the contract has been deployed: if deployment is at block N, `timeout` can be called in a block with height strictly greater than N+1000.\n\nAfter contract creation, the HTLC allows the following actions:\n- `commit` requires the committer to deposits a collateral (at least 1 ETH) in the contract, and records the commit;\n- `reveal` allows the committer to withdraw the whole contract balance, by revealing a preimage of the committed secret;\n- `timeout` can be called by anyone only after the deadline, and tranfers the whole contract balance to the receiver.",
-    "properties": [
-        "The overall sent amount does not exceed the initial deposit. This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`.",
-        "`reveal` and `timeout` can only be called after `commit`.",
-        "If `timeout` is called, then at least 1000 blocks have passed since the contract was deployed.",
-        "If `commit` is called, then the sender must be the committer."
-    ]
+    "specification": "file:spec.md",
+    "properties": {
+        "sent-le-init-bal": "The overall sent amount does not exceed the initial deposit.",
+        "reveal-timeout-after-commit": "`reveal` and `timeout` can only be called after `commit`.",
+        "timeout-deadline": "If `timeout` is called, then at least 1000 blocks have passed since the contract was deployed.",
+        "commit-auth-owner": "If `commit` is called, then the sender must be the owner.",
+        "reveal-auth-owner": "If `reveal` is called, then the sender must be the owner."
+    }
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-/// @custom:version `timeout` transfers balance to `msg.sender` instead of verifier.
+/// @custom:version removed check that `reveal` can only be called by `owner`.
 contract HTLC {
    address payable public owner;  
    address payable public verifier;
@@ -33,7 +33,7 @@ contract HTLC {
 
        hash = h;
        isCommitted = true;
-
+        
        // ghost state
        _deposited = address(this).balance;       
        _commit_called = true;
@@ -52,7 +52,7 @@ contract HTLC {
        // ghost state
        _sent += _to_send;
        _reveal_called = true;
-       _reveal_sender = msg.sender;            
+       _reveal_sender = msg.sender;             
    }
 
    function timeout() public {

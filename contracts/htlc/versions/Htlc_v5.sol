@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-/// @custom:version `timeout` transfers balance to `msg.sender` instead of verifier.
+/// @custom:version removed check that `commit` can only be called by `owner`.
 contract HTLC {
    address payable public owner;  
    address payable public verifier;
@@ -27,13 +27,13 @@ contract HTLC {
    }
 
    function commit(bytes32 h) public payable {
-       require(msg.sender == owner);
+       // require(msg.sender == owner);
        require(msg.value >= 1 ether);
        require(!isCommitted);
 
        hash = h;
        isCommitted = true;
-
+        
        // ghost state
        _deposited = address(this).balance;       
        _commit_called = true;
