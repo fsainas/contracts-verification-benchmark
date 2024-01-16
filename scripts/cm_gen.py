@@ -1,9 +1,13 @@
 import argparse
+import logging
+import utils
+import glob
+import re
 import csv
 import sys
 
 
-CM_HEADER = ["property", "version", "result"]
+CM_HEADER = ["property", "version", "result", "footnote"]
 
 
 def get_result(gt: int, out: str) -> str:
@@ -19,7 +23,7 @@ def get_result(gt: int, out: str) -> str:
             return 'T' + out    # TP
 
 
-def gen(ground_truth_csv: str, out_csv: str) -> list[str]:
+def gen(ground_truth_csv: str, out_csv: str, properties_dir: str) -> list[str]:
     cm_rows = [CM_HEADER]
     outputs = {}    # (p,v): output
 
@@ -36,6 +40,9 @@ def gen(ground_truth_csv: str, out_csv: str) -> list[str]:
         gt_reader = csv.reader(file)
         next(gt_reader)     # skip header
 
+        # set of non definable properties, used to put the footnote once
+        nondef_properties = set()
+
         # build confusion matrix
         for row in gt_reader:
             # skip blank lines or comments
@@ -46,10 +53,40 @@ def gen(ground_truth_csv: str, out_csv: str) -> list[str]:
 
             if (p,v) in outputs:
                 out = outputs[(p,v)]
-                cm_rows.append([p, v, get_result(gt, out)])
+
+                if out == utils.NONDEFINABLE and properties_dir:
+
+                    # Check for a bound property first
+                    bound_nondef = glob.glob(f'{properties_dir}/*{p}_{v}*')
+                    if bound_nondef:
+                        nondef_p = bound_nondef[0]
+                    else:
+                        nondef_p = glob.glob(f'{properties_dir}/*{p}.*')[0]     # take the generic one otherwise
+
+                    if nondef_p not in nondef_properties:
+
+                        with open(nondef_p, 'r') as file:
+
+                            note_match = re.search('/// @custom:nondef (.*)', file.read())
+
+                            if note_match:
+                                note = note_match.group(1)
+                                cm_rows.append([p, v, out, note])
+                                nondef_properties.add(nondef_p)
+                            else:
+                                logging.warning(f'{p} is nondefinable (ND) but no note was found.')
+                                cm_rows.append([p, v, out])
+
+                    else:
+                        cm_rows.append([p, v, out])
+
+                else:
+                    cm_rows.append([p, v, get_result(gt, out)])
+
                 del outputs[(p,v)]
+
             else:
-                cm_rows.append([p, v, 'ND'])
+                cm_rows.append([p, v, utils.NONDEFINABLE])  # no file
     
     for p,v in outputs.keys():
         print(f'\n[WARNING]: missing {p}-{v} ground truth',
@@ -72,9 +109,15 @@ if __name__ == "__main__":
             help='CSV file with results.',
             required=True
     )
+    parser.add_argument(
+            '--properties',
+            '-p',
+            help='Properties directory, to get nondefs.',
+            #required=True
+    )
     args = parser.parse_args()
 
-    cm_csv = gen(args.ground_truth, args.results)
+    cm_csv = gen(args.ground_truth, args.results, args.properties)
 
     cm_csv = [cm_csv[0]] + sorted(cm_csv[1:])
     csv.writer(sys.stdout).writerows(cm_csv)

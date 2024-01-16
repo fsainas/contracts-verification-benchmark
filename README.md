@@ -205,3 +205,12 @@ Property files must follow the specified naming conventions:
 The tool manages the matching of properties and versions. It prioritizes
 version-specific properties; if a version-specific definition of the property
 exists, the tool will use it. Otherwise, it will default to the generic one.
+
+### Property tags
+Incorporate the following tags into your properties files to enable specific features of the benchmark:
+
+- `/// @custom:nondef <note>`: Indicates the reason why a property is deemed
+  nondefinable. When this tag is set, the associated experiment for this
+  property will not be executed. Additionally, the specified note will appear
+  to the automatically generated readme as a footnote.
+- `/// @custom:negate`: Inverts the result provided by the tool.
