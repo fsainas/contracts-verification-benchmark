@@ -1,12 +1,13 @@
 import csv
 import re
 
-OUT_HEADER = ['property', 'version', 'outcome']     # outcome in P,P!,N,N!
+OUT_HEADER = ['property', 'version', 'outcome', 'footnote']     # outcome in P,P!,N,N!
 
 WEAK_POSITIVE = "P"
 WEAK_NEGATIVE = "N"
 STRONG_POSITIVE = "P!"
 STRONG_NEGATIVE = "N!"
+NONDEFINABLE = "ND"
 
 
 def write_log(path, log):

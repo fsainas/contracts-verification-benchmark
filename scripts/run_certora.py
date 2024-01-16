@@ -74,6 +74,14 @@ def run_certora(contract_path, spec_path):
               file=sys.stderr)
         sys.exit(1)
 
+    with open(spec_path, 'r') as file:
+        nondef = re.search('/// @custom:nondef (.*)', file.read())
+
+        if nondef:
+            print(contract_path + ": " + utils.NONDEFINABLE + 
+                  " (nondefinable)")
+            return (utils.NONDEFINABLE, nondef.group(1))
+
     params = {}
     params['contract_path'] = contract_path
     params['name'] = contract_name

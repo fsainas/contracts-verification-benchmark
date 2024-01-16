@@ -62,6 +62,14 @@ def run_solcmc(contract_path, timeout):
               file=sys.stderr)
         sys.exit(1)
 
+    with open(contract_path, 'r') as file:
+        nondef = re.search('/// @custom:nondef (.*)', file.read())
+
+        if nondef:
+            print(contract_path + ": " + utils.NONDEFINABLE + 
+                  " (nondefinable)")
+            return (utils.NONDEFINABLE, nondef.group(1))
+
     params = {}
     params['contract_path'] = contract_path
     params['timeout'] = timeout
