@@ -1,8 +1,8 @@
-# Token Transfer
+# Deposit (ERC20)
 
 ## Specification
 
-TokenTransfer implements the same functionality of
+This contract implements the same functionality of
 [SimpleTransfer](../simple_transfer), but operates on ERC20 tokens instead of
 ETH. The contract `constructor` takes the token address as a parameter. The
 `deposit` function allows the sender to deposit token units into the contract;

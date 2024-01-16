@@ -17,8 +17,8 @@ more precise verification techniques.
 The benchmark currently comprises several versions (correct or bugged) of the following use cases:
 - [Zero-token Bet](contracts/zerotoken_bet/) :white_check_mark:
 - [Zero-token Bank](contracts/zerotoken_bank/) :white_check_mark:
-- [Simple Transfer](contracts/simple_transfer/) :white_check_mark:
-- [Token Transfer](contracts/token_transfer/) :white_check_mark:
+- [Deposit (ETH)](contracts/deposit_eth/) :white_check_mark:
+- [Deposit (ERC20)](contracts/deposit_erc20/) :white_check_mark:
 - [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
 - [Bank](contracts/bank/) :white_check_mark:
 - [Lottery](contracts/lottery/)

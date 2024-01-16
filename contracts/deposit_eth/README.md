@@ -1,4 +1,5 @@
-# Simple Transfer
+# Deposit (ETH)
+
 ## Specification
 The contract has an initial balance, which consists of the amount of ETH paid to the constructor, plus the balance of the address of the contract before deployment. The contract has a `withdraw` function that can be called by anyone and transfers an `amount` of ETH (specified as a parameter) to the transaction sender.
 
@@ -33,11 +34,11 @@ The contract has an initial balance, which consists of the amount of ETH paid to
 ### SolCMC
 |        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | ND                | TN!               | TN                | TN!               | TN                |
-| **v2** | ND                | TN!               | FN                | TN!               | FN                |
-| **v3** | ND                | TN!               | FN                | FN!               | TN                |
-| **v4** | ND                | TN!               | TN                | TN!               | TN                |
-| **v5** | ND                | TN!               | FN                | TN!               | FN                |
+| **v1** | ND                | TN!               | TN                | ND                | TN                |
+| **v2** | ND                | TN!               | FN                | ND                | FN                |
+| **v3** | ND                | TN!               | FN                | ND                | TN                |
+| **v4** | ND                | TN!               | TN                | ND                | TN                |
+| **v5** | ND                | TN!               | FN                | ND                | FN                | 
 
 ### Certora
 |        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |

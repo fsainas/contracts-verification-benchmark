@@ -1,5 +1,5 @@
 {
-    "name": "Simple Transfer",
+    "name": "Deposit (ETH)",
     "specification": "The contract has an initial balance, which consists of the amount of ETH paid to the constructor, plus the balance of the address of the contract before deployment. The contract has a `withdraw` function that can be called by anyone and transfers an `amount` of ETH (specified as a parameter) to the transaction sender.",
     "properties": {
         "rel-le-init-bal": "the overall withdrawn amount does not exceed the initial deposit.",
