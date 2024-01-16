@@ -1,0 +1,8 @@
+{
+    "name": "Usecase Name",
+    "specification": "Usecase specification.",
+    "properties": {
+        "foo": "x is equal to the initial value",
+        "bar": "x is not equal to another value"
+    }
+}

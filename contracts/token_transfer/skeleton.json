@@ -1,8 +1,0 @@
-{
-    "name": "Token Transfer",
-    "specification": "TokenTransfer implements the same functionality of [SimpleTransfer](../simple_transfer), but operates on ERC20 tokens instead of ETH. The contract `constructor` takes the token address as a parameter. The `deposit` function allows the sender to deposit token units into the contract; it can be called only once. Before calling `deposit`, the depositor must approve that the amount they want to deposit can be spent by the contract: if so, the entire allowance is transferred to the contract.\n\n With ERC20 tokens, it is easier to increase the contract balance without the contract being able to notice or prevent it, but since this is also possible with ETH, the behavior can be considered comparable for the purposes of these tests.",
-    "properties": [
-        " `deposit()` can only be called once."
- 
-    ]
-}

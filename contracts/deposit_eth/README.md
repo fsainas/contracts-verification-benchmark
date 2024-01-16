@@ -1,9 +1,10 @@
-# Simple Transfer
+# Deposit (ETH)
+
 ## Specification
 The contract has an initial balance, which consists of the amount of ETH paid to the constructor, plus the balance of the address of the contract before deployment. The contract has a `withdraw` function that can be called by anyone and transfers an `amount` of ETH (specified as a parameter) to the transaction sender.
 
 ## Properties
-- **always-deplatable**: any user at any time can obtain the full balance of the contract.
+- **always-depletable**: any user at any time can obtain the full balance of the contract.
 - **rel-le-init-bal**: the overall withdrawn amount does not exceed the initial deposit.
 - **wd-contract-bal**: the contract balance is decreased by `amount` after a successful `withdraw(amount)`.
 - **wd-not-revert**: a transaction `withdraw(amount)` is not reverted whenever the `amount` does not exceed the contract balance.
@@ -17,7 +18,7 @@ The contract has an initial balance, which consists of the amount of ETH paid to
 - **v5**: `withdraw` requires a balance of at least `amount+1` instead of `amount`.
 
 ## Ground truth
-|        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
+|        | always-depletable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|
 | **v1** | 1                 | 0[^1]             | 0[^2]             | 0                 | 0                 |
 | **v2** | 1                 | 0                 | 1                 | 0                 | 1                 |
@@ -31,16 +32,16 @@ The contract has an initial balance, which consists of the amount of ETH paid to
 ## Experiments
 
 ### SolCMC
-|        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
+|        | always-depletable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | ND                | TN!               | TN                | TN!               | TN                |
-| **v2** | ND                | TN!               | FN                | TN!               | FN                |
-| **v3** | ND                | TN!               | FN                | FN!               | TN                |
-| **v4** | ND                | TN!               | TN                | TN!               | TN                |
-| **v5** | ND                | TN!               | FN                | TN!               | FN                |
+| **v1** | ND                | TN!               | TN                | ND                | TN                |
+| **v2** | ND                | TN!               | FN                | ND                | FN                |
+| **v3** | ND                | TN!               | FN                | ND                | TN                |
+| **v4** | ND                | TN!               | TN                | ND                | TN                |
+| **v5** | ND                | TN!               | FN                | ND                | FN                | 
 
 ### Certora
-|        | always-deplatable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
+|        | always-depletable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|
 | **v1** | ND                | TN!               | TN!               | TN!               | TN!               |
 | **v2** | ND                | TN!               | FN!               | TN!               | FN!               |

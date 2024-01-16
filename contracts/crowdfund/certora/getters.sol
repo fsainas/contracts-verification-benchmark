@@ -10,6 +10,6 @@
         return address(this).balance;
     }
 
-    function getReceiver() public view returns (address) {
-        return receiver;
+    function getOwner() public view returns (address) {
+        return owner;
     }
