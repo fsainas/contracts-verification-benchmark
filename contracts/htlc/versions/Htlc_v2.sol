@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-/// @custom:version removed check that `commit` must be called before `reveal` and `timeout`.
+/// @custom:version removed check that `commit` can only be called before `reveal` and `timeout`.
 contract HTLC {
    address payable public owner;  
    address payable public verifier;
@@ -17,6 +17,7 @@ contract HTLC {
    bool _timeout_called = false;
    uint _timeout_diff;
    address _commit_sender;
+   address _reveal_sender;
   
    constructor(address payable v) {
        owner = payable(msg.sender);
@@ -50,7 +51,8 @@ contract HTLC {
 
        // ghost state
        _sent += _to_send;
-       _reveal_called = true;            
+       _reveal_called = true;
+       _reveal_sender = msg.sender;     
    }
 
    function timeout() public {

@@ -1,4 +1,4 @@
-rule P1 {
+rule sent_le_init_bal {
     env e1;
     require e1.block.number == getStart();
 

@@ -1,4 +1,4 @@
-rule P4 {
+rule commit_auth_owner {
     env e;
     bytes32 b;
     commit(e, b);

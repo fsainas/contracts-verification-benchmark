@@ -1,4 +1,4 @@
-rule P3 {
+rule timeout_deadline {
     env e1;
     require e1.block.number == getStart();
 

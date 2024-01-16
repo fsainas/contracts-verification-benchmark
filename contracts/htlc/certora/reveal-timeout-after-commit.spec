@@ -1,4 +1,4 @@
-rule P2 {
+rule reveal_timeout_after_commit {
     env e;
     calldataarg args;
     method f;
