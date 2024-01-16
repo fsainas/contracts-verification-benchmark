@@ -1,4 +1,4 @@
-rule P6 {
+rule wd_fin_before {
     env e1;
     
     address addr;

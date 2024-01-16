@@ -1,4 +1,4 @@
-rule P2 {
+rule canc_revert {
     env e;
 
     cancel@withrevert(e);

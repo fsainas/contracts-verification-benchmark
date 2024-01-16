@@ -1,4 +1,4 @@
-rule P4 {
+rule fin_canc_twice {
     env e1;
     bool b1;
     if (b1) {
