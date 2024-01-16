@@ -213,4 +213,4 @@ Incorporate the following tags into your properties files to enable specific fea
   nondefinable. When this tag is set, the associated experiment for this
   property will not be executed. Additionally, the specified note will appear
   to the automatically generated readme as a footnote.
-- `/// @custom:negate`: (TODO) 
+- `/// @custom:negate`: Inverts the result provided by the tool.
