@@ -18,12 +18,13 @@ import os
 def build_contracts(versions_paths: list, properties_paths: list) -> dict:
     """
     Builds contracts to verify from versions and properties.
+    They will go to build/contracts.
 
     Returns:
         dict: { filename: contract_code, ...}
     """
 
-    # Specific properties
+    # Properties associated with a version
     bound_properties_paths = list(filter(
             lambda x: re.search(".*_v.*", x),
             properties_paths))
@@ -36,21 +37,23 @@ def build_contracts(versions_paths: list, properties_paths: list) -> dict:
         # Extract base id from base path (e.g. v1)
         v_id = v_path.split('/')[-1].split('_')[-1].split('.')[0]
 
-        v_bound = list(filter(
+        # Properties associated with the current version v
+        v_bound_properties_paths = list(filter(
                 lambda x: re.search(f'.*_{v_id}.*', x), 
                 bound_properties_paths))
-        
-        v_unbound = unbound_properties_paths
 
-        for bp_path in v_bound:
+        v_unbound_properties_paths = unbound_properties_paths
+
+        # Remove bound properties from the unbound variants       
+        for bp_path in v_bound_properties_paths:
             p_id = bp_path.split('/')[-1].split('_')[0]     # ../p1_v1.sol -> p1
-            # Remove bound properties from the unbound variants
-            v_unbound = list(filter(
+
+            v_unbound_properties_paths = list(filter(
                     lambda x: not re.search(f'{p_id}', x),
-                    v_unbound
+                    unbound_properties_paths
                     ))
 
-        v_properties_paths = v_bound + v_unbound
+        v_properties_paths = v_bound_properties_paths + v_unbound_properties_paths
 
         contracts.update(injector.inject_product([v_path], v_properties_paths))
 
