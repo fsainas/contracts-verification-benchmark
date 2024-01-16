@@ -16,14 +16,14 @@ import sys
 import re
 import os
 
-DEFAULT_TIMEOUT = 0
+DEFAULT_TIMEOUT = '10m'
 THREADS = 6
 
 COMMAND_TEMPLATE = Template(
         'timeout $timeout ' + 
         'solc $contract_path ' +
         '--model-checker-engine chc ' +
-        '--model-checker-timeout $timeout ' +
+        '--model-checker-timeout 0 ' +
         '--model-checker-targets assert ' +
         '--model-checker-show-unproved'
 )
@@ -56,6 +56,7 @@ def run_solcmc(contract_path, timeout):
     Returns:
         tuple: (outcome, log)
     """
+    # File not found
     if not os.path.isfile(contract_path): 
         print("[ERROR]: " + contract_path + " not found", 
               file=sys.stderr)
