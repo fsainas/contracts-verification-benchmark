@@ -50,7 +50,7 @@ After contract creation, the HTLC allows the following actions:
 | **v3** | TP!                         | TP!                         | TP!                         | TN!                         | TN!                         |
 | **v4** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
 | **v5** | TN!                         | TP!                         | TP!                         | TN!                         | TP!                         |
-| **v6** | TP!                         | FP!                         | TP!                         | TN!                         | TP!                         | 
+| **v6** | TP!                         | TN!                         | TP!                         | TN!                         | TP!                         |
 
 ### Certora
 |        | commit-auth-owner           | reveal-auth-owner           | reveal-timeout-after-commit | sent-le-init-bal            | timeout-deadline            |
