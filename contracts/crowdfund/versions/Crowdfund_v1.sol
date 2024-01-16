@@ -10,10 +10,6 @@ contract Crowdfund {
     address owner;      // receiver of the donated funds
     mapping(address => uint) public donors;
 
-    // ghost variables
-    uint _prevBalance;
-    uint _balance;
-
     constructor (address payable owner_, uint end_donate_, uint256 goal_) {
         owner = owner_;
         end_donate = end_donate_;
