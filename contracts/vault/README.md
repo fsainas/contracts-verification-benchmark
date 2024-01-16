@@ -38,11 +38,11 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 ## Experiments
 
 ### SolCMC
-|        | p1  | p2  | p3  | p4  | p5  | p6  | p7  | p8  | p9  |
-|--------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
-| **v1** | TP! | TP! | ND  | FP! | TP! | ND  | ND  | ND  | ND  |
-| **v2** | TP! | TP! | ND  | FP! | TN! | ND  | ND  | ND  | ND  |
-| **v3** | TP! | TP! | ND  | FP! | TP! | ND  | ND  | ND  | ND  |
+|        | p1    | p2    | p3    | p4    | p5    | p6    | p7    | p8    | p9    |
+|--------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| **v1** | TP!   | TP!   | ND    | ND    | ND    | ND    | ND    | ND    | ND    |
+| **v2** | TP!   | TP!   | ND    | ND    | ND    | ND    | ND    | ND    | ND    |
+| **v3** | TP!   | TP!   | ND    | ND    | ND    | ND    | ND    | ND    | ND    |
 
 ### Certora
 |        | p1  | p2  | p3  | p4  | p5  | p6  | p7  | p8  | p9  |
