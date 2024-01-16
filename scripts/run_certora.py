@@ -74,13 +74,21 @@ def run_certora(contract_path, spec_path):
               file=sys.stderr)
         sys.exit(1)
 
+    # Parse tags
+    negate = False
     with open(spec_path, 'r') as file:
-        nondef = re.search('/// @custom:nondef (.*)', file.read())
+        spec_code = file.read()
+        nondef = re.search('/// @custom:nondef (.*)', spec_code)
 
         if nondef:
             print(contract_path + ": " + utils.NONDEFINABLE + 
                   " (nondefinable)")
             return (utils.NONDEFINABLE, nondef.group(1))
+
+        neg = re.search('/// @custom:negate', spec_code)
+
+        if neg:
+            negate = True
 
     params = {}
     params['contract_path'] = contract_path
@@ -99,11 +107,13 @@ def run_certora(contract_path, spec_path):
         sys.exit(1)
 
     if no_errors_found(log.stdout):
-        print(contract_path + ", " + spec_path + ": " + utils.STRONG_POSITIVE)
-        return (utils.STRONG_POSITIVE, log.stdout+"\n"+log.stderr)
+        res = utils.STRONG_NEGATIVE if negate else utils.STRONG_POSITIVE
+        print(contract_path + ", " + spec_path + ": " + res)
+        return (res, log.stdout+"\n"+log.stderr)
     else:
-        print(contract_path + ", " + spec_path + ": " + utils.STRONG_NEGATIVE)
-        return (utils.STRONG_NEGATIVE, log.stdout+"\n"+log.stderr)
+        res = utils.STRONG_POSITIVE if negate else utils.STRONG_NEGATIVE
+        print(contract_path + ", " + spec_path + ": " + res)
+        return (res, log.stdout+"\n"+log.stderr)
 
 
 def run_certora_parallel(id, contract_path, spec_path, logs_dir):

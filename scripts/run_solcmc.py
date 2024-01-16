@@ -62,13 +62,21 @@ def run_solcmc(contract_path, timeout):
               file=sys.stderr)
         sys.exit(1)
 
+    # Parse tags
+    negate = False
     with open(contract_path, 'r') as file:
-        nondef = re.search('/// @custom:nondef (.*)', file.read())
+        contract_code = file.read()
+        nondef = re.search('/// @custom:nondef (.*)', contract_code)
 
         if nondef:
             print(contract_path + ": " + utils.NONDEFINABLE + 
                   " (nondefinable)")
             return (utils.NONDEFINABLE, nondef.group(1))
+
+        neg = re.search('/// @custom:negate', contract_code)
+
+        if neg:
+            negate = True
 
     params = {}
     params['contract_path'] = contract_path
@@ -87,21 +95,23 @@ def run_solcmc(contract_path, timeout):
 
     # GNU coreutils timeout
     if (not log.stderr) and (not log.stdout):
-        print(contract_path + ": " + utils.WEAK_NEGATIVE + 
-              " (timeout)")
-        return (utils.WEAK_NEGATIVE, log.stderr)
+        res = utils.WEAK_NEGATIVE
+        print(contract_path + ": " + res + " (timeout)")
+        return (res, log.stderr)
 
     if is_timeout_or_unknown(log.stderr):
-        print(contract_path + ": " + utils.WEAK_NEGATIVE + 
-              " (unknown)")
-        return (utils.WEAK_NEGATIVE, log.stderr)
+        res = utils.WEAK_POSITIVE if negate else utils.WEAK_NEGATIVE
+        print(contract_path + ": " + res + " (unknown)")
+        return (res, log.stderr)
 
     if has_assertion_warning(log.stderr):
-        print(contract_path + ": " + utils.STRONG_NEGATIVE)
-        return (utils.STRONG_NEGATIVE, log.stderr)
+        res = utils.STRONG_POSITIVE if negate else utils.STRONG_NEGATIVE
+        print(contract_path + ": " + res)
+        return (res, log.stderr)
 
-    print(contract_path + ": " + utils.STRONG_POSITIVE)
-    return (utils.STRONG_POSITIVE, log.stderr)
+    res = utils.STRONG_NEGATIVE if negate else utils.STRONG_POSITIVE
+    print(contract_path + ": " + res)
+    return (res, log.stderr)
 
 
 def run_solcmc_parallel(id, contract_path, timeout, logs_dir):
