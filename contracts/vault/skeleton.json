@@ -1,15 +1,15 @@
 {
     "name": "Vault",
-    "specification": "Vaults are a security mechanism to prevent cryptocurrency from being immediately withdrawn by an adversary who has stolen the owner's private key. To create the vault, the owner specifies a recovery key (distinct from the primary owner key), which can be used to cancel a withdraw request, and a wait time that has to elapse between a withdraw request and the actual currency transfer to the chosen recipient. Once the contract has been created, anyone can deposit native cryptocurrency in the vault through an external transaction.\n\nThe contract can be in one of two states:\n\n- IDLE: the vault is waiting for a withdraw request;\n\n- REQ: the owner has issued a withdraw request that has not been finalized yet. In this state, the owner can choose to **finalize** the request or to **cancel** it. Finalization can only happen after the wait time has passed since the request. During the wait time, the request can be cancelled by using the recovery key. \n\nConcretely, the keys are represented as addresses: requiring that an action can only be performed by someone knowing a certain key corresponds to requiring that a method is called by the corresponding address.",
-    "properties": [
-        "calling `withdraw` or `finalize` with a key different from the owner key, reverts.",
-        "calling `cancel` with a key different from the recovery key, reverts.",
-        "`withdraw` may be called twice in a row.",
-        "`finalize` or `cancel` may be called after `finalize` or `cancel`.",
-        "the owner key is never equal to the recovery key.",
-        "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, with no in-between calls.",
-        "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, possibly with in-between calls.",
-        "if an actor holds the recovery key, they can always prevent other actors from withdrawing funds from the contract",
-        "if an actor holds both the owner and recovery key, and no one else knows the recovery key, the former is able to eventually withdraw all the contract balance with probability 1 (for every fair trace)."
-    ]
+    "specification": "file:spec.md",
+    "properties": {
+        "wd-fin-revert": "calling `withdraw` or `finalize` with a key different from the owner key, reverts.",
+        "canc-revert": "calling `cancel` with a key different from the recovery key, reverts.",
+        "wd-twice": "`withdraw` may be called twice in a row.",
+        "fin-canc-twice": "`finalize` or `cancel` may be called after `finalize` or `cancel`.",
+        "okey-neq-rkey": "the owner key is never equal to the recovery key.",
+        "wd-fin-before": "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, with no in-between calls.",
+        "wd-fin-before-interleave": "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, possibly with in-between calls.",
+        "rkey-no-wd": "if an actor holds the recovery key, they can always prevent other actors from withdrawing funds from the contract",
+        "okey-rkey-private-wd": "if an actor holds both the owner and recovery key, and no one else knows the recovery key, the former is able to eventually withdraw all the contract balance with probability 1 (for every fair trace)."
+    }
 }

@@ -1,6 +1,6 @@
 /// @custom:negate
 
-rule P3 {
+rule wd_twice {
     env e1;
     address addr1;
     uint amt1;

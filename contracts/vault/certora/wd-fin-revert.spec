@@ -1,4 +1,4 @@
-rule P1_withdraw {
+rule withdraw_revert {
     env e;
     address receiver;
     uint amount;
@@ -7,7 +7,7 @@ rule P1_withdraw {
 
     assert(!lastReverted => e.msg.sender == currentContract.owner);
 }
-rule P1_finalize {
+rule finalize_revert {
     env e;
 
     finalize@withrevert(e);
