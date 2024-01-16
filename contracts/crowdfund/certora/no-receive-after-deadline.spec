@@ -1,4 +1,4 @@
-rule P3 {
+rule no_receive_after_deadline {
     env e1;
     env e2;
 

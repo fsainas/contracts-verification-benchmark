@@ -1,4 +1,4 @@
-rule P1 {
+rule no_wd_if_no_goal {
     env e;
     
     uint balance = getBalance();

@@ -6,7 +6,7 @@
         "wd-contract-bal": "the contract balance is decreased by `amount` after a successful `withdraw(amount)`.",
         "wd-sender-bal": "after a successful `withdraw(amount)`, the balance of the transaction sender is increased by `amount` ETH.",
         "wd-not-revert": "a transaction `withdraw(amount)` is not reverted whenever the `amount` does not exceed the contract balance.",
-        "always-deplatable": "any user at any time can obtain the full balance of the contract."
+        "always-depletable": "any user at any time can obtain the full balance of the contract."
     }
 }
 

@@ -7,15 +7,15 @@ contract Crowdfund {
 
     uint end_donate;    // last block in which users can donate
     uint goal;          // amount of ETH that must be donated for the crowdfunding to be succesful
-    address receiver;   // receiver of the donated funds
+    address owner;      // receiver of the donated funds
     mapping(address => uint) public donors;
 
     // ghost variables
     uint _prevBalance;
     uint _balance;
 
-    constructor (address payable receiver_, uint end_donate_, uint256 goal_) {
-        receiver = receiver_;
+    constructor (address payable owner_, uint end_donate_, uint256 goal_) {
+        owner = owner_;
         end_donate = end_donate_;
 	    goal = goal_;	
     }
@@ -29,7 +29,7 @@ contract Crowdfund {
         require (block.number > end_donate);
         require (address(this).balance >= goal);
 
-        (bool succ,) = receiver.call{value: address(this).balance}("");
+        (bool succ,) = owner.call{value: address(this).balance}("");
         require(succ);
     }
     

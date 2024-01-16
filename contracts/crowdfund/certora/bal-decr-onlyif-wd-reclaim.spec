@@ -5,13 +5,13 @@ rule P4 {
     
     require(e.block.number > getEndDonate());
     
-    mathint before = getBalance();
+    mathint old_balance = getBalance();
 
     f(e, args);
 
-    mathint after = getBalance();
+    mathint new_balance = getBalance();
     
-    assert before > after => (
+    assert old_balance > new_balance => (
         f.selector == sig:withdraw().selector ||
         f.selector == sig:reclaim().selector
     );
