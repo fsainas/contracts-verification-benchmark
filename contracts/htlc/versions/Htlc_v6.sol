@@ -41,7 +41,7 @@ contract HTLC {
    }
 
    function reveal(string memory s) public {
-       require(msg.sender == owner);
+       // require(msg.sender == owner);
        require(keccak256(abi.encodePacked(s)) == hash);
        require(isCommitted);       
 
