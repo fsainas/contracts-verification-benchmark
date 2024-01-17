@@ -5,9 +5,9 @@ pragma solidity >= 0.8.2;
 /// @custom:version conforming to specification.
 contract Crowdfund {
 
-    uint end_donate;    // last block in which users can donate
-    uint goal;          // amount of ETH that must be donated for the crowdfunding to be succesful
-    address owner;      // receiver of the donated funds
+    uint immutable end_donate;    // last block in which users can donate
+    uint immutable goal;          // amount of ETH that must be donated for the crowdfunding to be succesful
+    address immutable owner;      // receiver of the donated funds
     mapping(address => uint) public donors;
 
     constructor (address payable owner_, uint end_donate_, uint256 goal_) {

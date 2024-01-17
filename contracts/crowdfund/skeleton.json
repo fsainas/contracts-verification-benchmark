@@ -1,5 +1,5 @@
 {
-    "name": "Crowdfounf",
+    "name": "Crowdfund",
     "specification": "file:spec.md",
     "properties": {
         "no-wd-if-no-goal": "calls to `withdraw` will revert if the contract balance is less than the `goal`.",
@@ -9,6 +9,8 @@
         "bal-decr-onlyif-wd-reclaim": "after the donation phase, if the contract balance decreases then  either a successful `withdraw` or `reclaim` have been performed.",
         "reclaim-not-revert": "a transaction `reclaim` is not reverted if the goal amount is not reached and the deposit phase has ended, and the sender has donated before.",
         "owner-only-recv": "only the owner can receive ETH from the contract.",
-        "no-donate-after-deadline": "calls to `donate` will revert if the donation phase has ended."
+        "no-donate-after-deadline": "calls to `donate` will revert if the donation phase has ended.",
+        "donate-not-revert": "a transaction `donate` is not reverted if the donation phase has not ended.",
+        "donate-not-revert-overflow": "a transaction `donate` is not reverted if the donation phase has not ended and sum between the old and the current donation does not overflow."
     }
 }
