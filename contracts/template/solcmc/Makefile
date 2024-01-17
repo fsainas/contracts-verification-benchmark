@@ -6,7 +6,7 @@ CONTRACTS_DIR = $(BUILD_DIR)/contracts
 LOGS_DIR = $(BUILD_DIR)/logs
 LIB_DIR = $(CONTRACTS_DIR)/lib
 
-to = 0
+to = "10m"
 contract = ""
 
 PYTHON = python
