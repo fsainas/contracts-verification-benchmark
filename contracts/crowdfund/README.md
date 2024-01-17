@@ -1,4 +1,4 @@
-# Crowdfounf
+# Crowdfund
 ## Specification
 The Crowdfund contract implements a crowdfunding campaign. 
 
@@ -11,6 +11,8 @@ The contract implements the following methods:
 
 ## Properties
 - **bal-decr-onlyif-wd-reclaim**: after the donation phase, if the contract balance decreases then  either a successful `withdraw` or `reclaim` have been performed.
+- **donate-not-revert**: a transaction `donate` is not reverted if the donation phase has not ended.
+- **donate-not-revert-overflow**: a transaction `donate` is not reverted if the donation phase has not ended and sum between the old and the current donation does not overflow.
 - **no-donate-after-deadline**: calls to `donate` will revert if the donation phase has ended.
 - **no-receive-after-deadline**: the contract balance does not increase after the end of the donation phase.
 - **no-wd-if-no-goal**: calls to `withdraw` will revert if the contract balance is less than the `goal`.
@@ -23,31 +25,25 @@ The contract implements the following methods:
 - **v1**: conforming to specification.
 
 ## Ground truth
-|        | bal-decr-onlyif-wd-reclaim | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
-|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
-| **v1** | 1                          | 1                          | 0[^1]                      | 1                          | 1                          | 0                          | 0                          | 1                          |
+|        | bal-decr-onlyif-wd-reclaim | donate-not-revert          | donate-not-revert-overflow | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
+|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
+| **v1** | 1                          | 0[^1]                      | 1                          | 1                          | 0[^2]                      | 1                          | 1                          | 0                          | 0                          | 1                          |
  
-[^1]: This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`.
+[^1]: This property should be false, since the increment of the `donors` map could overflow.
+[^2]: This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`.
 
 
 ## Experiments
 
 ### SolCMC
-|        | bal-decr-onlyif-wd-reclaim | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
-|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
-| **v1** | ND                         | TP!                        | TN!                        | TP!                        | ND                         | ND                         | ND                         | ND                         |
- 
-
-
-### SolCMC
-|        | bal-decr-onlyif-wd-reclaim | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
-|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
-| **v1** | ND                         | TP!                        | TN!                        | TP!                        | ND                         | ND                         | ND                         | ND                         |
+|        | bal-decr-onlyif-wd-reclaim | donate-not-revert          | donate-not-revert-overflow | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
+|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
+| **v1** | ND                         | ND                         | ND                         | TP!                        | TN!                        | TP!                        | ND                         | ND                         | ND                         | ND                         |
  
 
 
 ### Certora
-|        | bal-decr-onlyif-wd-reclaim | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
-|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
-| **v1** | TP!                        | FN!                        | FP!                        | TP!                        | ND                         | ND                         | TN!                        | FN!                        |
+|        | bal-decr-onlyif-wd-reclaim | donate-not-revert          | donate-not-revert-overflow | no-donate-after-deadline   | no-receive-after-deadline  | no-wd-if-no-goal           | owner-only-recv            | reclaim-not-revert         | wd-not-revert              | wd-not-revert-EOA          |
+|--------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|----------------------------|
+| **v1** | TP!                        | TN!                        | FN!                        | FN!                        | FP!                        | TP!                        | ND                         | ND                         | TN!                        | FN!                        |
  

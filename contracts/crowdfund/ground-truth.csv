@@ -1,5 +1,7 @@
 property,version,truth,footnote-md
 no-wd-if-no-goal,v1,1,
+donate-not-revert,v1,0,"This property should be false, since the increment of the `donors` map could overflow."
+donate-not-revert-overflow,v1,1,
 wd-not-revert,v1,0,
 wd-not-revert-EOA,v1,1,
 no-receive-after-deadline,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
