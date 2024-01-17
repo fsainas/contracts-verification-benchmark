@@ -24,6 +24,7 @@ The contract acts as a wrapper to Solidity's `call` function.
  
 
 ## Experiments
+
 ### SolCMC
 |        | bal   | stor  |
 |--------|-------|-------|
@@ -33,7 +34,6 @@ The contract acts as a wrapper to Solidity's `call` function.
 | **v4** | TN!   | TN!   |
 | **v5** | FP!   | TP!   |
  
-
 ### Certora
 |        | bal   | stor  |
 |--------|-------|-------|

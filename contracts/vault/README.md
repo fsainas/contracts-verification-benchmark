@@ -13,7 +13,7 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 
 ## Properties
 - **canc-revert**: calling `cancel` with a key different from the recovery key, reverts.
-- **fin-canc-twice**: `finalize` or `cancel` may be called after `finalize` or `cancel`.
+- **fin-canc-twice**: `finalize` or `cancel` may be called immediately after `finalize` or `cancel`.
 - **okey-neq-rkey**: the owner key is never equal to the recovery key.
 - **okey-rkey-wd**: if an actor holds both the owner and recovery key, and no one else knows the recovery key, the former is able to eventually withdraw all the contract balance with probability 1 (for every fair trace).
 - **rkey-no-wd**: if an actor holds the recovery key, they can always prevent other actors from withdrawing funds from the contract
