@@ -12,12 +12,10 @@ contract TokenTransfer {
     // ghost variables
     uint _count_deposit;
 
-    // v1
     constructor(IERC20 token_) {
         token = token_;
     }
 
-    // v1
     function deposit() external {
         require(!ever_deposited);
 
@@ -28,7 +26,6 @@ contract TokenTransfer {
         _count_deposit += 1;	
     }
 
-    // v1
     function withdraw(uint amount) external {
         token.transfer(msg.sender, amount);
     }

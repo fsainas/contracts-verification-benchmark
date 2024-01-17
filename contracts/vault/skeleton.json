@@ -5,7 +5,7 @@
         "wd-fin-revert": "calling `withdraw` or `finalize` with a key different from the owner key, reverts.",
         "canc-revert": "calling `cancel` with a key different from the recovery key, reverts.",
         "wd-twice": "`withdraw` may be called twice in a row.",
-        "fin-canc-twice": "`finalize` or `cancel` may be called after `finalize` or `cancel`.",
+        "fin-canc-twice": "`finalize` or `cancel` may be called immediately after `finalize` or `cancel`.",
         "okey-neq-rkey": "the owner key is never equal to the recovery key.",
         "wd-fin-before": "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, with no in-between calls.",
         "wd-fin-before-interleave": "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, possibly with in-between calls.",
