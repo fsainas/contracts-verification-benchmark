@@ -19,8 +19,9 @@ import re
 
 THREADS = 6     # n of parallel executions
 
+
 COMMAND_TEMPLATE = Template(
-    'certoraRun $contract_path:$name --verify $name:$spec_path --wait_for_results'
+    'certoraRun $contract_path:$name --verify $name:$spec_path --msg "$msg"  --wait_for_results'
 )
 
 
@@ -94,6 +95,14 @@ def run_certora(contract_path, spec_path):
     params['contract_path'] = contract_path
     params['name'] = contract_name
     params['spec_path'] = spec_path
+    
+    try:
+        contract = contract_path.split('/')[-1].split('.')[0].split('_')
+        contract = contract[0]+contract[2]
+    except:
+        contract = contract_path.split('/')[-1].split('.')[0]
+    spec = spec_path.split('/')[-1].split('.')[0] 
+    params['msg'] = contract + "/" + spec
 
     command = COMMAND_TEMPLATE.substitute(params)
     print(command)
