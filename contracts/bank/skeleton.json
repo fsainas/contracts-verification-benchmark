@@ -9,8 +9,10 @@
         "withdraw-contract-balance": "after a successful `withdraw(amount)`, the ETH balance the contract is decreased by `amount`.",
         "withdraw-user-balance": "after a successful `withdraw(amount)`, the balance entry of `msg.sender` is decreased by `amount`.",
         "deposit-not-revert": "a `deposit` call does not revert if  `msg.value` is less or equal to the ETH balance of `msg.sender`.",
-        "deposit-revert": "a `deposit` call reverts if  `msg.value` is greater than the ETH balance of `msg.sender`.",
+        "deposit-revert-if-low-eth": "a `deposit` call reverts if `msg.value` is greater than the ETH balance of `msg.sender`.",
         "withdraw-not-revert": "a `withdraw(amount)` call does not revert if  `amount` is bigger than zero and less or equal to the balance entry of `msg.sender`.",
-        "withdraw-revert": "a `withdraw(amount)` call reverts if  `amount` is zero or greater than the balance entry of `msg.sender`."
+        "withdraw-revert": "a `withdraw(amount)` call reverts if `amount` is zero or greater than the balance entry of `msg.sender`.",
+        "withdraw-sender-rcv": "after a successful `withdraw(amount)`, the ETH balance of the transaction sender is increased by `amount` ETH.",
+        "withdraw-sender-rcv-EOA": "after a successful `withdraw(amount)` originated by an EOA, the ETH balance of the transaction sender is increased by `amount` ETH."
     }
 }

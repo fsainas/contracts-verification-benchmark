@@ -7,6 +7,7 @@ LOGS_DIR = $(BUILD_DIR)/logs
 LIB_DIR = $(CONTRACTS_DIR)/lib
 SPEC_DIR = $(BUILD_DIR)/specs
 SPEC_FILES = $(wildcard $(PROPERTIES_DIR)/*.spec)
+CERTORA_INTERNAL = ./.certora_internal
 
 PYTHON = python
 
@@ -58,5 +59,5 @@ clean_specs:
 	rm -rf $(SPEC_DIR)
 
 clean:
-	rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR) $(CERTORA_INTERNAL)
 

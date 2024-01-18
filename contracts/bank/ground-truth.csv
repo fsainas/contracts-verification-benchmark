@@ -13,9 +13,14 @@ withdraw-user-balance,v1,0,"A reentrancy attack is possible if the recipient add
 withdraw-user-balance,v2,0,
 deposit-not-revert,v1,1,
 deposit-not-revert,v2,1,
-deposit-revert,v1,1,
-deposit-revert,v2,1,
+deposit-revert-if-low-eth,v1,1,
+deposit-revert-if-low-eth,v2,1,
 withdraw-not-revert,v1,0,"A reentrancy attack is possible if the recipient address is an untrusted contract."
 withdraw-not-revert,v2,0,
 withdraw-revert,v1,1,
 withdraw-revert,v2,0,
+withdraw-sender-rcv,v1,0,"`msg.sender` can be an untrusted contract that transfer the received ETH to another account."
+withdraw-sender-rcv,v2,0,
+withdraw-sender-rcv-EOA,v1,1,
+withdraw-sender-rcv-EOA,v2,1,
+
