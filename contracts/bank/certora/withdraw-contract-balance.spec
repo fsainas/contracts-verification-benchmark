@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 rule withdraw_contract_balance {
     env e;
     uint256 amount;
