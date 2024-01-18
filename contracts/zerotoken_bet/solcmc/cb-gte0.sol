@@ -1,4 +1,4 @@
-// P1: the contract balance is always nonnegative
+// the contract balance is non-negative
 
 function invariant() public view {
     assert (balance >= 0);

@@ -1,4 +1,4 @@
-// P1: the contract balance is always nonnegative
+// the contract balance is always nonnegative
 
 invariant nonneg_and_sum2()
     // getBalanceA()>=0 && getBalanceB()>=0 && getBalance()>=0 &&
