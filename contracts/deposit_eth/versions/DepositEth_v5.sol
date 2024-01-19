@@ -2,8 +2,8 @@
 pragma solidity >= 0.8.2;
 import "./lib/ReentrancyGuard.sol";
 
-/// @custom:version `withdraw` requires a balance of at least `amount+1` instead of `amount`.
-contract SimpleTransfer is ReentrancyGuard {
+/// @custom:version non-reentrant `withdraw` requires a balance of at least `amount+1` instead of `amount`.
+contract DepositEth is ReentrancyGuard {
 
     uint private sent;
     uint public immutable initial_deposit;

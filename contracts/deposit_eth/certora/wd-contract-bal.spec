@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 rule wd_contract_bal {
     env e;
     uint amount;
