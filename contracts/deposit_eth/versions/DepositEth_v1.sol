@@ -2,7 +2,7 @@
 pragma solidity >= 0.8.2;
 
 /// @custom:version reentrant `withdraw`.
-contract SimpleTransfer {
+contract DepositEth {
 
     uint private sent;
     uint public immutable initial_deposit;
@@ -19,5 +19,4 @@ contract SimpleTransfer {
         (bool succ,) = msg.sender.call{value: amount}("");
         require(succ);	
     }
-
 }

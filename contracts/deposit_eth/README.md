@@ -1,50 +1,63 @@
 # Deposit (ETH)
-
 ## Specification
-The contract has an initial balance, which consists of the amount of ETH paid to the constructor, plus the balance of the address of the contract before deployment. The contract has a `withdraw` function that can be called by anyone and transfers an `amount` of ETH (specified as a parameter) to the transaction sender.
+The contract accepts a single deposit of ETH through the constructor. The function `withdraw(amount)` can be called by anyone to transfer `amount` ETH to the transaction sender.
 
 ## Properties
-- **always-depletable**: any user at any time can obtain the full balance of the contract.
-- **rel-le-init-bal**: the overall withdrawn amount does not exceed the initial deposit.
+- **always-depletable**: any user (EOA) at any time can fire a transaction to receive the full balance of the contract.
 - **wd-contract-bal**: the contract balance is decreased by `amount` after a successful `withdraw(amount)`.
+- **wd-leq-init-bal**: the overall withdrawn amount does not exceed the initial deposit.
 - **wd-not-revert**: a transaction `withdraw(amount)` is not reverted whenever the `amount` does not exceed the contract balance.
-- **wd-sender-bal**: after a successful `withdraw(amount)`, the balance of the transaction sender is increased by `amount` ETH.
+- **wd-sender-rcv**: after a successful `withdraw(amount)`, the balance of the transaction sender is increased by `amount` ETH.
+- **wd-sender-rcv-EOA**: after a successful `withdraw(amount)` originated by an EOA, the balance of the transaction sender is increased by `amount` ETH.
 
 ## Versions
 - **v1**: reentrant `withdraw`.
-- **v2**: non-reentrant `withdraw`, using [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.2/contracts/security/ReentrancyGuard.sol).
-- **v3**: `withdraw` transfers to `address(0)` instead of `msg.sender`.
-- **v4**: `withdraw` transfers `amount-1` instead of `amount`.
-- **v5**: `withdraw` requires a balance of at least `amount+1` instead of `amount`.
+- **v2**: non-reentrant `withdraw`.
+- **v3**: non-reentrant `withdraw` transfers to `address(0)` instead of `msg.sender`.
+- **v4**: non-reentrant `withdraw` transfers `amount-1` instead of `amount`.
+- **v5**: non-reentrant `withdraw` requires a balance of at least `amount+1` instead of `amount`.
+- **v6**: non-reentrant `withdraw` with blacklist.
+- **v7**: non-reentrant `withdraw` with whitelist.
+- **v8**: `withdraw` callable only by EOAs.
 
 ## Ground truth
-|        | always-depletable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
-|--------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | 1                 | 0[^1]             | 0[^2]             | 0                 | 0                 |
-| **v2** | 1                 | 0                 | 1                 | 0                 | 1                 |
-| **v3** | 0                 | 0                 | 1                 | 1                 | 0                 |
-| **v4** | 0                 | 0                 | 0                 | 0                 | 0                 |
-| **v5** | 0                 | 0                 | 1                 | 0                 | 1                 |
+|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
+|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **v1** | 1                 | 0[^1]             | 0[^2]             | 0                 | 0[^3]             | 1                 |
+| **v2** | 1                 | 1                 | 0                 | 0                 | 0                 | 1                 |
+| **v3** | 0                 | 1                 | 0                 | 1                 | 0                 | 0                 |
+| **v4** | 0                 | 0                 | 0                 | 0                 | 0                 | 0                 |
+| **v5** | 0                 | 1                 | 0                 | 0                 | 0                 | 1                 |
+| **v6** | 0                 | 1                 | 0                 | 0                 | 0                 | 1                 |
+| **v7** | 0                 | 1                 | 0                 | 0                 | 0                 | 1                 |
+| **v8** | 1                 | 1                 | 0                 | 1                 | 1                 | 1                 |
  
-[^1]: This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `self-destruct`.
-[^2]: A reentrant call to `withdraw` can remove more ETH than that specified in `amount`.
+[^1]: A reentrant call to `withdraw` can remove more ETH than the specified `amount`.
+[^2]: This property should always be false, since the contract can receive ETH when its address is specified in a coinbase transaction or in a `s-leq-destruct`.
+[^3]: `msg.sender` can be an untrusted contract that transfer the received ETH to another account.
 
 ## Experiments
 
 ### SolCMC
-|        | always-depletable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
-|--------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | ND                | TN!               | TN                | ND                | TN                |
-| **v2** | ND                | TN!               | FN                | ND                | FN                |
-| **v3** | ND                | TN!               | FN                | ND                | TN                |
-| **v4** | ND                | TN!               | TN                | ND                | TN                |
-| **v5** | ND                | TN!               | FN                | ND                | FN                | 
+|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
+|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **v1** | ND                | TN                | TN!               | ND                | TN                | FN                |
+| **v2** | ND                | FN                | TN!               | ND                | TN                | FN                |
+| **v3** | ND                | FN                | TN!               | ND                | TN                | TN                |
+| **v4** | ND                | TN                | TN!               | ND                | TN                | TN                |
+| **v5** | ND                | FN                | TN!               | ND                | TN                | FN                |
+| **v6** | ND                | FN                | TN!               | ND                | TN                | FN                |
+| **v7** | ND                | FN                | TN!               | ND                | TN                | FN                |
+| **v8** | ND                | FN                | TN!               | ND                | FN                | FN                |
 
 ### Certora
-|        | always-depletable | rel-le-init-bal   | wd-contract-bal   | wd-not-revert     | wd-sender-bal     |
-|--------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | ND                | TN!               | TN!               | TN!               | TN!               |
-| **v2** | ND                | TN!               | FN!               | TN!               | FN!               |
-| **v3** | ND                | TN!               | FN!               | FN!               | TN!               |
-| **v4** | ND                | TN!               | TN!               | TN!               | TN!               |
-| **v5** | ND                | TN!               | FN!               | TN!               | FN!               |
+|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
+|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **v1** | ND                | TN!               | TN!               | TN!               | TN!               | FN!               |
+| **v2** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
+| **v3** | ND                | FN!               | TN!               | FN!               | TN!               | TN!               |
+| **v4** | ND                | TN!               | TN!               | TN!               | TN!               | TN!               |
+| **v5** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
+| **v6** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
+| **v7** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
+| **v8** | ND                | FN!               | TN!               | FN!               | FN!               | FN!               |
