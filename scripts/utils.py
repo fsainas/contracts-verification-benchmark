@@ -3,11 +3,12 @@ import re
 
 OUT_HEADER = ['property', 'version', 'outcome', 'footnote']     # outcome in P,P!,N,N!
 
-WEAK_POSITIVE = "P"
-WEAK_NEGATIVE = "N"
-STRONG_POSITIVE = "P!"
-STRONG_NEGATIVE = "N!"
-NONDEFINABLE = "ND"
+WEAK_POSITIVE = 'P'
+WEAK_NEGATIVE = 'N'
+STRONG_POSITIVE = 'P!'
+STRONG_NEGATIVE = 'N!'
+NONDEFINABLE = 'ND'
+ERROR = 'ERR'
 
 
 def write_log(path, log):
