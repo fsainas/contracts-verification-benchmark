@@ -1,7 +1,5 @@
 """
-Name: run_certora
-Description:
-    Operates on either a single file or every file within a directory.
+Operates on either a single file or every file within a directory.
 
 Usage:
     python run_certora.py -c <file_or_dir> -s <spec_file> -o <output_dir>
@@ -74,18 +72,18 @@ def run(contract_path, spec_path):
 
     # Check if the contract to verify exists
     if not os.path.isfile(contract_path):
-        error = f'{contract_path} not found.'
-        logging.error(error)
-        return (ERROR, error)
+        msg = f'{contract_path} not found.'
+        logging.error(msg)
+        return (ERROR, msg)
 
     # Name of the Solidity contract to verify
     contract_name = utils.get_contract_name(contract_path)
 
     # Check the contract name
     if not contract_name:
-        error = f'Could not retrieve {contract_path} contract name.'
-        logging.error(error)
-        return (ERROR, error)
+        msg = f'Could not retrieve {contract_path} contract name.'
+        logging.error(msg)
+        return (ERROR, msg)
 
     # Process specs file
     negate = False
@@ -100,9 +98,9 @@ def run(contract_path, spec_path):
 
         # Check if there are asserts or satisfy
         if not has_assert and not has_satisfy:
-            error = f'Error in {spec_path}: No "assert" or "satisfy" found.'
-            logging.error(error)
-            return (ERROR, error)
+            msg = f'Error in {spec_path}: No "assert" or "satisfy" found.'
+            logging.error(msg)
+            return (ERROR, msg)
 
         # Exit if both are used
         if has_assert and has_satisfy:
@@ -111,17 +109,17 @@ def run(contract_path, spec_path):
             return (ERROR, error)
 
         # Process tags
-        # Nondefinable
+        # Tag Nondefinable
         nondef = re.search('/// @custom:nondef (.*)', spec_code)
         if nondef:
             print(f'{contract_path}: {NONDEFINABLE} (nondefinable)')
             return (NONDEFINABLE, nondef.group(1))
 
-        # Negate
-        neg = re.search('/// @custom:negate', spec_code)
-        negate = True if neg else False
+        # Tag Negate
+        negate = re.search('/// @custom:negate', spec_code)
 
 
+    # Prepare to fill template command
     params = {}
     params['contract_path'] = contract_path
     params['name'] = contract_name
@@ -137,7 +135,7 @@ def run(contract_path, spec_path):
     params['msg'] = contract + "/" + spec
 
     command = COMMAND_TEMPLATE.substitute(params)
-    print(command)  # CONSIDER USE LOGGING
+    print(command)
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
 
