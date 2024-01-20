@@ -15,19 +15,19 @@ more precise verification techniques.
 > We are currently updating the contracts to the standard described in the "[extending the benchmark](#extending-the-benchmark)" section. Up-to-date contracts are marked with :white_check_mark:.
 
 The benchmark currently comprises several versions (correct or bugged) of the following use cases:
-- [Zero-token Bet](contracts/zerotoken_bet/) :white_check_mark:
-- [Zero-token Bank](contracts/zerotoken_bank/) :white_check_mark:
+- [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
+- [Bet (tokenless)](contracts/zerotoken_bet/) :white_check_mark:
 - [Deposit (ETH)](contracts/deposit_eth/) :white_check_mark:
 - [Deposit (ERC20)](contracts/deposit_erc20/) :white_check_mark:
-- [Call Wrapper](contracts/call-wrapper/) :white_check_mark:
-- [Bank](contracts/bank/) :white_check_mark:
-- [Lottery](contracts/lottery/)
+- [Bank (tokenless)](contracts/zerotoken_bank/)
+- [Bank (ETH)](contracts/bank/) :white_check_mark:
 - [Escrow](contracts/escrow/) :white_check_mark:
-- [Vesting Wallet](contracts/vesting_wallet/) :white_check_mark:
 - [Vault](contracts/vault/) :white_check_mark:
 - [Crowdfund](contracts/crowdfund/) :white_check_mark:
 - [Hash Timed Locked Contract](contracts/htlc/) :white_check_mark:
-- [Constant-product AMM](contracts/tinyamm/) :white_check_mark:
+- [Vesting Wallet](contracts/vesting_wallet/) :white_check_mark:
+- [Lottery](contracts/lottery/)
+- [Constant-product AMM](contracts/tinyamm/)
 - [Payment Splitter](contracts/payment_splitter/)
 - [Social Recovery Wallet](contracts/social_recovery_wallet/)
 
@@ -194,7 +194,7 @@ rule P1 {
 }
 ```
 
-### Version specifc properties
+### Version-specific properties
 
 Property files must follow the specified naming conventions:
 
@@ -207,6 +207,7 @@ version-specific properties; if a version-specific definition of the property
 exists, the tool will use it. Otherwise, it will default to the generic one.
 
 ### Property tags
+
 Incorporate the following tags into your properties files to enable specific features of the benchmark:
 
 - `/// @custom:nondef <note>`: Indicates the reason why a property is deemed
