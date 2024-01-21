@@ -17,7 +17,7 @@ run: contracts directories
 	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR) --output $(BUILD_DIR) --timeout $(to)
 
 one: contracts directories
-	@$(PYTHON) ../../../scripts/runs.py --contract $(contract) --timeout $(to)
+	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(contract) --timeout $(to)
 
 contracts: $(VERSIONS_DIR) $(wildcard $(PROPERTIES_DIR)/*.sol) $(CONTRACTS_DIR)
 	@echo "Building contracts..."
