@@ -1,4 +1,9 @@
+'''
+Utilities to run the toolchain such as common strings and useful functions.
+'''
+
 import csv
+import logging
 import re
 
 OUT_HEADER = ['property', 'version', 'outcome', 'footnote']     # outcome in P,P!,N,N!
@@ -25,10 +30,8 @@ def write_csv(path, rows):
 def remove_comments(file_content):
     # Remove single-line comments
     file_content = re.sub(r'//.*\n', '', file_content)
-    
     # Remove multi-line comments
     file_content = re.sub(r'/\*(.|\n)*?\*/', '', file_content)
-    
     return file_content
 
 
@@ -53,12 +56,8 @@ def get_contract_name(contract_path):
 
     if matches:
         # The contract to verify is the last one
-        contract_name = matches[0]
+        contract_name = matches[-1]
         return contract_name
     else:
-        sys.stderr.write(
-                '[Error]:' +
-                f'{contract_path}:' +
-                "Couldn't retrieve contract name.\n"
-        )
+        logging.error(f"{contract_path}: Couldn't retrieve contract name.")
         return
