@@ -1,7 +1,5 @@
 """
-Name: run_solcmc
-Description:
-    Operates on either a single file or every file within a directory.
+Operates on either a single file or every file within a directory.
 
 Usage:
     python run_solcmc.py -i <file_or_dir> -o <output_dir> [-t <timeout>]
@@ -11,7 +9,16 @@ from string import Template
 from multiprocessing import Pool
 import subprocess
 import argparse
+import logging
 import utils
+from utils import (
+        STRONG_POSITIVE,
+        STRONG_NEGATIVE,
+        WEAK_POSITIVE,
+        WEAK_NEGATIVE,
+        NONDEFINABLE,
+        ERROR
+        )
 import sys
 import re
 import os
@@ -49,7 +56,7 @@ def is_timeout_or_unknown(output):
     return re.search(pattern, output, re.DOTALL)
 
 
-def run_solcmc(contract_path, timeout):
+def run(contract_path, timeout):
     """
     Runs a single solcmc experiment.
 
@@ -58,26 +65,25 @@ def run_solcmc(contract_path, timeout):
     """
     # File not found
     if not os.path.isfile(contract_path): 
-        print("[ERROR]: " + contract_path + " not found", 
-              file=sys.stderr)
-        sys.exit(1)
+        msg = f'{contract_path} not found.'
+        logging.error(msg)
+        return (ERROR, msg)
 
-    # Parse tags
     negate = False
     with open(contract_path, 'r') as file:
         contract_code = file.read()
-        nondef = re.search('/// @custom:nondef (.*)', contract_code)
 
+        # Process tags
+        # Tag Nondefinable
+        nondef = re.search('/// @custom:nondef (.*)', contract_code)
         if nondef:
-            print(contract_path + ": " + utils.NONDEFINABLE + 
-                  " (nondefinable)")
+            print(f'{contract_path}: {NONDEFINABLE} (nondefinable)')
             return (utils.NONDEFINABLE, nondef.group(1))
 
-        neg = re.search('/// @custom:negate', contract_code)
+        # Tag Negate
+        negate = re.search('/// @custom:negate', contract_code)
 
-        if neg:
-            negate = True
-
+    # Prepare to fill template command
     params = {}
     params['contract_path'] = contract_path
     params['timeout'] = timeout
@@ -87,43 +93,44 @@ def run_solcmc(contract_path, timeout):
     log = subprocess.run(command.split(), capture_output=True, text=True)
     
     if has_error(log.stderr):
+        msg = log.stderr
         print(log.stderr, file=sys.stderr)
         if has_source_error(log.stderr):
-            print('Use the dot to make a relative import: ' +
-                  "e.g. './lib/lib.sol'.\n")
-        sys.exit(1)
+            msg = 'Use the dot to make a relative import: e.g. "./lib/lib.sol"'
+            loggin.error(msg)
+        return (ERROR, msg)
 
-    # GNU coreutils timeout
+    # Timeout
     if (not log.stderr) and (not log.stdout):
-        res = utils.WEAK_NEGATIVE
-        print(contract_path + ": " + res + " (timeout)")
+        res = WEAK_NEGATIVE
+        print(f'{contract_path}: {res} (timeout)')
         return (res, log.stderr)
 
     if is_timeout_or_unknown(log.stderr):
-        res = utils.WEAK_POSITIVE if negate else utils.WEAK_NEGATIVE
-        print(contract_path + ": " + res + " (unknown)")
+        res = WEAK_POSITIVE if negate else WEAK_NEGATIVE
+        print(f'{contract_path}: {res} (unknown)')
         return (res, log.stderr)
 
     if has_assertion_warning(log.stderr):
-        res = utils.STRONG_POSITIVE if negate else utils.STRONG_NEGATIVE
-        print(contract_path + ": " + res)
+        res = STRONG_POSITIVE if negate else STRONG_NEGATIVE
+        print(f'{contract_path}: {res}')
         return (res, log.stderr)
 
-    res = utils.STRONG_NEGATIVE if negate else utils.STRONG_POSITIVE
-    print(contract_path + ": " + res)
+    res = STRONG_NEGATIVE if negate else STRONG_POSITIVE
+    print(f'{contract_path}: {res}')
     return (res, log.stderr)
 
 
-def run_solcmc_parallel(id, contract_path, timeout, logs_dir):
+def run_log(id, contract_path, timeout, logs_dir):
     """
-    Calls run_solcmc() and writes the log.
+    Calls run() and writes the log.
     """
-    (outcome, log) = run_solcmc(contract_path, timeout)
+    (outcome, log) = run(contract_path, timeout)
     utils.write_log(logs_dir + id + '.log', log)
     return (id, outcome)
 
 
-def run_all_solcmc(contracts_dir, timeout, logs_dir):
+def run_all(contracts_dir, timeout, logs_dir):
     """
     Runs solcmc on all files of a directory.
 
@@ -147,7 +154,7 @@ def run_all_solcmc(contracts_dir, timeout, logs_dir):
 
     with Pool(processes=THREADS) as pool:
         # [(id, outcome), ...]
-        results = pool.starmap(run_solcmc_parallel, inputs)
+        results = pool.starmap(run_log, inputs)
         for (id, outcome) in results:
             outcomes[id] = outcome
 
@@ -184,7 +191,7 @@ if __name__ == "__main__":
     output_dir = args.output if args.output[-1] == '/' else args.output + '/'
     logs_dir = output_dir + 'logs/'
 
-    outcomes = run_all_solcmc(contracts_dir, timeout, logs_dir)
+    outcomes = run_all(contracts_dir, timeout, logs_dir)
 
     out_csv = [utils.OUT_HEADER]
 

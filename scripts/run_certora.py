@@ -1,7 +1,5 @@
 """
-Name: run_certora
-Description:
-    Operates on either a single file or every file within a directory.
+Operates on either a single file or every file within a directory.
 
 Usage:
     python run_certora.py -c <file_or_dir> -s <spec_file> -o <output_dir>
@@ -11,7 +9,16 @@ from string import Template
 from multiprocessing import Pool
 import subprocess
 import argparse
+import logging
 import utils
+from utils import (
+        STRONG_POSITIVE,
+        STRONG_NEGATIVE,
+        WEAK_POSITIVE,
+        WEAK_NEGATIVE,
+        NONDEFINABLE,
+        ERROR
+        )
 import glob
 import sys
 import os
@@ -55,7 +62,7 @@ def get_properties(spec_path):
     )
 
 
-def run_certora(contract_path, spec_path):
+def run(contract_path, spec_path):
     """
     Runs a single certora experiment.
 
@@ -63,78 +70,106 @@ def run_certora(contract_path, spec_path):
         tuple: (outcome, log)
     """
 
+    # Check if the contract to verify exists
+    if not os.path.isfile(contract_path):
+        msg = f'{contract_path} not found.'
+        logging.error(msg)
+        return (ERROR, msg)
+
+    # Name of the Solidity contract to verify
     contract_name = utils.get_contract_name(contract_path)
 
-    if not os.path.isfile(contract_path): 
-        print("[ERROR]: " + contract_path + " not found", 
-              file=sys.stderr)
-        sys.exit(1)
-
+    # Check the contract name
     if not contract_name:
-        print("[ERROR]: Could not retrieve contract name: " + contract_path , 
-              file=sys.stderr)
-        sys.exit(1)
+        msg = f'Could not retrieve {contract_path} contract name.'
+        logging.error(msg)
+        return (ERROR, msg)
 
-    # Parse tags
+    # Process specs file
     negate = False
+    has_satisfy = False
+    has_assert = False
     with open(spec_path, 'r') as file:
         spec_code = file.read()
+        spec_no_comments = utils.remove_comments(spec_code)
+
+        has_satisfy = re.search('satisfy', spec_no_comments)
+        has_assert = re.search('assert', spec_no_comments)
+
+        # Check if there are asserts or satisfy
+        if not has_assert and not has_satisfy:
+            msg = f'Error in {spec_path}: No "assert" or "satisfy" found.'
+            logging.error(msg)
+            return (ERROR, msg)
+
+        # Exit if both are used
+        if has_assert and has_satisfy:
+            error = f'Error in {spec_path}: Combining both "satisfy" and "assert" is not allowed.'
+            logging.error(error)
+            return (ERROR, error)
+
+        # Process tags
+        # Tag Nondefinable
         nondef = re.search('/// @custom:nondef (.*)', spec_code)
-
         if nondef:
-            print(contract_path + ": " + utils.NONDEFINABLE + 
-                  " (nondefinable)")
-            return (utils.NONDEFINABLE, nondef.group(1))
+            print(f'{contract_path}: {NONDEFINABLE} (nondefinable)')
+            return (NONDEFINABLE, nondef.group(1))
 
-        neg = re.search('/// @custom:negate', spec_code)
+        # Tag Negate
+        negate = re.search('/// @custom:negate', spec_code)
 
-        if neg:
-            negate = True
 
+    # Prepare to fill template command
     params = {}
     params['contract_path'] = contract_path
     params['name'] = contract_name
     params['spec_path'] = spec_path
-    
+
     try:
         contract = contract_path.split('/')[-1].split('.')[0].split('_')
         contract = contract[0]+contract[2]
     except:
         contract = contract_path.split('/')[-1].split('.')[0]
     spec = spec_path.split('/')[-1].split('.')[0] 
+
     params['msg'] = contract + "/" + spec
 
     command = COMMAND_TEMPLATE.substitute(params)
     print(command)
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
+
+    # Handle Certora errors
     if log.stderr:
         print(log.stderr, file=sys.stderr)
 
     if has_critical_error(log.stdout):
-        print(log.stdout, file=sys.stderr)
-        sys.exit(1)
+        logging.error(log.stdout)
+        return (ERR, log.stdout)
 
-    if no_errors_found(log.stdout):
-        res = utils.STRONG_NEGATIVE if negate else utils.STRONG_POSITIVE
-        print(contract_path + ", " + spec_path + ": " + res)
-        return (res, log.stdout+"\n"+log.stderr)
-    else:
-        res = utils.STRONG_POSITIVE if negate else utils.STRONG_NEGATIVE
-        print(contract_path + ", " + spec_path + ": " + res)
-        return (res, log.stdout+"\n"+log.stderr)
+    # Save result
+    is_positive = no_errors_found(log.stdout)
+    # Negation
+    is_positive = not is_positive if negate else is_positive
+
+    res = STRONG_POSITIVE if has_assert else WEAK_POSITIVE
+    if not is_positive:
+        res = WEAK_NEGATIVE if has_assert else STRONG_NEGATIVE
+
+    print(f'{contract_path}, {spec_path}: {res}')
+    return (res, f'{log.stdout}\n\n{log.stderr}')
 
 
-def run_certora_parallel(id, contract_path, spec_path, logs_dir):
+def run_log(id, contract_path, spec_path, logs_dir):
     """
-    Calls run_certora() and writes the log.
+    Calls run() and writes the log.
     """
-    (outcome, log) = run_certora(contract_path, spec_path)
+    (outcome, log) = run(contract_path, spec_path)
     utils.write_log(logs_dir + id + '.log', log)
     return (id, outcome)
 
 
-def run_all_certora(contracts_dir, spec_path, logs_dir):
+def run_all(contracts_dir, spec_path, logs_dir):
     """
     Runs certora on all files of a directory.
 
@@ -191,7 +226,7 @@ def run_all_certora(contracts_dir, spec_path, logs_dir):
 
     with Pool(processes=THREADS) as pool:
         # [(id, outcome), ...]
-        results = pool.starmap(run_certora_parallel, inputs)
+        results = pool.starmap(run_log, inputs)
         for (id, outcome) in results:
             outcomes[id] = outcome
 
@@ -229,7 +264,7 @@ if __name__ == "__main__":
     logs_dir = output_dir + 'logs/'
     spec_path = args.specs if args.specs[-1] == '/' else args.specs + '/'
 
-    outcomes = run_all_certora(contracts_dir, spec_path, logs_dir)
+    outcomes = run_all(contracts_dir, spec_path, logs_dir)
 
     out_csv = [utils.OUT_HEADER]
 

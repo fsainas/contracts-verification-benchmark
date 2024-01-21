@@ -1,3 +1,4 @@
+# MERGE TO certora.py
 """
 Name: runc
 Description:
@@ -33,6 +34,6 @@ if __name__ == "__main__":
               file=sys.stderr)
     spec_path = args.specs
 
-    (out, log) = run_certora.run_certora(contract, spec_path)
+    (out, log) = run_certora.run(contract, spec_path)
     print(log)
     print("Result: " + out) 
