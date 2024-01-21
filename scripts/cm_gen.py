@@ -11,10 +11,10 @@ import sys
 CM_HEADER = ["property", "version", "result", "footnote"]
 
 
-def get_result(gt: int, out: str) -> str:
+def get_result(gt: str, out: str) -> str:
     if out == ERROR:
         return ERROR
-    if gt == 0:
+    if gt == '0':
         if out[0] == 'N':       # e.g 'N!'[0]
             return 'T' + out    # TN
         else:
@@ -52,7 +52,7 @@ def gen(ground_truth_csv: str, out_csv: str, properties_dir: str) -> list[str]:
             if not row or row[0] == '#':
                 continue
 
-            p, v, gt = row[0], row[1], int(row[2])
+            p, v, gt = row[0], row[1], row[2]
 
             if (p,v) in outputs:
                 out = outputs[(p,v)]
@@ -92,8 +92,8 @@ def gen(ground_truth_csv: str, out_csv: str, properties_dir: str) -> list[str]:
                 cm_rows.append([p, v, utils.NONDEFINABLE])  # no file
     
     for p,v in outputs.keys():
-        print(f'\n[WARNING]: missing {p}-{v} ground truth',
-              file=sys.stderr)
+        logging.error(f'Missing {p}-{v} ground truth.')
+        sys.exit(1)
 
     return cm_rows
 

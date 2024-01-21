@@ -1,14 +1,12 @@
-"""
-Script Name: mdtable_gen
-Description:
-    Creates a markdown table from a csv file with this scheme:
-    cols, rows, data.
+'''
+Creates a markdown table from a csv file with this scheme: cols, rows, data.
 
 Usage:
     python mdtable_gen.py --input file.csv
-"""
+'''
 
 import argparse
+import logging
 import csv
 import sys
 
@@ -18,7 +16,7 @@ MARGIN = 2   # between cells
 
 
 def gen_from_dict(data):
-    """
+    '''
     Writes the markdown table as a list of rows.
 
     Args:
@@ -26,13 +24,13 @@ def gen_from_dict(data):
 
     Returns:
         str: markdown table
-    """
+    '''
 
     cols_ids = sorted(set([c for c, _ in data.keys()]))
     rows_ids = sorted(set([r for _, r in data.keys()]))
 
     if not rows_ids:
-        print("\nEmpty cm.csv file!\n", file=sys.stderr)
+        logging.error('Empty cm.csv file.')
         sys.exit(1)
 
     max_c_length = max([len(c) for c in cols_ids])
@@ -95,10 +93,7 @@ def gen_from_csv(input_file):
         first_row = next(csv_reader)
 
         if not first_row:
-            print("\n[Error]: empty file: " +
-                  input_file + '\n' +
-                  "-> " + ','.join(row),
-                  file=sys.stderr)
+            logging.error(f'{input_file} is empty.')
             sys.exit(1)
 
         data = {}      # (c,r): (data, footnote)
@@ -111,10 +106,8 @@ def gen_from_csv(input_file):
             c, r, d = row[0], row[1], row[2]
 
             if len(c) == 0 or len(r) == 0 or len(d) == 0:
-                print("\n[Error]: missing values in " +
-                      input_file + '\n' +
-                      "-> " + ','.join(row),
-                      file=sys.stderr)
+                logging.error(f'Missing values in {input_file}.\n'
+                              f'-> {c},{r},{d}')
                 sys.exit(1)
 
             fn = row[3] if len(row) == 4 else ''    # footnote

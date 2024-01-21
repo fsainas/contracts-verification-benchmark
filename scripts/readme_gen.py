@@ -1,3 +1,7 @@
+'''
+Generates the plain README.
+'''
+
 import json
 from string import Template
 from os import listdir
@@ -56,10 +60,7 @@ def get_versions(versions_dir):
             with open(versions_dir + fname) as f:
                 content = f.read()
         except FileNotFoundError as e:
-            print("\n[Error]: README generation:" +
-                  fname + " not found.\n" +
-                  str(e),
-                  file=sys.stderr)
+            logging.error(f'README generation: {fname} not found.\n{e}')
             sys.exit(1)
 
         res = re.search('/// @custom:version (.*)', content)
@@ -67,6 +68,7 @@ def get_versions(versions_dir):
             versions.append(res.group(1))
         else:
             logging.warning(f'{fname} has no version comment.')
+
     return versions
 
 
@@ -76,28 +78,21 @@ def readme_gen(usecase_dir):
         with open(f'{usecase_dir}/skeleton.json') as f:
             skeleton = json.loads(f.read())
     except json.decoder.JSONDecodeError as e:
-        print("\n[Error]: README generation:" +
-              " Bad skeleton.json formatting.\n" +
-              str(e),
-              file=sys.stderr)
+        logging.error(f'README generation: Bad skeleton.json formatting.\n{e}')
         sys.exit(1)
 
     # Check properties formatting
     if not isinstance(skeleton['properties'], dict):
-        print("\n[Error]: README generation: " +
-              "Bad formatting of properties in skeleton.json.\n",
-              file=sys.stderr)
+        logging.error('README generation: Bad formatting of properties in skeleton.json.')
         sys.exit(1)
 
     # Pattern for allowed characters in property ids
     id_pattern = re.compile(r'^[a-zA-Z0-9-]+$')
-
     # Check each key against the pattern
     for id in skeleton['properties'].keys():
         if not id_pattern.match(id):
-            print("\n[Error]: README generation: " +
-                  f"Invalid characters in property ID '{id}'. Only alphanumeric characters and '-' are allowed.",
-                  file=sys.stderr)
+            logging.error(f'README generation: Invalid characters in property ID "{id}".'
+                          ' Only alphanumeric characters and \'-\' are allowed.')
             sys.exit(1)
 
     # Allow specification in a separate file (file:filename.md)
@@ -109,9 +104,7 @@ def readme_gen(usecase_dir):
             with open(f'{usecase_dir}/{spec_file_name}') as f:
                 specification = f.read()
         except FileNotFoundError as e:
-            print("\n[Error]: README generation:" +
-                  str(e),
-                  file=sys.stderr)
+            logging.error(f'README generation:\n{e}')
             sys.exit(1)
     else:
         specification = skeleton['specification']
