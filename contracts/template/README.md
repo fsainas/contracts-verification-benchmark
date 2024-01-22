@@ -23,12 +23,12 @@ Usecase specification.
 |        | bar   | foo   |
 |--------|-------|-------|
 | **v1** | ND    | TP!   |
-| **v2** | TP!   | TP!   |
+| **v2** | TP!   | FN!   |
  
 
 ### Certora
 |        | bar   | foo   |
 |--------|-------|-------|
-| **v1** | ND    | FN!   |
-| **v2** | ND    | FN!   |
+| **v1** | ND    | ERR   |
+| **v2** | ND    | FN    |
  

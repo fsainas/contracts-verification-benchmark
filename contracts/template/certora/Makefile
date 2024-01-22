@@ -23,7 +23,7 @@ run: clean_specs contracts specs directories
 	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(CONTRACTS_DIR) --specs $(SPEC_DIR) --output $(BUILD_DIR)
 
 one: clean_specs contracts specs directories 
-	@$(PYTHON) ../../../scripts/runc.py --contract $(contract) --specs $(specs)
+	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(contract) --specs $(specs)
 
 contracts: $(CONTRACTS_DIR) getters
 	@$(PYTHON) ../../../scripts/injector.py --base $(VERSIONS_DIR) --inject $(GETTER_FILE) --output $(CONTRACTS_DIR)

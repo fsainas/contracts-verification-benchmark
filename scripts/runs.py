@@ -1,3 +1,4 @@
+# MERGE TO solcmc.py
 """
 Name: runc
 Description:
@@ -34,6 +35,6 @@ if __name__ == "__main__":
         sys.exit(1)
     timeout = args.timeout
 
-    (out, log) = run_solcmc.run_solcmc(contract, timeout)
+    (out, log) = run_solcmc.run(contract, timeout)
     print(log)
     print("Result: " + out) 

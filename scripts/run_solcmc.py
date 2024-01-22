@@ -1,14 +1,15 @@
-"""
+'''
 Operates on either a single file or every file within a directory.
 
 Usage:
     python run_solcmc.py -i <file_or_dir> -o <output_dir> [-t <timeout>]
-"""
+'''
 
 from string import Template
 from multiprocessing import Pool
 import subprocess
 import argparse
+import glob
 import logging
 import utils
 from utils import (
@@ -57,17 +58,17 @@ def is_timeout_or_unknown(output):
 
 
 def run(contract_path, timeout):
-    """
+    '''
     Runs a single solcmc experiment.
 
     Returns:
         tuple: (outcome, log)
-    """
+    '''
     # File not found
     if not os.path.isfile(contract_path): 
         msg = f'{contract_path} not found.'
         logging.error(msg)
-        return (ERROR, msg)
+        return ERROR, msg
 
     negate = False
     with open(contract_path, 'r') as file:
@@ -78,7 +79,7 @@ def run(contract_path, timeout):
         nondef = re.search('/// @custom:nondef (.*)', contract_code)
         if nondef:
             print(f'{contract_path}: {NONDEFINABLE} (nondefinable)')
-            return (utils.NONDEFINABLE, nondef.group(1))
+            return utils.NONDEFINABLE, nondef.group(1)
 
         # Tag Negate
         negate = re.search('/// @custom:negate', contract_code)
@@ -97,60 +98,63 @@ def run(contract_path, timeout):
         print(log.stderr, file=sys.stderr)
         if has_source_error(log.stderr):
             msg = 'Use the dot to make a relative import: e.g. "./lib/lib.sol"'
-            loggin.error(msg)
-        return (ERROR, msg)
+            logging.error(msg)
+        return ERROR, msg
 
     # Timeout
     if (not log.stderr) and (not log.stdout):
         res = WEAK_NEGATIVE
         print(f'{contract_path}: {res} (timeout)')
-        return (res, log.stderr)
+        return res, log.stderr
 
     if is_timeout_or_unknown(log.stderr):
         res = WEAK_POSITIVE if negate else WEAK_NEGATIVE
         print(f'{contract_path}: {res} (unknown)')
-        return (res, log.stderr)
+        return res, log.stderr
 
     if has_assertion_warning(log.stderr):
         res = STRONG_POSITIVE if negate else STRONG_NEGATIVE
         print(f'{contract_path}: {res}')
-        return (res, log.stderr)
+        return res, log.stderr
 
     res = STRONG_NEGATIVE if negate else STRONG_POSITIVE
     print(f'{contract_path}: {res}')
-    return (res, log.stderr)
+    return res, log.stderr
 
 
-def run_log(id, contract_path, timeout, logs_dir):
-    """
+def run_log(id, contract_path, timeout, logs_dir=None):
+    '''
     Calls run() and writes the log.
-    """
-    (outcome, log) = run(contract_path, timeout)
-    utils.write_log(logs_dir + id + '.log', log)
-    return (id, outcome)
+    '''
+    outcome, log = run(contract_path, timeout)
+    if logs_dir:
+        utils.write_log(logs_dir + id + '.log', log)
+    else:
+        print(log)
+        print(f'Result: {outcome}') 
+    return id, outcome
 
 
-def run_all(contracts_dir, timeout, logs_dir):
-    """
+def run_all(contracts_paths, timeout, logs_dir=None):
+    '''
     Runs solcmc on all files of a directory.
 
     Args:
-        contracts_dir (str): Contracts directory path.
+        contracts_paths (list): Contracts paths.
         timeout (int): Solcmc timeout.
 
     Returns:
-        dict: {p*_v*: (outcome, log)}
-    """
+        dict: {key_v*: outcome}
+    '''
     outcomes = {}
 
     # inputs for run_solcmc_parallel()
     # [(id, contract_path, timeout, logs_dir), ...]
     inputs = []
 
-    for file in os.listdir(contracts_dir):
-        if file.endswith('.sol'):     
-            id = '_'.join(file.split('_')[-2:]).split('.sol')[0]
-            inputs.append((id, contracts_dir + file, timeout, logs_dir))
+    for contract_path in contracts_paths:
+        id = '_'.join(contract_path.split('_')[-2:]).split('.sol')[0]
+        inputs.append((id, contract_path, timeout, logs_dir))
 
     with Pool(processes=THREADS) as pool:
         # [(id, outcome), ...]
@@ -161,43 +165,55 @@ def run_all(contracts_dir, timeout, logs_dir):
     return outcomes
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
             '--contracts',
             '-c',
-            help='Contracts dir.',
+            help='Contracts dir or contract file..',
             required=True
     )
     parser.add_argument(  # build/
             '--output',
             '-o',
-            help='Output dir.',
-            required=True
+            help='Output directory.'
+            #required=True
     )
     parser.add_argument(
             '--timeout',
             '-t',
-            help='Timeout time'
+            help='Timeout time.'
     )
     args = parser.parse_args()
 
-    timeout = args.timeout if args.timeout else DEFAULT_TIMEOUT
-    contracts_dir = (
+    # Remove final slash
+    contracts = (
             args.contracts
-            if args.contracts[-1] == '/'
-            else args.contracts + '/'
+            if args.contracts[-1] != '/'
+            else args.contracts[:-1]
             )
-    output_dir = args.output if args.output[-1] == '/' else args.output + '/'
-    logs_dir = output_dir + 'logs/'
 
-    outcomes = run_all(contracts_dir, timeout, logs_dir)
+    # Get contracts paths
+    contracts_paths = (
+            glob.glob(f'{contracts}/*.sol')
+            if os.path.isdir(contracts)
+            else [contracts]
+    )
 
-    out_csv = [utils.OUT_HEADER]
+    timeout = args.timeout if args.timeout else DEFAULT_TIMEOUT
 
-    for id in outcomes.keys():
-        p = id.split('_')[0]
-        v = id.split('_')[1]
-        out_csv.append([p, v, outcomes[id]])
+    if args.output:
+        output_dir = args.output if args.output[-1] == '/' else args.output + '/'
+        logs_dir = output_dir + 'logs/'
 
-    utils.write_csv(output_dir + 'out.csv', out_csv)
+        outcomes = run_all(contracts_paths, timeout, logs_dir)
+
+        out_csv = [utils.OUT_HEADER]
+        for id in outcomes.keys():
+            p = id.split('_')[0]
+            v = id.split('_')[1]
+            out_csv.append([p, v, outcomes[id]])
+
+        utils.write_csv(output_dir + 'out.csv', out_csv)
+    else:
+        run_all(contracts_paths, timeout)
