@@ -5,6 +5,7 @@ Utilities to run the toolchain such as common strings and useful functions.
 import csv
 import logging
 import re
+from pathlib import Path
 
 OUT_HEADER = ['property', 'version', 'outcome', 'footnote']     # outcome in P,P!,N,N!
 
@@ -61,3 +62,20 @@ def get_contract_name(contract_path):
     else:
         logging.error(f"{contract_path}: Couldn't retrieve contract name.")
         return
+
+
+def get_files_in_path(input_path, extensions=None):
+    path = Path(input_path)
+    if path.is_dir():
+        # If it's a directory, list all files inside with the specified extensions
+        if extensions:
+            files = [file for file in path.iterdir() 
+                    if file.is_file() and file.suffix in extensions]
+        else:
+            files = [file for file in path.iterdir() if file.is_file()]
+    else:
+        # If it's a file, use the file itself if it matches the specified extensions
+        files = [path] if not extensions or path.suffix in extensions else []
+
+    return files
+
