@@ -50,7 +50,7 @@ def build_contracts(versions_paths: list, properties_paths: list) -> dict:
 
             v_unbound_properties_paths = list(filter(
                     lambda x: not re.search(f'{p_id}', x),
-                    unbound_properties_paths
+                    v_unbound_properties_paths
                     ))
 
         v_properties_paths = v_bound_properties_paths + v_unbound_properties_paths
