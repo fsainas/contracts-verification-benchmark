@@ -203,16 +203,16 @@ function invariant() public {
         for contract in contracts.values():
             self.assertEqual(contract, expected)
 
-    def test_constructor_precond(self):
+    def test_constructor_preghost(self):
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
-        temp_prop = '''/// @custom:precond constructor
+        temp_prop = '''/// @custom:preghost constructor
 require(x == 1);
 '''
         expected = '''contract TestContract {
     uint x = 0;
 
     constructor() {
-        /// @custom:precond constructor
+        /// @custom:preghost constructor
         require(x == 1);
         x = 0;
     }
@@ -231,9 +231,9 @@ require(x == 1);
         for contract in contracts.values():
             self.assertEqual(contract, expected)
 
-    def test_constructor_postcond(self):
+    def test_constructor_postghost(self):
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
-        temp_prop = '''/// @custom:postcond constructor
+        temp_prop = '''/// @custom:postghost constructor
 assert(x == 0);
 '''
         expected = '''contract TestContract {
@@ -241,7 +241,7 @@ assert(x == 0);
 
     constructor() {
         x = 0;
-        /// @custom:postcond constructor
+        /// @custom:postghost constructor
         assert(x == 0);
     }
 
@@ -259,9 +259,9 @@ assert(x == 0);
         for contract in contracts.values():
             self.assertEqual(contract, expected)
 
-    def test_fun_precond(self):
+    def test_fun_preghost(self):
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
-        temp_prop = '''/// @custom:precond function fun1
+        temp_prop = '''/// @custom:preghost function fun1
 require(x == 1);
 '''
         expected = '''contract TestContract {
@@ -272,7 +272,7 @@ require(x == 1);
     }
 
     function fun1() public {
-        /// @custom:precond function fun1
+        /// @custom:preghost function fun1
         require(x == 1);
         return 1;
     }
@@ -287,9 +287,9 @@ require(x == 1);
         for contract in contracts.values():
             self.assertEqual(contract, expected)
 
-    def test_fun_postcond(self):
+    def test_fun_postghost(self):
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
-        temp_prop = '''/// @custom:postcond function fun1
+        temp_prop = '''/// @custom:postghost function fun1
 assert(x == 0);
 '''
         expected = '''contract TestContract {
@@ -300,7 +300,7 @@ assert(x == 0);
     }
 
     function fun1() public {
-        /// @custom:postcond function fun1
+        /// @custom:postghost function fun1
         assert(x == 0);
         return 1;
     }
