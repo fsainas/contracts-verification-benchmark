@@ -148,26 +148,34 @@ SolCMC directories contain:
 - `Makefile`: to run solcmc experiments and manage contracts building.
 - Property files.
 
-An example of a property file:
+#### SolCMC Instrumentation
+Three types of instrumentation are available for SolCMC verification: function
+preconditions, function postconditions, and invariants. To apply these, use the
+following tags within your property files:
 
+- `/// @custom:precond function <function name>`: Define conditions that must be satisfied before executing the body of a specific function. Typically `require` statements.
+- `/// @custom:postcond function <function name>`: Specify conditions that should be true after the execution of a particular function. Typically `assert` statements.
+- `/// @custom:invariant`: Declare conditions that must remain valid throughout the entire contract execution, expressed through functions.
+
+Example of a SolCMC property file:
 ```
-function p(<T> y, ...) public {
-    // preconditions
-    require(x != y);
-    // ...
+/// @custom:precond constructor
+require(x > 0);
 
-    // some change in state
+/// @custom:postcond constructor
+assert(z < 10);
+
+/// @custom:postcond function f1
+assert(y == 1);
+
+/// @custom:invariant
+function invariant(uint z) public {
+    require(x != y);
     f1(x, y);
     f2();
-    // ...
-
-    // postconditions
     assert(x != y);
-    // ...
 }
 ```
-
-In this case `x` could be a state variable of the contract and `y` an arbitrary value of type `T`.
 
 ### Certora directory structure
 
