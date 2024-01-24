@@ -16,6 +16,7 @@ from utils import (
         WEAK_POSITIVE,
         WEAK_NEGATIVE,
         NONDEFINABLE,
+        UNKNOWN,
         ERROR
         )
 import sys
@@ -101,9 +102,8 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT):
 
     # Timeout
     if (not log.stderr) and (not log.stdout):
-        res = WEAK_NEGATIVE
-        print(f'{contract_path}: {res} (timeout)')
-        return res, log.stderr
+        print(f'{contract_path}: {UNKNOWN} (timeout)')
+        return UNKNOWN, log.stderr
 
     if is_timeout_or_unknown(log.stderr):
         res = WEAK_POSITIVE if negate else WEAK_NEGATIVE
