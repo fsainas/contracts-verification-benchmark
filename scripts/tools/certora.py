@@ -120,7 +120,14 @@ def run(contract_path, spec_path):
 
     command = COMMAND_TEMPLATE.substitute(params)
     print(command)
-    log = subprocess.run(command.split(), capture_output=True, text=True)
+    try:
+        log = subprocess.run(command.split(), capture_output=True, text=True)
+    except FileNotFoundError as e:
+        if 'certoraRun' in str(e):
+            logging.error('Certora is not installed. Use:\npip install certora-cli.')
+            return ERROR, str(e)
+
+        
 
 
     # Handle Certora errors
@@ -129,7 +136,7 @@ def run(contract_path, spec_path):
 
     if has_critical_error(log.stdout):
         logging.error(log.stdout)
-        return ERR, log.stdout
+        return ERROR, log.stdout
 
     # Save result
     is_positive = no_errors_found(log.stdout)
