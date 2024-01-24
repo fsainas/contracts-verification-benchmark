@@ -1,7 +1,9 @@
 import argparse
 import logging
 import utils
-from utils import ERROR
+from utils import (
+        UNKNOWN,
+        ERROR)
 import glob
 import re
 import csv
@@ -14,6 +16,8 @@ CM_HEADER = ["property", "version", "result", "footnote"]
 def get_result(gt: str, out: str) -> str:
     if out == ERROR:
         return ERROR
+    if out == UNKNOWN:
+        return UNKNOWN
     if gt == '0':
         if out[0] == 'N':       # e.g 'N!'[0]
             return 'T' + out    # TN
