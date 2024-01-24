@@ -110,6 +110,31 @@ function invariant() public {
         for contract in contracts.values():
             self.assertEqual(contract, expected)
 
+    def test_nondef(self):
+        temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
+        temp_prop = '/// @custom:nondef This property is nondefinable.'
+        expected = '''contract TestContract {
+    uint x = 0;
+
+    constructor() {
+        x = 0;
+    }
+
+    function fun1() public {
+        return 1;
+    }
+
+    /// @custom:nondef This property is nondefinable.
+}
+'''
+        with open(temp_prop_path, 'w') as f:
+            f.write(temp_prop)
+
+        contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
+
+        for contract in contracts.values():
+            self.assertEqual(contract, expected)
+
     def test_nondef_header(self):
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
         temp_prop = '''/// @custom:nondef nondefinable property
