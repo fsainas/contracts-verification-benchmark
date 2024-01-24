@@ -9,12 +9,12 @@ import sys
 import re
 
 
-TAG_PRECOND = '/// @custom:precond'
-TAG_POSTCOND = '/// @custom:postcond'
+TAG_PREGHOST = '/// @custom:preghost'
+TAG_POSTGHOST = '/// @custom:postghost'
 TAG_INVARIANT = '/// @custom:invariant'
 
 
-def get_condition(lines, i):
+def get_ghost(lines, i):
     '''
     Yields the code until EOF or '///'.
     Returns the code and the new index.
@@ -22,8 +22,8 @@ def get_condition(lines, i):
     code = [lines[i-1]]     # Save tag
 
     while i < len(lines) and not any(
-            [TAG_PRECOND in lines[i],
-             TAG_POSTCOND in lines[i],
+            [TAG_PREGHOST in lines[i],
+             TAG_POSTGHOST in lines[i],
              TAG_INVARIANT in lines[i]]):
 
         code.append(lines[i])
@@ -32,20 +32,20 @@ def get_condition(lines, i):
     return code, i
 
 
-def get_conditions(property_path):
+def get_ghosts(property_path):
     '''
-    Extracts the conditions from a solcmc property file.
+    Extracts the ghost from a solcmc property file.
     Returns:
         dict: {
-            'preconditions': {},
-            'postconditions': {},
+            'preghosts': {},
+            'postghosts': {},
             'invariants': []
             }
     '''
 
-    conditions = {
-            'preconditions': {},
-            'postconditions': {},
+    ghosts = {
+            'preghosts': {},
+            'postghosts': {},
             'invariants': []
             }
 
@@ -53,17 +53,17 @@ def get_conditions(property_path):
     with open(property_path, 'r') as f:
         prop = f.read()
 
-        precond_match = re.search(TAG_PRECOND+' (.*)', prop)
-        postcond_match = re.search(TAG_POSTCOND+' (.*)', prop)
+        precond_match = re.search(TAG_PREGHOST + ' (.*)', prop)
+        postcond_match = re.search(TAG_POSTGHOST + ' (.*)', prop)
         inv_match = re.search(TAG_INVARIANT, prop)
 
         if not any([precond_match,
                     postcond_match,
                     inv_match]) and len(prop) > 0:
-            conditions['invariants'].append(l + '\n' for l in prop.splitlines())
-            return conditions
+            ghosts['invariants'].append(l + '\n' for l in prop.splitlines())
+            return ghosts
 
-    # Yield verification conditions
+    # Yield verification ghosts
     with open(property_path, 'r') as f:
         lines = f.readlines()
         i = 0
@@ -73,40 +73,40 @@ def get_conditions(property_path):
         while i < len(lines):
             line = lines[i]
 
-            precond_match = re.search(TAG_PRECOND+' (.*)', line)
-            postcond_match = re.search(TAG_POSTCOND+' (.*)', line)
+            precond_match = re.search(TAG_PREGHOST + ' (.*)', line)
+            postcond_match = re.search(TAG_POSTGHOST + ' (.*)', line)
             inv_match = re.search(TAG_INVARIANT, line)
 
             if precond_match:
                 if not header_collected:
                     header_collected = True
                     header = lines[:i]
-                # Save function name and preconditions
+                # Save function name and preghosts
                 fun = precond_match.group(1).strip()
-                precond, i = get_condition(lines, i+1)
-                conditions['preconditions'][fun] = header + precond
+                precond, i = get_ghost(lines, i+1)
+                ghosts['preghosts'][fun] = header + precond
             elif postcond_match:
                 if not header_collected:
                     header_collected = True
                     header = lines[:i]
-                # Save function name and postconditions
+                # Save function name and postghosts
                 fun = postcond_match.group(1).strip()
-                postcond, i = get_condition(lines, i+1)
-                conditions['postconditions'][fun] = header + postcond
+                postcond, i = get_ghost(lines, i+1)
+                ghosts['postghosts'][fun] = header + postcond
             elif inv_match:
                 if not header_collected:
                     header_collected = True
                     header = lines[:i]
                 # Save invariants
-                inv, i = get_condition(lines, i+1)
-                conditions['invariants'] = [header + inv]
+                inv, i = get_ghost(lines, i+1)
+                ghosts['invariants'] = [header + inv]
             else:
                 i += 1
 
             if header:
                 header = []
 
-    return conditions
+    return ghosts
 
 
 def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
@@ -162,32 +162,32 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
             with open(v_path, 'r') as f:
                 contract = f.readlines()
 
-            conditions = get_conditions(property_path)
+            ghosts = get_ghosts(property_path)
 
-            if not any([conditions['preconditions'],
-                       conditions['postconditions'],
-                       conditions['invariants']]):
+            if not any([ghosts['preghosts'],
+                       ghosts['postghosts'],
+                       ghosts['invariants']]):
                 logging.warning(f'No instrumentation found in {property_path}.')
 
-            for fun, code in conditions['preconditions'].items():
+            for fun, code in ghosts['preghosts'].items():
                 # Inject after function signature
                 contract = injector.inject_after(contract, code, fun)
                 if contract is None:
                     logging.error(
-                            f'Precondition injection failed: {property_path}: '
+                            f'Preghost injection failed: {property_path}: '
                             f'{v_path}: {fun}.')
                     sys.exit(1)
 
-            for fun, code in conditions['postconditions'].items():
+            for fun, code in ghosts['postghosts'].items():
                 # Inject before last bracket of function
                 contract = injector.inject_postcond(contract, code, fun)
                 if contract is None:
                     logging.error(
-                            f'Postcondition injection failed: {property_path}: '
+                            f'Postghost injection failed: {property_path}: '
                             f'{v_path}: {fun}.')
                     sys.exit(1)
 
-            for inv in conditions['invariants']:
+            for inv in ghosts['invariants']:
                 # Inject before last bracket
                 contract = injector.inject_before_last_bracket(contract, inv)
                 if contract is None:
