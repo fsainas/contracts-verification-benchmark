@@ -1,4 +1,5 @@
 from setup.instrumentation import instrument_contracts
+from unittest.mock import patch
 import unittest
 import tempfile
 import os
@@ -503,8 +504,18 @@ uint _z = 1;'''
         contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
 
         for contract in contracts.values():
-            print(contract)
             self.assertEqual(contract, expected)
+
+    @patch('logging.Logger.warning')
+    def test_empty_property(self, mock):
+        property_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
+        property = ' '
+
+        with open(property_path, 'w') as f:
+            f.write(property)
+
+        instrument_contracts([self.temp_version_path], [property_path])
+        mock.assert_called_once_with(f'No instrumentation found in {property_path}.')
 
 
 if __name__ == '__main__':
