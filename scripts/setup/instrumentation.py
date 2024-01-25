@@ -5,10 +5,12 @@ Generates solcmc contracts from versions and properties files.
 from setup import injector
 from pathlib import PurePath
 import logging
+import utils
 import sys
 import re
 
 
+TAG_GHOSTSTATE = '/// @custom:ghost'
 TAG_PREGHOST = '/// @custom:preghost'
 TAG_POSTGHOST = '/// @custom:postghost'
 TAG_INVARIANT = '/// @custom:invariant'
@@ -22,30 +24,27 @@ def get_ghost(lines, i):
     code = [lines[i-1]]     # Save tag
 
     while i < len(lines) and not any(
-            [TAG_PREGHOST in lines[i],
+            [TAG_GHOSTSTATE in lines[i],
+             TAG_PREGHOST in lines[i],
              TAG_POSTGHOST in lines[i],
              TAG_INVARIANT in lines[i]]):
 
         code.append(lines[i])
         i += 1
 
+    print(code)
     return code, i
 
 
-def get_ghosts(property_path):
+def get_ghosts(property_path: str) -> dict:
     '''
-    Extracts the ghost from a solcmc property file.
-    Returns:
-        dict: {
-            'preghosts': {},
-            'postghosts': {},
-            'invariants': []
-            }
+    Extracts the ghost code from a solcmc property file.
     '''
 
     ghosts = {
-            'preghosts': {},
-            'postghosts': {},
+            'pre': {},
+            'post': {},
+            'state': [],
             'invariants': []
             }
 
@@ -53,14 +52,16 @@ def get_ghosts(property_path):
     with open(property_path, 'r') as f:
         prop = f.read()
 
-        precond_match = re.search(TAG_PREGHOST + ' (.*)', prop)
-        postcond_match = re.search(TAG_POSTGHOST + ' (.*)', prop)
+        state_match = re.search(TAG_GHOSTSTATE, prop)
+        pre_match = re.search(TAG_PREGHOST + ' (.*)', prop)
+        post_match = re.search(TAG_POSTGHOST + ' (.*)', prop)
         inv_match = re.search(TAG_INVARIANT, prop)
 
-        if not any([precond_match,
-                    postcond_match,
+        if not any([state_match,
+                    pre_match,
+                    post_match,
                     inv_match]) and len(prop) > 0:
-            ghosts['invariants'].append(l + '\n' for l in prop.splitlines())
+            ghosts['invariants'].append([l + '\n' for l in prop.splitlines()])
             return ghosts
 
     # Yield verification ghosts
@@ -73,33 +74,42 @@ def get_ghosts(property_path):
         while i < len(lines):
             line = lines[i]
 
-            precond_match = re.search(TAG_PREGHOST + ' (.*)', line)
-            postcond_match = re.search(TAG_POSTGHOST + ' (.*)', line)
+            ''' This is very inefficient '''
+            # Look for a tag in the current line
+            state_match = re.search(TAG_GHOSTSTATE, line)
+            pre_match = re.search(TAG_PREGHOST + ' (.*)', line)
+            post_match = re.search(TAG_POSTGHOST + ' (.*)', line)
             inv_match = re.search(TAG_INVARIANT, line)
 
-            if precond_match:
+            if state_match:
+                if not header_collected:
+                    header_collected = True
+                    header = lines[:i]
+                state, i = get_ghost(lines, i+1)
+                ghosts['state'] += header + state
+            elif pre_match:
                 if not header_collected:
                     header_collected = True
                     header = lines[:i]
                 # Save function name and preghosts
-                fun = precond_match.group(1).strip()
+                fun = pre_match.group(1).strip()
                 precond, i = get_ghost(lines, i+1)
-                ghosts['preghosts'][fun] = header + precond
-            elif postcond_match:
+                ghosts['pre'][fun] = header + precond
+            elif post_match:
                 if not header_collected:
                     header_collected = True
                     header = lines[:i]
                 # Save function name and postghosts
-                fun = postcond_match.group(1).strip()
+                fun = post_match.group(1).strip()
                 postcond, i = get_ghost(lines, i+1)
-                ghosts['postghosts'][fun] = header + postcond
+                ghosts['post'][fun] = header + postcond
             elif inv_match:
                 if not header_collected:
                     header_collected = True
                     header = lines[:i]
                 # Save invariants
                 inv, i = get_ghost(lines, i+1)
-                ghosts['invariants'] = [header + inv]
+                ghosts['invariants'] += [header + inv]
             else:
                 i += 1
 
@@ -164,12 +174,23 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
 
             ghosts = get_ghosts(property_path)
 
-            if not any([ghosts['preghosts'],
-                       ghosts['postghosts'],
-                       ghosts['invariants']]):
+            if not any([ghosts['state'],
+                        ghosts['pre'],
+                        ghosts['post'],
+                        ghosts['invariants']]):
                 logging.warning(f'No instrumentation found in {property_path}.')
 
-            for fun, code in ghosts['preghosts'].items():
+            if ghosts['state']:
+                # Inject before last bracket
+                contract_pattern = 'contract ' + utils.get_contract_name(v_path)
+                contract = injector.inject_after(contract, ghosts['state'], contract_pattern)
+                if contract is None:
+                    state = ''.join(l for l in code)
+                    logging.error(f'Ghost state injection failed: {property_path}: '
+                                  f'{v_path}: {state}.')
+                    sys.exit(1)
+
+            for fun, code in ghosts['pre'].items():
                 # Inject after function signature
                 contract = injector.inject_after(contract, code, fun)
                 if contract is None:
@@ -178,7 +199,7 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
                             f'{v_path}: {fun}.')
                     sys.exit(1)
 
-            for fun, code in ghosts['postghosts'].items():
+            for fun, code in ghosts['post'].items():
                 # Inject before last bracket of function
                 contract = injector.inject_postcond(contract, code, fun)
                 if contract is None:

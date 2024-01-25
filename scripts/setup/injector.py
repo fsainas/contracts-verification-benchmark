@@ -40,9 +40,11 @@ def inject_before_last_bracket(base_code: list, to_inject_code: list):
 
     indentation = get_indentation(base_code[last_bracket_index]) + INDENT_STRING
 
+    print(to_inject_code)
     if last_bracket_index:
         return (base_code[:last_bracket_index] + 
                 [indentation + l for l in to_inject_code] + 
+                ['\n' if to_inject_code[-1] != '\n' else ''] +  # Make sure to not write inside an existing line
                 base_code[last_bracket_index:])
     else: 
         return None
@@ -60,6 +62,7 @@ def inject_after(base_code: list, to_inject_code: list, pattern: str) -> list:
             indentation = get_indentation(line) + INDENT_STRING
             return (base_code[:i+1] + 
                     [indentation + l for l in to_inject_code] + 
+                    ['\n' if to_inject_code[-1][-1] != '\n' else ''] +  # Make sure to not write inside an existing line
                     base_code[i+1:])
 
     return None
