@@ -48,8 +48,7 @@ class TestInstrumentContracts(unittest.TestCase):
 /// @custom:invariant
 function invariant() public {
     assert(x == 1);
-}
-'''
+}'''
         expected = '''contract TestContract {
     uint x = 0;
 
@@ -82,8 +81,7 @@ function invariant() public {
 function invariant() public {
     assert(x == 1);
     /// @custom:negate
-}
-'''
+}'''
         expected = '''contract TestContract {
     uint x = 0;
 
@@ -125,6 +123,7 @@ function invariant() public {
     }
 
     /// @custom:nondef This property is nondefinable.
+
 }
 '''
         with open(temp_prop_path, 'w') as f:
@@ -141,8 +140,7 @@ function invariant() public {
 /// @custom:invariant
 function invariant() public {
     assert(x == 1);
-}
-'''
+}'''
         expected = '''contract TestContract {
     uint x = 0;
 
@@ -175,8 +173,7 @@ function invariant() public {
 function invariant() public {
     assert(x == 1);
     /// @custom:nondef nondefinable property
-}
-'''
+}'''
         expected = '''contract TestContract {
     uint x = 0;
 
@@ -319,8 +316,7 @@ assert(x == 0);
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
         temp_prop = '''function invariant() public {
     assert(x == 1);
-}
-'''
+}'''
         expected = '''contract TestContract {
     uint x = 0;
 
@@ -335,6 +331,7 @@ assert(x == 0);
     function invariant() public {
         assert(x == 1);
     }
+
 }
 '''
         with open(temp_prop_path, 'w') as f:
@@ -350,8 +347,7 @@ assert(x == 0);
         temp_prop = '''/// @custom:invariant
 function invariant() public {
     assert(x == 1);
-}
-'''
+}'''
         expected = '''contract TestContract {
     uint x = 0;
 
@@ -375,6 +371,139 @@ function invariant() public {
         contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
 
         for contract in contracts.values():
+            self.assertEqual(contract, expected)
+
+    def test_invariant_double(self):
+        temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
+        temp_prop = '''/// @custom:invariant
+function invariant1() public {
+    assert(x == 1);
+}
+
+/// @custom:invariant
+function invariant2() public {
+    assert(x == 2);
+}'''
+        expected = '''contract TestContract {
+    uint x = 0;
+
+    constructor() {
+        x = 0;
+    }
+
+    function fun1() public {
+        return 1;
+    }
+
+    /// @custom:invariant
+    function invariant1() public {
+        assert(x == 1);
+    }
+    
+    /// @custom:invariant
+    function invariant2() public {
+        assert(x == 2);
+    }
+}
+'''
+        with open(temp_prop_path, 'w') as f:
+            f.write(temp_prop)
+
+        contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
+
+        for contract in contracts.values():
+            self.assertEqual(contract, expected)
+
+    def test_ghost(self):
+        temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
+        temp_prop = '''/// @custom:ghost
+uint _y;'''
+        expected = '''contract TestContract {
+    /// @custom:ghost
+    uint _y;
+    uint x = 0;
+
+    constructor() {
+        x = 0;
+    }
+
+    function fun1() public {
+        return 1;
+    }
+
+}
+'''
+        with open(temp_prop_path, 'w') as f:
+            f.write(temp_prop)
+
+        contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
+
+        for contract in contracts.values():
+            self.assertEqual(contract, expected)
+
+    def test_ghost_middle(self):
+        temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
+        temp_prop = '''/// @custom:preghost function fun1
+uint _x1 = 1;
+/// @custom:ghost
+uint _y;'''
+
+        expected = '''contract TestContract {
+    /// @custom:ghost
+    uint _y;
+    uint x = 0;
+
+    constructor() {
+        x = 0;
+    }
+
+    function fun1() public {
+        /// @custom:preghost function fun1
+        uint _x1 = 1;
+        return 1;
+    }
+
+}
+'''
+        with open(temp_prop_path, 'w') as f:
+            f.write(temp_prop)
+
+        contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
+
+        for contract in contracts.values():
+            self.assertEqual(contract, expected)
+
+    def test_ghost_double(self):
+        temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
+        temp_prop = '''/// @custom:ghost
+uint _y;
+/// @custom:ghost
+uint _z = 1;'''
+
+        expected = '''contract TestContract {
+    /// @custom:ghost
+    uint _y;
+    /// @custom:ghost
+    uint _z = 1;
+    uint x = 0;
+
+    constructor() {
+        x = 0;
+    }
+
+    function fun1() public {
+        return 1;
+    }
+
+}
+'''
+        with open(temp_prop_path, 'w') as f:
+            f.write(temp_prop)
+
+        contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
+
+        for contract in contracts.values():
+            print(contract)
             self.assertEqual(contract, expected)
 
 

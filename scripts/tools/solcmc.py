@@ -26,6 +26,9 @@ import os
 DEFAULT_TIMEOUT = '10m'
 THREADS = 6
 
+TAG_NONDEF = '/// @custom:nondef'
+TAG_NEGATE = '/// @custom:negate'
+
 COMMAND_TEMPLATE = Template(
         'timeout $timeout ' +
         'solc $contract_path ' +
@@ -46,12 +49,12 @@ def has_source_error(output):
     return re.search(pattern, output, re.DOTALL)
 
 
-def has_assertion_warning(output):
+def has_assertion_violation(output):
     pattern = r'.*Warning: CHC: Assertion violation happens here.*'
     return re.search(pattern, output, re.DOTALL)
 
 
-def is_timeout_or_unknown(output):
+def has_weak_assertion_violation(output):
     pattern = r'.*Warning: CHC: Assertion violation might happen here.*'
     return re.search(pattern, output, re.DOTALL)
 
@@ -69,19 +72,18 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT):
         logging.error(msg)
         return ERROR, msg
 
-    negate = False
     with open(contract_path, 'r') as file:
         contract_code = file.read()
 
-        # Process tags
-        # Tag Nondefinable
-        nondef = re.search('/// @custom:nondef (.*)', contract_code)
-        if nondef:
-            print(f'{contract_path}: {NONDEFINABLE} (nondefinable)')
-            return utils.NONDEFINABLE, nondef.group(1)
+    # Process tags
+    # Tag Nondefinable
+    nondef = re.search(TAG_NONDEF + ' (.*)', contract_code)
+    if nondef:
+        print(f'{contract_path}: {NONDEFINABLE}')
+        return NONDEFINABLE, nondef.group(1)
 
-        # Tag Negate
-        negate = re.search('/// @custom:negate', contract_code)
+    # Tag Negate
+    negate = re.search(TAG_NEGATE, contract_code)
 
     # Prepare to fill template command
     params = {}
@@ -92,30 +94,30 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT):
     print(command)
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
-    if has_error(log.stderr):
-        msg = log.stderr
-        print(log.stderr, file=sys.stderr)
-        if has_source_error(log.stderr):
-            msg = 'Use the dot to make a relative import: e.g. "./lib/lib.sol"'
-            logging.error(msg)
+    # Invalid time interval
+    if 'invalid time' in log.stderr:
+        msg = f'Invalid time interval "{timeout}".'
+        logging.error(msg)
         return ERROR, msg
 
-    # Timeout
-    if (not log.stderr) and (not log.stdout):
-        print(f'{contract_path}: {UNKNOWN} (timeout)')
-        return UNKNOWN, log.stderr
+    if has_error(log.stderr):
+        if has_source_error(log.stderr):
+            msg = 'Use the dot to make a relative import: e.g. "./lib/lib.sol"'
+        else:
+            msg = log.stderr
+        print(log.stderr, file=sys.stderr)
+        logging.error(msg)
+        return ERROR, msg
 
-    if is_timeout_or_unknown(log.stderr):
+    if (not log.stderr) and (not log.stdout):   # Timeout
+        res = UNKNOWN
+    elif has_weak_assertion_violation(log.stderr):
         res = WEAK_POSITIVE if negate else WEAK_NEGATIVE
-        print(f'{contract_path}: {res} (unknown)')
-        return res, log.stderr
-
-    if has_assertion_warning(log.stderr):
+    elif has_assertion_violation(log.stderr):
         res = STRONG_POSITIVE if negate else STRONG_NEGATIVE
-        print(f'{contract_path}: {res}')
-        return res, log.stderr
+    else:
+        res = STRONG_NEGATIVE if negate else STRONG_POSITIVE
 
-    res = STRONG_NEGATIVE if negate else STRONG_POSITIVE
     print(f'{contract_path}: {res}')
     return res, log.stderr
 

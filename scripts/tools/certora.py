@@ -127,9 +127,6 @@ def run(contract_path, spec_path):
             logging.error('Certora is not installed. Use:\npip install certora-cli.')
             return ERROR, str(e)
 
-        
-
-
     # Handle Certora errors
     if log.stderr:
         print(log.stderr, file=sys.stderr)
