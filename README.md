@@ -149,24 +149,29 @@ SolCMC directories contain:
 - Property files.
 
 #### SolCMC Instrumentation
-Three types of instrumentation are available for SolCMC verification: function
+Four types of instrumentation are available for SolCMC verification: ghost state, function
 preghosts, function postghosts, and invariants. To apply these, use the
 following tags within your property files:
 
-- `/// @custom:preghost function <function name>`: Define conditions that must be satisfied before executing the body of a specific function. Typically `require` statements.
-- `/// @custom:postghost function <function name>`: Specify conditions that should be true after the execution of a particular function. Typically `assert` statements.
-- `/// @custom:invariant`: Declare conditions that must remain valid throughout the entire contract execution, expressed through functions.
+- `/// @custom:ghost`: Defines a ghost contract state 
+- `/// @custom:preghost function <function name>`: Defines ghost code to be executed before the body of a specific function.
+- `/// @custom:postghost function <function name>`: Defines ghost code to be executed after the body of a specific function.
+- `/// @custom:invariant`: Declares conditions that must remain valid throughout the entire contract execution, expressed through functions.
 
 Example of a SolCMC property file:
 ```
+/// @custom:ghost
+uint _x = 0;
+uint _y;
+
 /// @custom:preghost constructor
-require(x > 0);
+require(_x > 0);
 
 /// @custom:postghost constructor
 assert(z < 10);
 
 /// @custom:postghost function f1
-assert(y == 1);
+assert(_y == 1);
 
 /// @custom:invariant
 function invariant(uint z) public {
