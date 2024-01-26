@@ -3,7 +3,7 @@ Generates solcmc contracts from versions and properties files.
 '''
 
 from setup import injector
-from pathlib import PurePath
+from pathlib import Path
 import logging
 import utils
 import sys
@@ -32,7 +32,6 @@ def get_ghost(lines, i):
         code.append(lines[i])
         i += 1
 
-    print(code)
     return code, i
 
 
@@ -50,19 +49,17 @@ def get_ghosts(property_path: str) -> dict:
 
     # Support old specifications, to be removed later
     with open(property_path, 'r') as f:
-        prop = f.read()
+        code = f.read()
 
-        state_match = re.search(TAG_GHOSTSTATE, prop)
-        pre_match = re.search(TAG_PREGHOST + ' (.*)', prop)
-        post_match = re.search(TAG_POSTGHOST + ' (.*)', prop)
-        inv_match = re.search(TAG_INVARIANT, prop)
+        state_match = re.search(TAG_GHOSTSTATE, code)
+        pre_match = re.search(TAG_PREGHOST + ' (.*)', code)
+        post_match = re.search(TAG_POSTGHOST + ' (.*)', code)
+        inv_match = re.search(TAG_INVARIANT, code)
 
-        if not any([state_match,
-                    pre_match,
-                    post_match,
-                    inv_match]) and len(prop) > 0:
-            ghosts['invariants'].append([l + '\n' for l in prop.splitlines()])
-            return ghosts
+        if not any([state_match, pre_match, post_match, inv_match]) and len(code) > 0:
+            if code.strip():
+                ghosts['invariants'].append([l + '\n' for l in code.splitlines()])
+                return ghosts
 
     # Yield verification ghosts
     with open(property_path, 'r') as f:
@@ -128,66 +125,34 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
         dict: { filename: contract_code, ...}
     '''
 
-    '''IMPROVEMENT 
-    Move properties sorting in a separate function '''
-    # Properties associated with a version
-    specific_properties = list(filter(
-            lambda x: re.search(".*_v.*", x),
-            properties_paths))
-
-    # Generic properties
-    generic_properties = list(
-            set(properties_paths) - set(specific_properties))
-
     contracts = {}
 
-    for v_path in versions_paths:
-        # Extract base id from base path (e.g. v1)
-        v_id = PurePath(v_path).stem.split('_')[1]
-
-        # Properties associated with the current version v
-        v_specific_properties = list(filter(
-                lambda x: re.search(f'.*_{v_id}.*', x),
-                specific_properties))
-
-        v_generic_properties = generic_properties
-
-        # Remove bound properties from the unbound variants
-        for specific_property in v_specific_properties:
-            # ../p1_v1.sol -> p1
-            p_id = PurePath(specific_property).stem.split('_')[0]
-
-            v_generic_properties = list(filter(
-                    lambda x: not re.search(f'{p_id}', x),
-                    v_generic_properties
-                    ))
-
-        # List of properties to verify for the current version
-        v_properties_paths = v_specific_properties + v_generic_properties
+    for version_path in versions_paths:
+        # Get list of properties to verify for this version
+        version_properties_paths = utils.get_properties(version_path, properties_paths)
 
         # Instrument version for every property
-        for property_path in v_properties_paths:
+        for property_path in version_properties_paths:
 
             contract = []   # contract to instrument
-            with open(v_path, 'r') as f:
+            with open(version_path, 'r') as f:
                 contract = f.readlines()
 
             ghosts = get_ghosts(property_path)
 
-            if not any([ghosts['state'],
-                        ghosts['pre'],
-                        ghosts['post'],
-                        ghosts['invariants']]):
+            ''' Move this into another function '''
+            # Empty property file
+            if not any(ghosts[key] for key in ['state', 'pre', 'post', 'invariants']):
                 logging.warning(f'No instrumentation found in {property_path}.')
 
             if ghosts['state']:
                 # Inject before last bracket
-                contract_pattern = 'contract ' + utils.get_contract_name(v_path)
+                contract_pattern = 'contract ' + utils.get_contract_name(version_path)
                 contract = injector.inject_after(contract, ghosts['state'], contract_pattern)
                 if contract is None:
                     state = ''.join(l for l in code)
                     logging.error(f'Ghost state injection failed: {property_path}: '
-                                  f'{v_path}: {state}.')
+                                  f'{version_path}: {state}.')
                     sys.exit(1)
 
             for fun, code in ghosts['pre'].items():
@@ -196,7 +161,7 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
                 if contract is None:
                     logging.error(
                             f'Preghost injection failed: {property_path}: '
-                            f'{v_path}: {fun}.')
+                            f'{version_path}: {fun}.')
                     sys.exit(1)
 
             for fun, code in ghosts['post'].items():
@@ -205,7 +170,7 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
                 if contract is None:
                     logging.error(
                             f'Postghost injection failed: {property_path}: '
-                            f'{v_path}: {fun}.')
+                            f'{version_path}: {fun}.')
                     sys.exit(1)
 
             for inv in ghosts['invariants']:
@@ -214,13 +179,13 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
                 if contract is None:
                     inv_as_string = ''.join(l for l in inv)
                     logging.error(f'Invariant injection failed: {property_path}: '
-                                  f'{v_path}: {inv_as_string}.')
+                                  f'{version_path}: {inv_as_string}.')
                     sys.exit(1)
 
             # Construct filename
-            name = PurePath(v_path).stem.split('_')[0]
-            p_id = PurePath(property_path).stem
-            filename = f'{name}_{p_id}_{v_id}.sol'
+            name, version_id = Path(version_path).stem.split('_')
+            property_id = Path(property_path).stem
+            filename = f'{name}_{property_id}_{version_id}.sol'
 
             contracts.update({filename: ''.join(l for l in contract)})
 

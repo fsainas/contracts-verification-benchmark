@@ -40,7 +40,7 @@ def inject_before_last_bracket(base_code: list, to_inject_code: list):
 
     indentation = get_indentation(base_code[last_bracket_index]) + INDENT_STRING
 
-    print(to_inject_code)
+    #print(to_inject_code)
     if last_bracket_index:
         return (base_code[:last_bracket_index] + 
                 [indentation + l for l in to_inject_code] + 
