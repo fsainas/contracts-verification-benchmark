@@ -16,10 +16,17 @@ TAG_POSTGHOST = '/// @custom:postghost'
 TAG_INVARIANT = '/// @custom:invariant'
 
 
-def get_ghost(lines, i):
+def get_ghost(lines: list, i: int) -> tuple:
     '''
-    Yields the code until EOF or '///'.
-    Returns the code and the new index.
+    Extracts code until EOF or '///', returning the code and the new index.
+
+    Args:
+        lines (list): List of lines containing the code.
+        i (int): Index indicating the starting position for code extraction.
+
+    Returns:
+        tuple: A tuple containing the extracted code as a list of lines and the
+        updated index.
     '''
     code = [lines[i-1]]     # Save tag
 
@@ -37,9 +44,28 @@ def get_ghost(lines, i):
 
 def get_ghosts(property_path: str) -> dict:
     '''
-    Extracts the ghost code from a solcmc property file.
-    '''
+    Extracts ghost code from a solcmc property file.
 
+    Args:
+        property_path (str): The path to the solcmc property file.
+
+    Returns:
+        dict: A dictionary containing preghosts, postghosts, state ghosts, and invariants.
+              Structure: {'pre': {function_name: [code_lines, ...]},
+                          'post': {function_name: [code_lines, ...]},
+                          'state': [code_lines, ...],
+                          'invariants': [[code_lines, ...]]}
+
+    Note:
+        This function processes a solcmc property file, collecting code
+        sections labeled as preghosts, postghosts, state ghosts, and
+        invariants. The collected code is organized into a dictionary. If the
+        property file is empty or lacks the specified tags, it returns an empty
+        dictionary.
+        The function relies on the get_ghost helper function for extracting
+        ghost code sections.
+
+    '''
     ghosts = {
             'pre': {},
             'post': {},
@@ -51,67 +77,61 @@ def get_ghosts(property_path: str) -> dict:
     with open(property_path, 'r') as f:
         code = f.read()
 
-        state_match = re.search(TAG_GHOSTSTATE, code)
-        pre_match = re.search(TAG_PREGHOST + ' (.*)', code)
-        post_match = re.search(TAG_POSTGHOST + ' (.*)', code)
-        inv_match = re.search(TAG_INVARIANT, code)
+    # Empty property
+    if not code.strip():
+        return ghosts
 
-        if not any([state_match, pre_match, post_match, inv_match]) and len(code) > 0:
-            if code.strip():
-                ghosts['invariants'].append([l + '\n' for l in code.splitlines()])
-                return ghosts
+    tags_in_code = [TAG_PREGHOST in code, 
+                    TAG_POSTGHOST in code, 
+                    TAG_GHOSTSTATE in code, 
+                    TAG_INVARIANT in code]
+
+    if not any(tags_in_code):
+        ghosts['invariants'].append([l + '\n' for l in code.splitlines()])
+        return ghosts
 
     # Yield verification ghosts
     with open(property_path, 'r') as f:
         lines = f.readlines()
-        i = 0
-        header_collected = False   # To collect header
-        header = []
 
-        while i < len(lines):
-            line = lines[i]
+    header_collected = False   # To collect header
+    header = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
 
-            ''' This is very inefficient '''
-            # Look for a tag in the current line
-            state_match = re.search(TAG_GHOSTSTATE, line)
-            pre_match = re.search(TAG_PREGHOST + ' (.*)', line)
-            post_match = re.search(TAG_POSTGHOST + ' (.*)', line)
-            inv_match = re.search(TAG_INVARIANT, line)
+        tags_in_line = [TAG_PREGHOST in line, 
+                        TAG_POSTGHOST in line, 
+                        TAG_GHOSTSTATE in line, 
+                        TAG_INVARIANT in line]
+        
+        if any(tags_in_line):
+            if not header_collected:
+                header_collected = True
+                header = lines[:i]
 
-            if state_match:
-                if not header_collected:
-                    header_collected = True
-                    header = lines[:i]
-                state, i = get_ghost(lines, i+1)
-                ghosts['state'] += header + state
-            elif pre_match:
-                if not header_collected:
-                    header_collected = True
-                    header = lines[:i]
-                # Save function name and preghosts
-                fun = pre_match.group(1).strip()
-                precond, i = get_ghost(lines, i+1)
-                ghosts['pre'][fun] = header + precond
-            elif post_match:
-                if not header_collected:
-                    header_collected = True
-                    header = lines[:i]
-                # Save function name and postghosts
-                fun = post_match.group(1).strip()
-                postcond, i = get_ghost(lines, i+1)
-                ghosts['post'][fun] = header + postcond
-            elif inv_match:
-                if not header_collected:
-                    header_collected = True
-                    header = lines[:i]
-                # Save invariants
-                inv, i = get_ghost(lines, i+1)
-                ghosts['invariants'] += [header + inv]
-            else:
-                i += 1
+        if TAG_PREGHOST in line:
+            # Save function name and preghosts
+            fun = re.search(TAG_PREGHOST + ' (.*)', line).group(1).strip()
+            precond, i = get_ghost(lines, i+1)
+            ghosts['pre'][fun] = header + precond
+        elif TAG_POSTGHOST in line:
+            # Save function name and postghosts
+            fun = re.search(TAG_POSTGHOST + ' (.*)', line).group(1).strip()
+            postcond, i = get_ghost(lines, i+1)
+            ghosts['post'][fun] = header + postcond
+        elif TAG_GHOSTSTATE in line:
+            state, i = get_ghost(lines, i+1)
+            ghosts['state'] += header + state
+        elif TAG_INVARIANT in line:
+            # Save invariants
+            inv, i = get_ghost(lines, i+1)
+            ghosts['invariants'] += [header + inv]
+        else:
+            i += 1
 
-            if header:
-                header = []
+        if header:
+            header = []
 
     return ghosts
 
