@@ -103,13 +103,13 @@ def get_properties(version_path: str, properties_paths: list):
     version_specific_properties_paths = [p for p in properties_paths if f'_{version_id}.' in p] 
 
     # Remove the generic version when there is a specific one 
-    version_generic_properties_paths = properties_paths
+    version_generic_properties_paths = [p for p in properties_paths if '_v' not in p]
     for specific_property_path in version_specific_properties_paths:
 
         property_id = Path(specific_property_path).stem.split('_')[0]
 
         version_generic_properties_paths = [p for p in version_generic_properties_paths
-                                      if (property_id not in p) and
-                                      ('_v' not in p)] 
+                                            if (property_id not in p)] 
+
 
     return version_specific_properties_paths + version_generic_properties_paths

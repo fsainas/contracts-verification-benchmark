@@ -204,7 +204,7 @@ def instrument_contracts(versions_paths: list, properties_paths: list) -> dict:
 
             # Construct filename
             name, version_id = Path(version_path).stem.split('_')
-            property_id = Path(property_path).stem
+            property_id = Path(property_path).stem.split('_')[0]    # split to eventually remove version
             filename = f'{name}_{property_id}_{version_id}.sol'
 
             contracts.update({filename: ''.join(l for l in contract)})

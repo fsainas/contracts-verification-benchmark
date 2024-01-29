@@ -43,6 +43,17 @@ class TestInstrumentContracts(unittest.TestCase):
         for name in contracts:
             self.assertEqual(name, 'test_prop-id_v1.sol')
 
+    def test_filename_specific_property(self):
+        temp_prop_path = os.path.join(self.temp_dir.name, 'prop-id_v1.sol')
+
+        with open(temp_prop_path, 'w') as f:
+            f.write('.')     # Empty property
+
+        contracts = instrument_contracts([self.temp_version_path], [temp_prop_path])
+
+        for name in contracts:
+            self.assertEqual(name, 'test_prop-id_v1.sol')
+
     def test_negation_header(self):
         temp_prop_path = os.path.join(self.temp_dir.name, 'temp-prop.sol')
         temp_prop = '''/// @custom:negate

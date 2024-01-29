@@ -15,9 +15,25 @@ class TestGetPropertiesFunction(unittest.TestCase):
         # Cleanup: close the temporary directory
         self.dir.cleanup()
 
-    def test_no_specific_properties(self):
+    def test_no_properties1(self):
+        property_names = ['p1_v2.sol', 'abc_v2.sol', 'prop-3_v3.sol']
+        expected_names = []
+        property_paths = [os.path.join(self.dir.name, pn) for pn in property_names]
+        expected_paths = [os.path.join(self.dir.name, e) for e in expected_names]
+        res = get_properties(self.version_path, property_paths)
+        self.assertEqual(res, expected_paths)
+
+    def test_no_specific_properties1(self):
         property_names = ['p1.sol', 'abc.sol', 'prop-3.sol']
         expected_names = ['p1.sol', 'abc.sol', 'prop-3.sol']
+        property_paths = [os.path.join(self.dir.name, pn) for pn in property_names]
+        expected_paths = [os.path.join(self.dir.name, e) for e in expected_names]
+        res = get_properties(self.version_path, property_paths)
+        self.assertEqual(res, expected_paths)
+
+    def test_no_specific_properties2(self):
+        property_names = ['p1.sol', 'abc_v2.sol', 'prop-3.sol']
+        expected_names = ['p1.sol', 'prop-3.sol']
         property_paths = [os.path.join(self.dir.name, pn) for pn in property_names]
         expected_paths = [os.path.join(self.dir.name, e) for e in expected_names]
         res = get_properties(self.version_path, property_paths)
