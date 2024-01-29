@@ -49,7 +49,7 @@ one: clean-specs contracts specs directories
 setup: contracts specs getters directories
 
 contracts: $(CONTRACTS_DIR) getters
-	@$(PYTHON) ../../../scripts/injector.py --base $(VERSIONS_DIR) --inject $(GETTER_FILE) --output $(CONTRACTS_DIR)
+	@$(PYTHON) ../../../scripts/inject_getters.py --contracts $(VERSIONS_DIR) --getters $(GETTER_FILE) --output $(CONTRACTS_DIR)
 
 specs: $(SPEC_DIR) 
 	@for file in $(SPEC_FILES); do \

@@ -7,6 +7,7 @@ Usage:
 
 from string import Template
 from multiprocessing import Pool
+from pathlib import Path
 import subprocess
 import logging
 import utils
@@ -26,7 +27,7 @@ THREADS = 6     # n of parallel executions
 
 
 COMMAND_TEMPLATE = Template(
-    'certoraRun $contract_path:$name --verify $name:$spec_path --msg "$msg"  --wait_for_results'
+    'certoraRun $contract_path:$name --verify $name:$spec_path --msg "$msg" --wait_for_results'
 )
 
 
@@ -108,18 +109,12 @@ def run(contract_path, spec_path):
     params['contract_path'] = contract_path
     params['name'] = contract_name
     params['spec_path'] = spec_path
-
-    try:
-        contract = contract_path.split('/')[-1].split('.')[0].split('_')
-        contract = contract[0]+contract[2]
-    except:
-        contract = contract_path.split('/')[-1].split('.')[0]
-    spec = spec_path.split('/')[-1].split('.')[0] 
-
-    params['msg'] = contract + "/" + spec
+    name, version_id = Path(contract_path).stem.split('_')
+    property_id = Path(spec_path).stem.split('_')[0]
+    params['msg'] = f'{name}_{property_id}_{version_id}'
 
     command = COMMAND_TEMPLATE.substitute(params)
-    print(command)
+    # print(command) - substitute with a log that does not go to stdout
     try:
         log = subprocess.run(command.split(), capture_output=True, text=True)
     except FileNotFoundError as e:
@@ -174,44 +169,17 @@ def run_all(contracts_paths, specs_paths, logs_dir=None):
         dict: {key_v*: outcome}
     '''
     outcomes = {}
-
-    # Specific properties
-    bound_properties_paths = list(filter(
-            lambda x: re.search(".*_v.*", x),
-            specs_paths))
-    unbound_properties_paths = list(
-            set(specs_paths) - set(bound_properties_paths))
-
     inputs = []     # inputs for run_log()
 
-    for v_path in contracts_paths:
-        # Extract base id from base path (e.g. v1)
-        v_id = v_path.split('/')[-1].split('_')[-1].split('.')[0]
+    for contract_path in contracts_paths:
+        # Get list of properties to verify for this contract
+        contract_properties_paths = utils.get_properties(contract_path, specs_paths)
 
-        v_bound = list(filter(
-                lambda x: re.search(f'.*_{v_id}.*', x),
-                bound_properties_paths))
-
-        v_unbound = unbound_properties_paths
-
-        for bp_path in v_bound:
-            p_id = bp_path.split('/')[-1].split('_')[0]     # ../p1_v1.sol -> p1
-            # Remove bound properties from the unbound variants
-            v_unbound = list(filter(
-                    lambda x: not re.search(f'{p_id}', x),
-                    v_unbound
-                    ))
-
-        # List of properties to for the current version
-        v_properties_paths = v_bound + v_unbound
-
-        for s_path in v_properties_paths:
-            id = (  # e.g. p1_v1
-                    s_path.split('.')[-2].split('/')[-1].split('_')[0] +
-                    '_' +
-                    v_path.split('_')[-1].split('.sol')[0]
-            )
-            inputs.append((id, v_path, s_path, logs_dir))
+        for property_path in contract_properties_paths:
+            property_id = Path(property_path).stem.split('_')[0]    # split to eventually remove version
+            version_id = Path(contract_path).stem.split('_')[1]
+            id = f'{property_id}_{version_id}'
+            inputs.append((id, contract_path, property_path, logs_dir))
 
     with Pool(processes=THREADS) as pool:
         # [(id, outcome), ...]

@@ -1,5 +1,5 @@
 '''
-Collection of function to inject code.
+Collection of functions to inject code.
 
 Usage:
     python injector.py -b <base_file_path> -i <to_inject_path> [-o <output_dir>]
@@ -127,6 +127,7 @@ def inject_postcond(base_code: list, to_inject_code: list, pattern: str):
             base_code[i:])
 
 
+"""
 def inject_code(base_file: str, to_inject_file: str) -> str:
     '''
     Injects code of a to-inject file before the last bracket of a base file.
@@ -185,3 +186,4 @@ def inject_product(base_files: list, to_inject_files: list) -> dict:
             updated_files[filename] = file 
 
     return updated_files
+"""
