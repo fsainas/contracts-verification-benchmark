@@ -24,6 +24,7 @@ import re
 import os
 
 DEFAULT_TIMEOUT = '10m'
+DEFAULT_SOLVER = 'z3'
 THREADS = 6
 
 TAG_NONDEF = '/// @custom:nondef'
@@ -35,8 +36,8 @@ COMMAND_TEMPLATE = Template(
         '--model-checker-engine chc ' +
         '--model-checker-timeout 0 ' +
         '--model-checker-targets assert ' +
-        '--model-checker-show-unproved'
-)
+        '--model-checker-show-unproved ' +
+        '--model-checker-solvers=$solver')
 
 
 def has_error(output):
@@ -58,8 +59,12 @@ def has_weak_assertion_violation(output):
     pattern = r'.*Warning: CHC: Assertion violation might happen here.*'
     return re.search(pattern, output, re.DOTALL)
 
+def warning_solver_not_found(output):
+    pattern = r'.*Warning: Solver (.*) was selected for SMTChecker but it was not found.*'
+    return re.search(pattern, output, re.DOTALL)
 
-def run(contract_path, timeout=DEFAULT_TIMEOUT):
+
+def run(contract_path, timeout=DEFAULT_TIMEOUT, solver=DEFAULT_SOLVER):
     '''
     Runs a single solcmc experiment.
 
@@ -89,9 +94,10 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT):
     params = {}
     params['contract_path'] = contract_path
     params['timeout'] = timeout
+    params['solver'] = solver
 
     command = COMMAND_TEMPLATE.substitute(params)
-    print(command)
+    # print(command) - substitute with a log that does not go to stdout
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
     # Invalid time interval
@@ -109,6 +115,15 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT):
         logging.error(msg)
         return ERROR, msg
 
+    solver_not_found = warning_solver_not_found(log.stderr)
+
+    if solver_not_found:
+        solver = solver_not_found.group(1)
+        msg = f'Solver {solver} was not found. Check installation.'
+        logging.error(msg)
+        return ERROR, msg
+        
+
     if (not log.stderr) and (not log.stdout):   # Timeout
         res = UNKNOWN
     elif has_weak_assertion_violation(log.stderr):
@@ -122,11 +137,11 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT):
     return res, log.stderr
 
 
-def run_log(id, contract_path, timeout, logs_dir=None):
+def run_log(id, contract_path, timeout=DEFAULT_TIMEOUT, logs_dir=None, solver=DEFAULT_SOLVER):
     '''
     Calls run() and writes the log.
     '''
-    outcome, log = run(contract_path, timeout)
+    outcome, log = run(contract_path, timeout, solver)
     if logs_dir:
         utils.write_log(logs_dir + id + '.log', log)
     else:
@@ -135,7 +150,7 @@ def run_log(id, contract_path, timeout, logs_dir=None):
     return id, outcome
 
 
-def run_all(contracts_paths, timeout, logs_dir=None):
+def run_all(contracts_paths, timeout=DEFAULT_TIMEOUT, logs_dir=None, solver=DEFAULT_SOLVER):
     '''
     Runs solcmc on all files of a directory.
 
@@ -154,7 +169,7 @@ def run_all(contracts_paths, timeout, logs_dir=None):
 
     for contract_path in contracts_paths:
         id = '_'.join(contract_path.split('_')[-2:]).split('.sol')[0]
-        inputs.append((id, contract_path, timeout, logs_dir))
+        inputs.append((id, contract_path, timeout, logs_dir, solver))
 
     with Pool(processes=THREADS) as pool:
         # [(id, outcome), ...]

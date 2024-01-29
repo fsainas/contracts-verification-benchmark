@@ -12,6 +12,7 @@ import utils
 import os
 
 DEFAULT_TIMEOUT = '10m'
+DEFAULT_SOLVER = 'z3'
 
 
 if __name__ == '__main__':
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     parser.add_argument(
             '--contracts',
             '-c',
-            help='Contracts dir or contract file..',
+            help='Contracts dir or contract file.',
             required=True
     )
     parser.add_argument(  # build/
@@ -31,6 +32,12 @@ if __name__ == '__main__':
             '--timeout',
             '-t',
             help='Timeout time.'
+    )
+
+    parser.add_argument(
+            '--solver',
+            '-s',
+            help='Model checker: {z3, eld}'
     )
     args = parser.parse_args()
 
@@ -49,12 +56,13 @@ if __name__ == '__main__':
     )
 
     timeout = args.timeout if args.timeout else DEFAULT_TIMEOUT
+    solver = args.solver if args.solver else DEFAULT_SOLVER
 
     if args.output:
         output_dir = args.output if args.output[-1] == '/' else args.output + '/'
         logs_dir = output_dir + 'logs/'
 
-        outcomes = run_all(contracts_paths, timeout, logs_dir)
+        outcomes = run_all(contracts_paths, timeout, logs_dir, solver)
 
         out_csv = [utils.OUT_HEADER]
         for id in outcomes.keys():
@@ -64,4 +72,4 @@ if __name__ == '__main__':
 
         utils.write_csv(output_dir + 'out.csv', out_csv)
     else:
-        run_all(contracts_paths, timeout)
+        run_all(contracts_paths, timeout, solver=solver)
