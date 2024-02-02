@@ -51,6 +51,7 @@ For each entry of the matrix, we summarize the output of the tool as follows:
 | TN     | True Negative  (property does not hold, verification fails)    |
 | FP     | False Positive (property does not hold, verification succeeds) |
 | FN     | False Negative (property holds, verification fails)            |
+| UNK    | Timeout / Memory exhaustion                                    |
 | ND     | Property not definable with the tool                           |
 
 Additionally, we mark with ! the classifications TP,TN,FP,FN, when the verification tool 
@@ -63,7 +64,6 @@ verification tools according to the following table:
 | P       |                         | Satisfy green  |
 | P!      | Property is valid       | Assert green   |
 | N       | Property might be false | Assert red     |
-| N       | Timeout                 | Timeout        |
 | N!      | Property is false       | Satisfy red    | 
 
 ## Extending the benchmark
@@ -127,25 +127,27 @@ The `versions/` directory contains various Solidity variants of the use case
 contract, with version definitions in natural language written using the
 NatSpec format and the `@custom:version` tag:
 ```
-/// @custom:version reentrant `withdraw`.
+/// @custom:version <version definition>.
 ```
 
 #### Makefile
 
 The Makefile defines the following commands:
 1. `make plain`: generates the README without experiment results. It utilizes `skeleton.json`, `ground-truth.csv` and version files from `versions/`.
-1. `make solcmc`: run the SolCMC experiments. By default, the timeout is set to 10 minutes. Use `make solcmc to=<int>` to set a different timeout for each query in seconds.
+1. `make solcmc`: runs the SolCMC experiments. By default, the timeout is set to 10 minutes. Use `make solcmc to=<int>` to set a different timeout for each query in seconds.
 1. `make certora`: runs the Certora experiments; results are written in the README.
 1. `make all`: runs experiments with all verification tools and generates the complete README.
 1. `make clean`: removes build directories from verification tool directories.
-1. `make cleanr`: removes the readme file.
+1. `make clean-solcmc`: removes solcmc build directories.
+1. `make clean-certora`: removes certora build directories.
+1. `make cleanr`: removes the README.
 
 
 ### SolCMC directory structure
 
 SolCMC directories contain:
 
-- `Makefile`: to run solcmc experiments and manage contracts building.
+- `Makefile`: to setup and run solcmc experiments.
 - Property files.
 
 #### SolCMC Instrumentation
@@ -153,9 +155,9 @@ Four types of instrumentation are available for SolCMC verification: ghost state
 preghosts, function postghosts, and invariants. To apply these, use the
 following tags within your property files:
 
-- `/// @custom:ghost`: Defines a ghost contract state 
-- `/// @custom:preghost function <function name>`: Defines ghost code to be executed before the body of a specific function.
-- `/// @custom:postghost function <function name>`: Defines ghost code to be executed after the body of a specific function.
+- `/// @custom:ghost`: Defines ghost contract variables.
+- `/// @custom:preghost function <function name>`: Defines ghost code to be executed before the body of a specific method.
+- `/// @custom:postghost function <function name>`: Defines ghost code to be executed after the body of a specific method.
 - `/// @custom:invariant`: Declares conditions that must remain valid throughout the entire contract execution, expressed through functions.
 
 Example of a SolCMC property file:
@@ -185,7 +187,7 @@ function invariant(uint z) public {
 ### Certora directory structure
 
 Certora directories contain:
-- `Makefile`: to run certora experiments and manage contracts building.
+- `Makefile`: to setup and run certora experiments.
 - `getters.sol`: a collection of getters for contract state variables, useful to write certora specifications.
 - `methods.spec`: methods declaration to use in certora specifications.
 - Specification files.
