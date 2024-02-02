@@ -2,10 +2,11 @@
 Utilities to run the toolchain such as common strings and useful functions.
 '''
 
-import csv
-import logging
-import re
 from pathlib import Path
+import logging
+import csv
+import re
+import os
 
 OUT_HEADER = ['property', 'version', 'outcome', 'footnote']     # outcome in P,P!,N,N!
 
@@ -79,6 +80,18 @@ def get_files_in_path(input_path, extensions=None):
         files = [path] if not extensions or path.suffix in extensions else []
 
     return files
+
+
+def find_paths_with_subpath(dir: str, subpath: str):
+    """
+    Given a subpath finds all files that matches inside a given directory.
+    """
+    file_paths = []
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if subpath in os.path.join(root, file):
+                file_paths.append(os.path.join(root, file))
+    return file_paths
 
 
 def get_properties(version_path: str, properties_paths: list):
