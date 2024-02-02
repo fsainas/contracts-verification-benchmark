@@ -64,11 +64,26 @@ verification tools according to the following table:
 | P       |                         | Satisfy green  |
 | P!      | Property is valid       | Assert green   |
 | N       | Property might be false | Assert red     |
-| N!      | Property is false       | Satisfy red    | 
+| N!      | Property is false       | Satisfy red    |
+
+### Computing scores
+To compute scores for each verification tool, navigate to the
+[`contracts/`](contracts/) directory and execute the following command in your
+terminal:
+```
+$ make
+or
+$ make scores
+```
+This commands will generate a `.csv` file where each tool is represented by a
+row, displaying the count of different outcomes and the total score of the
+tool. Please ensure that you have previously run experiments in the
+corresponding usecase directories, as this process relies on experiments
+results.
 
 ## Extending the benchmark
 
-In the `contracts/` directory, run the following command to initialize a new use case:
+In the [`contracts/`](contracts/) directory, run the following command to initialize a new use case:
 
 ```
 $ make init name=<usecase-name>
