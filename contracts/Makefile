@@ -2,6 +2,15 @@ TEMPLATE_DIR = ./template
 CERTORA_DIR = certora
 SOLCMC_DIR = solcmc
 
+PYTHON = python
+
+target = ""
+
+.PHONY: scores init update update-all
+
+scores:
+	@$(PYTHON) ../scripts/score.py -d . -o .
+
 init:
 ifdef name 
 	@if [ -d "./$(name)" ]; \
@@ -15,6 +24,11 @@ else
 endif
 
 update:
+	cp $(TEMPLATE_DIR)/Makefile $(target)
+	cp $(TEMPLATE_DIR)/solcmc/Makefile $(target)/$(SOLCMC_DIR)
+	cp $(TEMPLATE_DIR)/certora/Makefile $(target)/$(CERTORA_DIR)
+
+update-all:
 	@for dir in $(wildcard */); do \
 		if [ ./$$dir != $(TEMPLATE_DIR)/ ]; then \
 			cp $(TEMPLATE_DIR)/Makefile "$$dir"; \
