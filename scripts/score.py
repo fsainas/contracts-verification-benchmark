@@ -36,6 +36,17 @@ if __name__ == '__main__':
     solcmc_eld_cm_paths = utils.find_paths_with_subpath(args.dir, SOLCMC_ELD_CM_PATTERN)
     certora_cm_paths = utils.find_paths_with_subpath(args.dir, CERTORA_CM_PATTERN)
 
+    solcmc_z3_usecases = ',\n'.join([str(Path(p).parents[-2]) for p in solcmc_z3_cm_paths])
+    solcmc_eld_usecases = ',\n'.join([str(Path(p).parents[-2]) for p in solcmc_eld_cm_paths])
+    certora_usecases = ',\n'.join([str(Path(p).parents[-2]) for p in certora_cm_paths])
+
+    print('Found SolCMC-Z3 outcomes in:')
+    print(solcmc_z3_usecases, '\n')
+    print('Found SolCMC-Eldarica outcomes in:')
+    print(solcmc_eld_usecases, '\n')
+    print('Found Certora outcomes in:')
+    print(certora_usecases, '\n')
+
     # Compute and store the score and number of outcomes
     results['solcmc-z3'] = (compute_total_score(solcmc_z3_cm_paths),
                             count_total_outcomes(solcmc_z3_cm_paths))
