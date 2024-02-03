@@ -1,6 +1,6 @@
-'''
+"""
 Generates the plain README.
-'''
+"""
 
 import json
 from string import Template

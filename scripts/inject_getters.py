@@ -1,6 +1,6 @@
-'''
+"""
 Script for injecting getters into contracts to be verified with Certora.
-'''
+"""
 from setup.injector import inject_before_last_bracket
 from pathlib import Path
 import argparse
@@ -14,34 +14,24 @@ if __name__ == '__main__':
             '--contracts',
             '-c',
             help='Contract file or dir path.',
-            required=True
-    )
+            required=True)
     parser.add_argument(
             '--getters',
             '-g',
             help='Getters file path.',
-            required=True
-    )
+            required=True)
     parser.add_argument(
             '--output',
             '-o',
-            help='Output directory path.',
-    )
+            help='Output directory path.')
     args = parser.parse_args()
 
-    args.output = args.output if args.output[-1] == '/' else args.output + '/'
-
-    args.contracts = (
-            args.contracts
-            if args.contracts[-1] != '/'
-            else args.contracts[:-1]
-            )
+    contracts = Path(args.contracts)
 
     contracts_paths = (
-            glob.glob(f'{args.contracts}/*v*.sol')
+            glob.glob(f'{contracts}/*v*.sol')
             if os.path.isdir(args.contracts)
-            else [args.contracts]
-    )
+            else [args.contracts])
 
     for contract_path in contracts_paths:
         # Save contract lines of code
@@ -59,7 +49,8 @@ if __name__ == '__main__':
         filename = Path(contract_path).name
 
         if args.output:
-            with open(args.output + filename, 'w') as f:
+            output = Path(args.output)
+            with open(output.joinpath(filename), 'w') as f:
                 f.write(contract_with_getters)
         else:
             print(contract_with_getters)

@@ -1,7 +1,6 @@
-'''
+"""
 Utilities to run the toolchain such as common strings and useful functions.
-'''
-
+"""
 from pathlib import Path
 import logging
 import csv
@@ -39,7 +38,7 @@ def remove_comments(file_content):
 
 
 def get_contract_name(contract_path):
-    '''
+    """
     Extracts the contract name from a contract path.
 
     Args:
@@ -47,7 +46,7 @@ def get_contract_name(contract_path):
 
     Returns:
         str: Contract name.
-    '''
+    """
     contract_code = ''
 
     with open(contract_path, 'r') as contract_file:
@@ -71,8 +70,8 @@ def get_files_in_path(input_path, extensions=None):
     if path.is_dir():
         # If it's a directory, list all files inside with the specified extensions
         if extensions:
-            files = [file for file in path.iterdir() 
-                    if file.is_file() and file.suffix in extensions]
+            files = [file for file in path.iterdir()
+                     if file.is_file() and file.suffix in extensions]
         else:
             files = [file for file in path.iterdir() if file.is_file()]
     else:
@@ -95,11 +94,11 @@ def find_paths_with_subpath(dir: str, subpath: str):
 
 
 def get_properties(version_path: str, properties_paths: list):
-    '''
+    """
     Determine the properties to verify for a given version based on the provided
     version path and a list of property paths. This function returns a list of
     properties, including generic properties and specific properties if present.
-    
+
     Args:
         version_path (str): The path to the version.
         properties_paths (list): A list of paths to properties.
@@ -107,22 +106,21 @@ def get_properties(version_path: str, properties_paths: list):
     Returns:
         list: The properties to verify for the specified version.
 
-    '''
+    """
 
     # Extract base id from base path (e.g. v1)
     version_id = Path(version_path).stem.split('_')[1]
 
     # Properties associated with the current version
-    version_specific_properties_paths = [p for p in properties_paths if f'_{version_id}.' in p] 
+    version_specific_properties_paths = [p for p in properties_paths if f'_{version_id}.' in p]
 
-    # Remove the generic version when there is a specific one 
+    # Remove the generic version when there is a specific one
     version_generic_properties_paths = [p for p in properties_paths if '_v' not in p]
     for specific_property_path in version_specific_properties_paths:
 
         property_id = Path(specific_property_path).stem.split('_')[0]
 
         version_generic_properties_paths = [p for p in version_generic_properties_paths
-                                            if (property_id not in p)] 
-
+                                            if (property_id not in p)]
 
     return version_specific_properties_paths + version_generic_properties_paths

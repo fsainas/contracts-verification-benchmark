@@ -10,19 +10,16 @@ if __name__ == "__main__":
             '--ground-truth',
             '-g',
             help='CSV ground-truth file.',
-            required=True
-    )
+            required=True)
     parser.add_argument(
             '--results',
             '-r',
             help='CSV file with results.',
-            required=True
-    )
+            required=True)
     parser.add_argument(
             '--properties',
             '-p',
-            help='Properties directory, to get nondefs.'
-    )
+            help='Properties directory, to get nondefs.')
     args = parser.parse_args()
 
     cm_csv = gen(args.ground_truth, args.results, args.properties)

@@ -11,14 +11,12 @@ from pathlib import Path
 import subprocess
 import logging
 import utils
-from utils import (
-        STRONG_POSITIVE,
-        STRONG_NEGATIVE,
-        WEAK_POSITIVE,
-        WEAK_NEGATIVE,
-        NONDEFINABLE,
-        ERROR
-        )
+from utils import (STRONG_POSITIVE,
+                   STRONG_NEGATIVE,
+                   WEAK_POSITIVE,
+                   WEAK_NEGATIVE,
+                   NONDEFINABLE,
+                   ERROR)
 import sys
 import os
 import re
@@ -149,7 +147,7 @@ def run_log(id, contract_path, spec_path, logs_dir=None):
     '''
     outcome, log = run(contract_path, spec_path)
     if logs_dir:
-        utils.write_log(logs_dir + id + '.log', log)
+        utils.write_log(Path(logs_dir).joinpath(id + '.log'), log)
     else:
         print(log)
         print(f'Result: {outcome}') 

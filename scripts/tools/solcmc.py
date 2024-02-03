@@ -5,20 +5,19 @@ Usage:
     python run_solcmc.py -i <file_or_dir> -o <output_dir> [-t <timeout>]
 '''
 
-from string import Template
 from multiprocessing import Pool
+from string import Template
+from pathlib import Path
 import subprocess
 import logging
 import utils
-from utils import (
-        STRONG_POSITIVE,
-        STRONG_NEGATIVE,
-        WEAK_POSITIVE,
-        WEAK_NEGATIVE,
-        NONDEFINABLE,
-        UNKNOWN,
-        ERROR
-        )
+from utils import (STRONG_POSITIVE,
+                   STRONG_NEGATIVE,
+                   WEAK_POSITIVE,
+                   WEAK_NEGATIVE,
+                   NONDEFINABLE,
+                   UNKNOWN,
+                   ERROR)
 import sys
 import re
 import os
@@ -143,7 +142,7 @@ def run_log(id, contract_path, timeout=DEFAULT_TIMEOUT, logs_dir=None, solver=DE
     '''
     outcome, log = run(contract_path, timeout, solver)
     if logs_dir:
-        utils.write_log(logs_dir + id + '.log', log)
+        utils.write_log(Path(logs_dir).joinpath(id + '.log'), log)
     else:
         print(log)
         print(f'Result: {outcome}')
