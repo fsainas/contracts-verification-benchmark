@@ -1,7 +1,6 @@
-'''
+"""
 Generates the plain README.
-'''
-
+"""
 from report_gen.readme import gen
 import argparse
 
