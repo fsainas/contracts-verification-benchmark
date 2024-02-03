@@ -13,6 +13,7 @@ import argparse
 
 PLAIN_README_TEMPLATE = Template(
 '''# $name
+$credits
 ## Specification
 $specification
 
@@ -111,6 +112,7 @@ def gen(usecase_dir):
 
     readme = {}
     readme['name'] = skeleton['name']
+    readme['credits'] = skeleton['credits'] + "\n" if 'credits' in skeleton else ""
     readme['specification'] = specification
     readme['properties'] = md_property_list(skeleton['properties'])
     readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
