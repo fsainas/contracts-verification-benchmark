@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.18;
 
-/// @custom:version `timeout` can be called since block N+1000 (included).
+/// @custom:version `timeout` can be called since block N+999 (included).
 contract HTLC {
    address payable public owner;  
    address payable public verifier;
@@ -56,7 +56,7 @@ contract HTLC {
    }
 
    function timeout() public {
-       require(block.number >= start + 1000);
+       require(block.number >= start + 999);
        require(isCommitted);       
 
        uint _to_send = address(this).balance;

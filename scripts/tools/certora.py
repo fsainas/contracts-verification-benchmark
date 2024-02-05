@@ -11,14 +11,12 @@ from pathlib import Path
 import subprocess
 import logging
 import utils
-from utils import (
-        STRONG_POSITIVE,
-        STRONG_NEGATIVE,
-        WEAK_POSITIVE,
-        WEAK_NEGATIVE,
-        NONDEFINABLE,
-        ERROR
-        )
+from utils import (STRONG_POSITIVE,
+                   STRONG_NEGATIVE,
+                   WEAK_POSITIVE,
+                   WEAK_NEGATIVE,
+                   NONDEFINABLE,
+                   ERROR)
 import sys
 import os
 import re
@@ -74,15 +72,17 @@ def run(contract_path, spec_path):
     negate = False
     has_satisfy = False
     has_assert = False
+    has_invariant = False
     with open(spec_path, 'r') as file:
         spec_code = file.read()
         spec_no_comments = utils.remove_comments(spec_code)
 
         has_satisfy = re.search('satisfy', spec_no_comments)
         has_assert = re.search('assert', spec_no_comments)
+        has_invariant = re.search('invariant', spec_no_comments)
 
         # Check if there are asserts or satisfy
-        if not has_assert and not has_satisfy:
+        if not has_assert and not has_satisfy and not has_invariant:
             msg = f'Error in {spec_path}: No "assert" or "satisfy" found.'
             logging.error(msg)
             return ERROR, msg
@@ -135,9 +135,9 @@ def run(contract_path, spec_path):
     # Negation
     is_positive = not is_positive if negate else is_positive
 
-    res = STRONG_POSITIVE if has_assert else WEAK_POSITIVE
+    res = STRONG_POSITIVE if has_assert or has_invariant else WEAK_POSITIVE
     if not is_positive:
-        res = WEAK_NEGATIVE if has_assert else STRONG_NEGATIVE
+        res = WEAK_NEGATIVE if has_assert or has_invariant else STRONG_NEGATIVE
 
     print(f'{contract_path}, {spec_path}: {res}')
     return res, f'{log.stdout}\n\n{log.stderr}'
@@ -149,7 +149,7 @@ def run_log(id, contract_path, spec_path, logs_dir=None):
     '''
     outcome, log = run(contract_path, spec_path)
     if logs_dir:
-        utils.write_log(logs_dir + id + '.log', log)
+        utils.write_log(Path(logs_dir).joinpath(id + '.log'), log)
     else:
         print(log)
         print(f'Result: {outcome}') 

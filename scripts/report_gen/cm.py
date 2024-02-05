@@ -1,9 +1,8 @@
 import argparse
 import logging
 import utils
-from utils import (
-        UNKNOWN,
-        ERROR)
+from utils import (UNKNOWN,
+                   ERROR)
 import glob
 import re
 import csv

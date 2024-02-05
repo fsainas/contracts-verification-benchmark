@@ -4,9 +4,10 @@ rule withdraw_not_revert {
     env e;
     uint amount;
 
-    require(amount <= getBalanceEntry(e.msg.sender));
+    require(0 <= amount);
+    require(amount <= currentContract.balances[e.msg.sender]);
 
     withdraw@withrevert(e, amount);
 
-    assert(!lastReverted);
+    assert !lastReverted;
 }

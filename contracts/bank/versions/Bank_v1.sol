@@ -19,3 +19,4 @@ contract Bank {
         require(success);
     }
 }
+

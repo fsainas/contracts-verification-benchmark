@@ -1,10 +1,10 @@
-/// @custom:negate
-
 rule wd_twice {
     env e1;
     address addr1;
     uint amt1;
-    withdraw(e1, addr1, amt1);
+    withdraw@withrevert(e1, addr1, amt1);
+    
+    satisfy !lastReverted;
     
     env e2;
     address addr2;

@@ -1,3 +1,5 @@
-function invariant() public view {
-   assert(!_timeout_called || _timeout_diff > 1000);
+function invariant() public {
+   timeout();
+   
+   assert (block.number >= start + 1000);
 }

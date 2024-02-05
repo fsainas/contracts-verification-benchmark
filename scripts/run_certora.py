@@ -1,11 +1,8 @@
-'''
+"""
 Operates on either a single file or every file within a directory.
-
-Usage:
-    python run_certora.py -c <file_or_dir> -s <spec_file> -o <output_dir>
-'''
-
+"""
 from tools.certora import run_all
+from pathlib import Path
 import argparse
 import utils
 import glob
@@ -17,52 +14,36 @@ if __name__ == '__main__':
             '--contracts',
             '-c',
             help='Contracts dir or contract file.',
-            required=True
-            )
+            required=True)
     parser.add_argument(
             '--specs',
             '-s',
             help='CVL Specification dir or file.',
-            required=True
-            )
+            required=True)
     parser.add_argument(  # build/
             '--output',
             '-o',
-            help='Output directory.',
-    )
+            help='Output directory.')
     args = parser.parse_args()
 
-    # Remove final slash
-    contracts = (
-            args.contracts
-            if args.contracts[-1] != '/'
-            else args.contracts[:-1]
-            )
+    contracts = Path(args.contracts)
+    specs = Path(args.specs)
 
     # Get contracts paths
     contracts_paths = (
             glob.glob(f'{contracts}/*.sol')
             if os.path.isdir(contracts)
-            else [contracts]
-    )
-
-    # Remove final slash
-    specs = (
-            args.specs
-            if args.specs[-1] != '/'
-            else args.specs[:-1]
-            )
+            else [contracts])
 
     # Get specs paths
     specs_paths = (
             glob.glob(f'{specs}/*.spec')
             if os.path.isdir(specs)
-            else [specs]
-    )
+            else [specs])
 
     if args.output:
-        output_dir = args.output if args.output[-1] == '/' else args.output + '/'
-        logs_dir = output_dir + 'logs/'
+        output_dir = Path(args.output)
+        logs_dir = output_dir.joinpath('logs/')
 
         outcomes = run_all(contracts_paths, specs_paths, logs_dir)
 
@@ -72,6 +53,6 @@ if __name__ == '__main__':
             v = id.split('_')[1]
             out_csv.append([p, v, outcomes[id]])
 
-        utils.write_csv(output_dir + 'out.csv', out_csv)
+        utils.write_csv(output_dir.joinpath('out.csv'), out_csv)
     else:
         run_all(contracts_paths, specs_paths)

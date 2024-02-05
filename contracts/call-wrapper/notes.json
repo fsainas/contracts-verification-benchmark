@@ -1,0 +1,16 @@
+{
+    "bal-v2": {
+        "solcmc": "S:REENTRANT_SELFDESTRUCT",
+        "note": "fooled because every function is non reentrant"
+    },
+    "bal-v5": {
+        "solcmc": "S:REENTRANT_SELFDESTRUCT",
+        "note": "fooled because every function is non reentrant"
+    },
+    "stor-v3": {
+        "certora": "S:REENTRANT_CALL"
+    },
+    "stor-v4": {
+        "certora": "S:REENTRANT_CALL"
+    }
+}.
