@@ -29,8 +29,8 @@ run: $(TABLE)
 
 $(TABLE): $(CM)
 	@echo "Generating SolCMC results table ($(TABLE))..."
-	@if [ $(solver) == "z3" ]; then echo "#### Z3" > $(TABLE); \
-	elif [ $(solver) == "eld" ]; then echo "#### Eldarica" > $(TABLE); fi
+	@if [ $(solver) = "z3" ]; then echo "#### Z3" > $(TABLE); \
+	elif [ $(solver) = "eld" ]; then echo "#### Eldarica" > $(TABLE); fi
 	@$(PYTHON) ../../../scripts/mdtable_gen.py --input $(CM) >> $(TABLE)
 
 $(CM): $(GROUND_TRUTH) $(OUT)

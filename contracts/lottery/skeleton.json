@@ -3,14 +3,14 @@
     "credits": "This is a simplified version of [this](https://github.com/owanhunte/ethereum-solidity-course-updated-code/blob/main/lottery/contracts/Lottery.sol) contract by [@verumlotus](https://github.com/owanhunte).",
     "specification": "file:specification.md" ,
     "properties": {
-        "p1": "players can't be removed from the game until a winner is picked.",
-        "p2": "the only way to be a member of the `players[]` array is to call `enter()`.",
-        "p3": "if a player calls `enter()` and successfully sends 0.01 Ether, the player is added to `players[]`.",
-        "p4": "between the `start` and `start+duration` blocks, any user can join the lottery.",
-        "p5": "after the `start+duration` block, no user can join the lottery.",
-        "p6": "after the `start+duration` block, any user can choose to become the picker. If any does, a winner will eventually be picked.",
-        "p7": "among the users that have joined the lottery, the probability of any of them being selected as a winner is equal.",
-        "p8": "the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` Ether.",
-        "p9": "the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` Ether."
+        "players-permanent": "players can't be removed from the game until a winner is picked.",
+        "add-player-only-enter": "the only way to be a member of the `players[]` array is to call `enter()`.",
+        "enter-add-player": "if `enter()` is successfully called, the `msg.sender` is added to `players[]`.",
+        "any-user-can-enter": "between the `start` and `start+duration` blocks, any user can join the lottery.",
+        "enter-closes": "after the `start+duration` block, no user can join the lottery.",
+        "any-user-can-picker": "after the `start+duration` block, any user can choose to become the picker. If any does, a winner will eventually be picked.",
+        "fairness": "among the users that have joined the lottery, the probability of any of them being selected as a winner is equal.",
+        "picker-paid": "the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` Ether.",
+        "winner-paid": "the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` Ether."
     }
 }

@@ -1,3 +1,5 @@
-function invariant() public view {
-   assert(!isCommitted || _commit_sender==owner);
+function invariant(bytes32 s) public payable {
+   commit(s);
+
+   assert(msg.sender == owner);
 }

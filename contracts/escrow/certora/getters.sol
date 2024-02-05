@@ -17,3 +17,11 @@ function getArbiter() public view returns (address) {
 function getState() public view returns (Escrow.State) {
     return state;
 }
+
+function getFee() public view returns (uint256) {
+    return fee;
+}
+
+function getDeposit() public view returns (uint256) {
+    return deposit;
+}

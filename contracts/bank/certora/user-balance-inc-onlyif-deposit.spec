@@ -6,9 +6,9 @@ rule user_balance_inc_onlyif_deposit {
     calldataarg args;
     address a;
 
-    mathint currb = getBalanceEntry(a);
+    mathint currb = currentContract.balances[a];
     f(e, args);
-    mathint newb = getBalanceEntry(a);
+    mathint newb = currentContract.balances[a];
 
     assert(newb > currb => (f.selector == sig:deposit().selector && e.msg.sender == a));
 }

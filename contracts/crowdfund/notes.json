@@ -1,0 +1,33 @@
+{
+    "bal-decrl-onlyif-wd-reclaim": {
+        "solcmc": "D:[TODO] probably ok"
+    },
+    "donate-not-revert": {
+        "solcmc": "D:LIVENESS"
+    },
+    "donate-not-revert-overflow": {
+        "solcmc": "D:LIVENESS",
+        "certora": "C:"
+    },
+    "no-donate-after-deadline": {
+        "certora": "C:[TODO] implementation broken"
+    },
+    "no-receive-after-deadline": {
+        "certora": "S:[TODO] implementation makes no sense"
+    },
+    "owner-only-recv": {
+        "solcmc": "D:FUND_OWNERSHIP_TRANSFER",
+        "certora": "D:FUND_OWNERSHIP_TRANSFER"
+    },
+    "reclaim-not-revert": {
+        "solcmc": "D:LIVENESS+HISTORY",
+        "certora": "D:[TODO] try (HISTORY)"
+    },
+    "wd-not-revert": {
+        "solcmc": "D:LIVENESS"
+    },
+    "wd-not-revert-EOA": {
+        "solcmc": "D:LIVENESS",
+        "certora": "C:NO_EOA"
+    }
+}

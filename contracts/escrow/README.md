@@ -1,4 +1,5 @@
 # Escrow
+
 ## Specification
 This contract involves three participants: a buyer, a seller and an arbiter. At construction, the buyer provides a deposit in ETH, and it specifies the addresses of the seller and of the arbiter, and the fee that will be paid to the arbiter in case it is used to resolve a dispute. After construction, the contract operates in three states: Agree, Dispute, Redeem. 
 
@@ -14,7 +15,7 @@ In the Dispute state, the arbiter redeems the fee, and chooses whom between the 
 In the Redeem state, the chosen recipient can `redeem` the whole contract balance.
 
 ## Properties
-- **arbitrate-send**: after a successful call to `arbitrate`, the arbiter receives `fee` ETH.
+- **arbitrate-send**: during a successful call to `arbitrate`, the arbiter receives `fee` ETH.
 - **auth-in-agree**: in the Agree state, only the buyer and the seller can perform actions.
 - **auth-in-dispute**: in the Dispute state, only the arbiter can perform actions.
 - **dispute-if-agree**: in the Agree state, both the buyer and the seller can open a dispute.
@@ -33,19 +34,28 @@ In the Redeem state, the chosen recipient can `redeem` the whole contract balanc
 | **v1** | 1                         | 1                         | 1                         | 1                         | 1                         | 1                         | 1                         | 1                         |
 | **v2** | 1                         | 0                         | 1                         | 1                         | 1                         | 0                         | 1                         | 1                         |
  
+
 ## Experiments
- 
 ### SolCMC
+#### Z3
 |        | arbitrate-send            | auth-in-agree             | auth-in-dispute           | dispute-if-agree          | dispute-onlyif-agree      | no-send-in-agree          | recipient-buyer-or-seller | redeem-send               |
 |--------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|
-| **v1** | ND                        | TP!                       | TP!                       | FN!                       | TP!                       | TP!                       | TP!                       | ND                        |
-| **v2** | ND                        | TN!                       | TP!                       | FN!                       | TP!                       | TN                        | TP!                       | ND                        |
+| **v1** | ND                        | TP!                       | TP!                       | ND                        | TP!                       | TP!                       | TP!                       | ND                        |
+| **v2** | ND                        | TN!                       | TP!                       | ND                        | TP!                       | UNK                       | TP!                       | ND                        |
+ 
+
+#### Eldarica
+|        | arbitrate-send            | auth-in-agree             | auth-in-dispute           | dispute-if-agree          | dispute-onlyif-agree      | no-send-in-agree          | recipient-buyer-or-seller | redeem-send               |
+|--------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|
+| **v1** | ND                        | TP!                       | TP!                       | ND                        | TP!                       | TP!                       | TP!                       | ND                        |
+| **v2** | ND                        | TN!                       | TP!                       | ND                        | TP!                       | TN!                       | TP!                       | ND                        |
  
 
 
 ### Certora
 |        | arbitrate-send            | auth-in-agree             | auth-in-dispute           | dispute-if-agree          | dispute-onlyif-agree      | no-send-in-agree          | recipient-buyer-or-seller | redeem-send               |
 |--------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|
-| **v1** | ND                        | TP!                       | TP!                       | TP!                       | TP!                       | TP!                       | FN!                       | ND                        |
-| **v2** | ND                        | TN!                       | TP!                       | TP!                       | TP!                       | TN!                       | FN!                       | ND                        |
+| **v1** | FN                        | TP!                       | TP!                       | TP!                       | TP!                       | TP!                       | FN                        | FN                        |
+| **v2** | FN                        | TN                        | TP!                       | TP!                       | TP!                       | TN                        | FN                        | FN                        |
  
+

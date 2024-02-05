@@ -78,10 +78,8 @@ $(LIB_DIR):
 
 #---------------------------- CLEAN ------------------------------#
 clean-specs:
-	@echo "Cleaning specs..."
-	@rm -rf $(SPEC_DIR)
+	rm -rf $(SPEC_DIR)
 
 clean:
-	@echo "Deleting \"certora/build/\"..."
-	@rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)
 

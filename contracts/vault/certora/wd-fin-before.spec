@@ -6,7 +6,7 @@ rule wd_fin_before {
     withdraw(e1, addr, amt);
 
     env e2;
-    require (e2.block.number < assert_uint256(e1.block.number + currentContract.wait_time));
+    require (to_mathint(e2.block.number) < to_mathint(e1.block.number) + to_mathint(currentContract.wait_time));
     finalize(e2);
 
     satisfy !lastReverted;

@@ -9,4 +9,6 @@ methods {
     function getSeller() external returns (address) envfree;
     function getArbiter() external returns (address) envfree;
     function getState() external returns (Escrow.State) envfree;
+    function getFee() external returns (uint256) envfree;
+    function getDeposit() external returns (uint256) envfree;
 }

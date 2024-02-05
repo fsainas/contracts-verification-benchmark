@@ -1,12 +1,9 @@
 rule no_wd_if_no_goal {
     env e;
     
-    uint balance = getBalance();
-    uint goal = getGoal();
-    require balance < goal;
+    require getBalance() < getGoal();
     
     withdraw@withrevert(e);    
-
     assert lastReverted;
 }
 

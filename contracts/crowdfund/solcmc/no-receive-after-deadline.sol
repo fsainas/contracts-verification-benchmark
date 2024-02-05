@@ -1,12 +1,17 @@
-// ghost variables
-uint _prevBalance;
-uint _balance;
+uint saved;
+bool done;
 
-function invariant() public {
+function invstore() public {
     require(block.number > end_donate);
+    require(!done);
 
-    _prevBalance = _balance;
-    _balance = address(this).balance;
+    saved = address(this).balance;
+    done = true;
+}
 
-    assert(!(_prevBalance != 0) || _prevBalance >= _balance);
+function invariant(uint choice) public {
+    require(block.number > end_donate);
+    require(done);
+
+    assert(address(this).balance <= saved);
 }

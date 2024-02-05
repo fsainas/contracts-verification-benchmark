@@ -3,11 +3,12 @@ rule auth_in_dispute {
     method f;
     calldataarg args;
 
-    require f.selector != sig:getBalance().selector;
-    require f.selector != sig:getBuyer().selector;
-    require f.selector != sig:getSeller().selector;
-    require f.selector != sig:getArbiter().selector;
-    require f.selector != sig:getState().selector;
+    require 
+        (  f.selector == sig:approve_payment().selector
+        || f.selector == sig:refund().selector
+        || f.selector == sig:open_dispute().selector
+        || f.selector == sig:arbitrate(address).selector
+        || f.selector == sig:redeem().selector);
     
     require(getState() == Escrow.State.DISPUTE);
     f(e, args);

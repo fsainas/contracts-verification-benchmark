@@ -52,5 +52,4 @@ contract Lottery {
         (success,) = winner.call{value: address(this).balance}("");
         require(success);
     }
-
 }
