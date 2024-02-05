@@ -7,7 +7,7 @@ import "./IERC20.sol";
  * @dev Implementation of the {IERC20} interface.
  *
  */
-contract ERC20 is IERC20, IERC20Errors {
+contract ERC20 is IERC20 {
     mapping(address => uint256) private _balances;
     uint256 private _totalSupply;
 

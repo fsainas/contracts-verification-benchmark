@@ -6,12 +6,12 @@ CONTRACTS_DIR = $(BUILD_DIR)/contracts
 LOGS_DIR = $(BUILD_DIR)/logs
 LIB_DIR = $(CONTRACTS_DIR)/lib
 
-to = 0
+to = "10m"
 contract = ""
 
 PYTHON = python
 
-.PHONY = run clean
+.PHONY = run clean one contracts directories
 
 run: contracts directories
 	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR) --output $(BUILD_DIR) --timeout $(to)
@@ -19,7 +19,8 @@ run: contracts directories
 one: contracts directories
 	@$(PYTHON) ../../../scripts/runs.py --contract $(contract) --timeout $(to)
 
-contracts: $(CONTRACTS_DIR)
+contracts: $(VERSIONS_DIR) $(wildcard $(PROPERTIES_DIR)/*.sol) $(CONTRACTS_DIR)
+	@echo "Building contracts..."
 	@$(PYTHON) ../../../scripts/builder.py --versions $(VERSIONS_DIR) --properties $(PROPERTIES_DIR) --output $(CONTRACTS_DIR)
 
 directories: $(CONTRACTS_DIR) $(LOGS_DIR) $(LIB_DIR)
@@ -34,5 +35,4 @@ $(LIB_DIR):
 	@cp -r ../../../lib/ $@
 
 clean:
-	rm -rf build/
-
+	rm -rf $(BUILD_DIR)

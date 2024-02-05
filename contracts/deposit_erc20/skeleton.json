@@ -2,6 +2,8 @@
     "name": "Deposit (ERC20)",
     "specification": "file:spec.md",
     "properties": {
-        "no-deposit-twice": "`deposit` can only be called once."
+        "no-deposit-twice": "`deposit` can only be called once.",
+        "wd-leq-init-bal": "the overall withdrawn amount does not exceed the initial deposit.",
+        "wd-contract-bal": "the contract token balance is decreased by `amount` after a successful `withdraw(amount)`."
      }
 }

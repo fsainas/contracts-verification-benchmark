@@ -13,7 +13,7 @@ The contract handles the maturation (vesting) of native cryptocurrency for a giv
 - **release-rel**: after a successful call to `release`, the beneficiary receives `releasable()` ETH
 
 ## Versions
-- **v1**: from [OpenZeppelin] (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol).
+- **v1**: from [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol).
 - **v2**: releasable funds is over-approximated.
 
 ## Ground truth
