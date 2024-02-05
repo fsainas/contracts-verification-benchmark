@@ -4,13 +4,9 @@ rule withdraw_user_balance {
     env e;
     uint256 amount;
 
-    address sender = e.msg.sender;
-    mathint old_user_balance = getBalanceEntry(sender);
-
+    mathint old_user_balance = currentContract.balances[e.msg.sender];
     withdraw(e,amount);
+    mathint new_user_balance = currentContract.balances[e.msg.sender];
 
-    mathint new_user_balance = getBalanceEntry(sender);
-
-    mathint amount_mathint = to_mathint(amount);
-    assert new_user_balance == old_user_balance - amount_mathint;
+    assert new_user_balance == old_user_balance - to_mathint(amount);
 }

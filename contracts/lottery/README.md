@@ -25,23 +25,43 @@ of a new winner. Ultimately, the players array is reset and new round begins.
 
 
 ## Properties
-- **p1**: players can't be removed from the game until a winner is picked.
-- **p2**: the only way to be a member of the `players[]` array is to call `enter()`.
-- **p3**: if a player calls `enter()` and successfully sends 0.01 Ether, the player is added to `players[]`.
-- **p4**: between the `start` and `start+duration` blocks, any user can join the lottery.
-- **p5**: after the `start+duration` block, no user can join the lottery.
-- **p6**: after the `start+duration` block, any user can choose to become the picker. If any does, a winner will eventually be picked.
-- **p7**: among the users that have joined the lottery, the probability of any of them being selected as a winner is equal.
-- **p8**: the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` Ether.
-- **p9**: the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` Ether.
+- **add-player-only-enter**: the only way to be a member of the `players[]` array is to call `enter()`.
+- **any-user-can-enter**: between the `start` and `start+duration` blocks, any user can join the lottery.
+- **any-user-can-picker**: after the `start+duration` block, any user can choose to become the picker. If any does, a winner will eventually be picked.
+- **enter-add-player**: if `enter()` is successfully called, the `msg.sender` is added to `players[]`.
+- **enter-closes**: after the `start+duration` block, no user can join the lottery.
+- **fairness**: among the users that have joined the lottery, the probability of any of them being selected as a winner is equal.
+- **picker-paid**: the picker (if present) will eventually receive `0.01 * len(players[]) * 0.01` Ether.
+- **players-permanent**: players can't be removed from the game until a winner is picked.
+- **winner-paid**: the player that is selected as a winner will eventually receive `0.01 * len(players[]) * 0.99` Ether.
 
 ## Versions
 - **v1**: conforming to specification.
 
 ## Ground truth
-|        | p1    | p2    | p3    | p4    | p5    | p6    | p7    | p8    | p9    |
-|--------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
-| **v1** | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     | 1     |
+|        | add-player-only-enter | any-user-can-enter    | any-user-can-picker   | enter-add-player      | enter-closes          | fairness              | picker-paid           | players-permanent     | winner-paid           |
+|--------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
+| **v1** | 1                     | 1                     | 1                     | 1                     | 0                     | 1                     | 1                     | 1                     | 1                     |
  
 
 ## Experiments
+### SolCMC
+#### Z3
+|        | add-player-only-enter | any-user-can-enter    | any-user-can-picker   | enter-add-player      | enter-closes          | fairness              | picker-paid           | players-permanent     | winner-paid           |
+|--------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
+| **v1** | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    |
+ 
+
+#### Eldarica
+|        | add-player-only-enter | any-user-can-enter    | any-user-can-picker   | enter-add-player      | enter-closes          | fairness              | picker-paid           | players-permanent     | winner-paid           |
+|--------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
+| **v1** | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    | ND                    |
+ 
+
+
+### Certora
+|        | add-player-only-enter | any-user-can-enter    | any-user-can-picker   | enter-add-player      | enter-closes          | fairness              | picker-paid           | players-permanent     | winner-paid           |
+|--------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|-----------------------|
+| **v1** | FN                    | TP!                   | FN                    | FN                    | TN                    | ND                    | ND                    | FN                    | ND                    |
+ 
+

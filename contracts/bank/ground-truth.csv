@@ -1,20 +1,18 @@
 property,version,truth,footnote-md
 deposit-contract-balance,v1,1,
 deposit-contract-balance,v2,1,
-deposit-user-balance,v1,1,
-deposit-user-balance,v2,1,
-user-balance-inc-onlyif-deposit,v1,1,
-user-balance-inc-onlyif-deposit,v2,1,
-user-balance-dec-onlyif-withdraw,v1,1,
-user-balance-dec-onlyif-withdraw,v2,1,
-withdraw-contract-balance,v1,0,"A reentrancy attack is possible if the recipient address is an untrusted contract."
-withdraw-contract-balance,v2,0,
-withdraw-user-balance,v1,0,"A reentrancy attack is possible if the recipient address is an untrusted contract."
-withdraw-user-balance,v2,0,
 deposit-not-revert,v1,1,
 deposit-not-revert,v2,1,
 deposit-revert-if-low-eth,v1,1,
 deposit-revert-if-low-eth,v2,1,
+deposit-user-balance,v1,1,
+deposit-user-balance,v2,1,
+user-balance-dec-onlyif-withdraw,v1,0,"A call to withdraw by a user b may lead to a reentrant call to withdraw by a user a." 
+user-balance-dec-onlyif-withdraw,v2,0,
+user-balance-inc-onlyif-deposit,v1,0,"A call to withdraw may lead to a reentrant call to deposit, increasing the user's balance."
+user-balance-inc-onlyif-deposit,v2,0,
+withdraw-contract-balance,v1,0,"A reentrancy attack is possible if the recipient address is an untrusted contract."
+withdraw-contract-balance,v2,0,
 withdraw-not-revert,v1,0,"A reentrancy attack is possible if the recipient address is an untrusted contract."
 withdraw-not-revert,v2,0,
 withdraw-revert,v1,1,
@@ -23,4 +21,6 @@ withdraw-sender-rcv,v1,0,"`msg.sender` can be an untrusted contract that transfe
 withdraw-sender-rcv,v2,0,
 withdraw-sender-rcv-EOA,v1,1,
 withdraw-sender-rcv-EOA,v2,1,
+withdraw-user-balance,v1,0,"A reentrancy attack is possible if the recipient address is an untrusted contract."
+withdraw-user-balance,v2,0,
 

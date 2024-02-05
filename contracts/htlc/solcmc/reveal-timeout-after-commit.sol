@@ -1,4 +1,11 @@
-function invariant() public view {
-   // assert(!((_timeout_called || _reveal_called) && !_commit_called));
-   assert(!(_timeout_called || _reveal_called) || _commit_called);
+function invariant(bool b, string memory s) public {
+   require(!isCommitted);
+
+   if (b) {
+      reveal(s);
+   } else {
+      timeout();
+   }
+
+   assert(false);
 }

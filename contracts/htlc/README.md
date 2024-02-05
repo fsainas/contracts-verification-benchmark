@@ -1,4 +1,5 @@
 # HTLC
+
 ## Specification
 The Hash Timed Locked Contract (HTLC) involves two users, the *owner* and the *verifier*, and it allows the owner to commit to a secret and reveal it afterwards, within a given deadline. 
 
@@ -21,7 +22,7 @@ After contract creation, the HTLC allows the following actions:
 ## Versions
 - **v1**: conformant to specification.
 - **v2**: removed check that `commit` can only be called before `reveal` and `timeout`.
-- **v3**: `timeout` can be called since block N+1000 (included).
+- **v3**: `timeout` can be called since block N+999 (included).
 - **v4**: `timeout` transfers balance to `msg.sender` instead of verifier.
 - **v5**: removed check that `commit` can only be called by `owner`.
 - **v6**: removed check that `reveal` can only be called by `owner`.
@@ -39,26 +40,39 @@ After contract creation, the HTLC allows the following actions:
 [^1]: This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`.
 [^2]: Since the `reveal` transaction is broadcast in the mempool before the transaction is finalized, anyone can read the secret from the mempool and play its own `reveal` transaction.
 
-
 ## Experiments
-
 ### SolCMC
+#### Z3
 |        | commit-auth-owner           | reveal-auth-owner           | reveal-timeout-after-commit | sent-le-init-bal            | timeout-deadline            |
 |--------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
 | **v1** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
 | **v2** | TP!                         | TP!                         | TN!                         | TN!                         | TP!                         |
 | **v3** | TP!                         | TP!                         | TP!                         | TN!                         | TN!                         |
 | **v4** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
-| **v5** | TN!                         | TP!                         | TP!                         | TN!                         | TP!                         |
+| **v5** | FP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
 | **v6** | TP!                         | TN!                         | TP!                         | TN!                         | TP!                         |
+ 
+
+#### Eldarica
+|        | commit-auth-owner           | reveal-auth-owner           | reveal-timeout-after-commit | sent-le-init-bal            | timeout-deadline            |
+|--------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
+| **v1** | TP!                         | TP!                         | TP!                         | FP!                         | TP!                         |
+| **v2** | TP!                         | TP!                         | FP!                         | FP!                         | TP!                         |
+| **v3** | TP!                         | TP!                         | TP!                         | FP!                         | FP!                         |
+| **v4** | TP!                         | TP!                         | TP!                         | FP!                         | TP!                         |
+| **v5** | FP!                         | TP!                         | TP!                         | FP!                         | TP!                         |
+| **v6** | TP!                         | FP!                         | TP!                         | FP!                         | TP!                         |
+ 
+
 
 ### Certora
 |        | commit-auth-owner           | reveal-auth-owner           | reveal-timeout-after-commit | sent-le-init-bal            | timeout-deadline            |
 |--------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
-| **v1** | TP!                         | FN!                         | FN!                         | FP!                         | TP!                         |
-| **v2** | TP!                         | FN!                         | TN!                         | FP!                         | TP!                         |
-| **v3** | TP!                         | FN!                         | FN!                         | FP!                         | TN!                         |
-| **v4** | TP!                         | FN!                         | FN!                         | FP!                         | TP!                         |
-| **v5** | TN!                         | FN!                         | FN!                         | FP!                         | TP!                         |
-| **v6** | TP!                         | TN!                         | FN!                         | FP!                         | TP!                         |
+| **v1** | TP!                         | FN                          | FN                          | TN                          | TP!                         |
+| **v2** | TP!                         | FN                          | TN                          | TN                          | TP!                         |
+| **v3** | TP!                         | FN                          | FN                          | TN                          | TN                          |
+| **v4** | TP!                         | FN                          | FN                          | TN                          | TP!                         |
+| **v5** | TN                          | FN                          | FN                          | TN                          | TP!                         |
+| **v6** | TP!                         | TN                          | FN                          | TN                          | TP!                         |
  
+

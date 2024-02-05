@@ -29,8 +29,8 @@ run: $(TABLE)
 
 $(TABLE): $(CM)
 	@echo "Generating SolCMC results table ($(TABLE))..."
-	@if [ $(solver) == "z3" ]; then echo "#### Z3" > $(TABLE); \
-	elif [ $(solver) == "eld" ]; then echo "#### Eldarica" > $(TABLE); fi
+	@if [ $(solver) = "z3" ]; then echo "#### Z3" > $(TABLE); \
+	elif [ $(solver) = "eld" ]; then echo "#### Eldarica" > $(TABLE); fi
 	@$(PYTHON) ../../../scripts/mdtable_gen.py --input $(CM) >> $(TABLE)
 
 $(CM): $(GROUND_TRUTH) $(OUT)
@@ -39,7 +39,7 @@ $(CM): $(GROUND_TRUTH) $(OUT)
 
 $(OUT): setup $(PROPERTIES_FILES) $(VERSIONS_FILES)
 	@echo "Running SolCMC ($(solver)) experiments..."
-	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR)/ --output $(OUTPUT_DIR) --timeout $(to) --solver $(solver)
+	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR) --output $(OUTPUT_DIR) --timeout $(to) --solver $(solver)
 
 one: setup
 	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(contract) --timeout $(to)
@@ -64,5 +64,4 @@ $(LIB_DIR):
 
 #---------------------------- CLEAN ------------------------------#
 clean:
-	@echo "Deleting \"solcmc/build/\"..."
-	@rm -rf $(BUILD_DIR)
+	rm -rf $(BUILD_DIR)

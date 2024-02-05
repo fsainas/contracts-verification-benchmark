@@ -10,6 +10,10 @@
         return address(this).balance;
     }
 
+    function balanceOf(address a) public view returns (uint) {
+        return a.balance;
+    }
+
     function getDonated(address a) public view returns (uint) {
         return donors[a];
     }

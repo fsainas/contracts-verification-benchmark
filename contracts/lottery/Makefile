@@ -1,5 +1,3 @@
-MAKEFLAGS = --no-print-directory
-
 SOLCMC_DIR = ./solcmc
 SOLCMC_BUILD_DIR = $(SOLCMC_DIR)/build
 SOLCMC_Z3_TABLE = $(SOLCMC_BUILD_DIR)/z3/table.md
@@ -54,13 +52,10 @@ $(README): $(VERSIONS_DIR) $(SKELETON) $(GROUND_TRUTH)
 clean: cleanr clean-solcmc clean-certora
 
 cleanr:
-	@echo "Cleaning README..."
-	@rm -f $(README)
+	rm -f $(README)
 
 clean-solcmc:
-	@echo "Cleaning SolCMC..."
-	@cd $(realpath $(SOLCMC_DIR)) && make clean
+	cd $(realpath $(SOLCMC_DIR)) && make clean
 
 clean-certora:
-	@echo "Cleaning Certora..."
-	@cd $(realpath $(CERTORA_DIR)) && make clean
+	cd $(realpath $(CERTORA_DIR)) && make clean

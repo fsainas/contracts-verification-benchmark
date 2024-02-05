@@ -4,7 +4,7 @@ rule withdraw_revert {
     env e;
     uint amount;
 
-    require (amount==0 || amount>getBalanceEntry(e.msg.sender));
+    require (amount == 0 || amount > currentContract.balances[e.msg.sender]);
 
     withdraw@withrevert(e, amount);
 

@@ -1,11 +1,11 @@
 property,version,truth,footnote-md
-no-wd-if-no-goal,v1,1,
+bal-decr-onlyif-wd-reclaim,v1,1,
 donate-not-revert,v1,0,"This property should be false, since the increment of the `donors` map could overflow."
 donate-not-revert-overflow,v1,1,
-wd-not-revert,v1,0,
-wd-not-revert-EOA,v1,1,
-no-receive-after-deadline,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
-bal-decr-onlyif-wd-reclaim,v1,1,
-reclaim-not-revert,v1,0,
-owner-only-recv,v1,1,
 no-donate-after-deadline,v1,1,
+no-receive-after-deadline,v1,0,"This property should always be false, since a contract can receive ETH when its address is specified in a coinbase transaction or in a `selfdestruct`."
+no-wd-if-no-goal,v1,1,
+owner-only-recv,v1,1,
+reclaim-not-revert,v1,0,"All funds may have been reclaimed already."
+wd-not-revert,v1,0,"Receiver of the funds may revert the transaction."
+wd-not-revert-EOA,v1,1,

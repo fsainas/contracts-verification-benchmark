@@ -3,12 +3,9 @@
 rule deposit_contract_balance {
     env e;
 
-    mathint old_contract_balance = getContractBalance();
-
+    mathint old_contract_balance = balanceOf(currentContract);
     deposit(e);
+    mathint new_contract_balance = balanceOf(currentContract);
 
-    mathint new_contract_balance = getContractBalance();
-
-    mathint deposit_amount = to_mathint(e.msg.value);
-    assert new_contract_balance == old_contract_balance + deposit_amount;
+    assert new_contract_balance == old_contract_balance + to_mathint(e.msg.value);
 }
