@@ -31,6 +31,14 @@ if __name__ == '__main__':
             '--solver',
             '-s',
             help='Model checker: {z3, eld}')
+    parser.add_argument(
+            '--version',
+            '-v',
+            help='Run experiments on this version only.')
+    parser.add_argument(
+            '--property',
+            '-p',
+            help='Run experiments on this property only.')
     args = parser.parse_args()
 
     contracts = Path(args.contracts)
@@ -40,6 +48,12 @@ if __name__ == '__main__':
             glob.glob(f'{contracts}/*.sol')
             if os.path.isdir(contracts)
             else [str(contracts)])
+
+    if args.version:
+        contracts_paths = [c for c in contracts_paths if args.version in c]
+
+    if args.property:
+        contracts_paths = [c for c in contracts_paths if args.property in c]
 
     timeout = args.timeout if args.timeout else DEFAULT_TIMEOUT
     solver = args.solver if args.solver else DEFAULT_SOLVER

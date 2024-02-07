@@ -2,6 +2,8 @@
 solver = z3
 to = 10m
 contract = ""
+version = ""
+property = ""
 
 # Input files
 VERSIONS_DIR = ../versions/
@@ -39,7 +41,7 @@ $(CM): $(GROUND_TRUTH) $(OUT)
 
 $(OUT): setup $(PROPERTIES_FILES) $(VERSIONS_FILES)
 	@echo "Running SolCMC ($(solver)) experiments..."
-	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR)/ --output $(OUTPUT_DIR) --timeout $(to) --solver $(solver)
+	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR)/ --output $(OUTPUT_DIR) --timeout $(to) --solver $(solver) --version $(version) --property $(property)
 
 one: setup
 	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(contract) --timeout $(to)

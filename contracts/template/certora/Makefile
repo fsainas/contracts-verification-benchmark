@@ -1,6 +1,8 @@
 # Params 
 contract = ""
 specs = ""
+version = ""
+property = ""
 
 # Input Files
 VERSIONS_DIR = ../versions/
@@ -38,9 +40,9 @@ $(CM): $(GROUND_TRUTH) $(OUT)
 	@echo "Generating Certora confusion matrix ($(CM))..."
 	@$(PYTHON) ../../../scripts/cm_gen.py --ground-truth $(GROUND_TRUTH) --results $(OUT) > $(CM)
 
-$(OUT): setup $(VERSIONS_FILES) $(SPEC_FILES) $(GETTER_FILE) 
+$(OUT): clean-specs setup $(VERSIONS_FILES) $(SPEC_FILES) $(GETTER_FILE) 
 	@echo "Running Certora experiments..."
-	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(CONTRACTS_DIR) --specs $(SPEC_DIR) --output $(OUTPUT_DIR)
+	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(CONTRACTS_DIR) --specs $(SPEC_DIR) --output $(OUTPUT_DIR) --version $(version) --property $(property)
 
 one: clean-specs contracts specs directories 
 	@$(PYTHON) ../../../scripts/run_certora.py --contracts $(contract) --specs $(specs)
@@ -78,8 +80,10 @@ $(LIB_DIR):
 
 #---------------------------- CLEAN ------------------------------#
 clean-specs:
-	rm -rf $(SPEC_DIR)
+	@echo "Cleaning specs..."
+	@rm -rf $(SPEC_DIR)
 
 clean:
-	rm -rf $(BUILD_DIR)
+	@echo "Deleting \"certora/build/\"..."
+	@rm -rf $(BUILD_DIR)
 
