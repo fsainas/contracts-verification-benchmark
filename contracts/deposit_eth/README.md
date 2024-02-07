@@ -1,4 +1,5 @@
 # Deposit (ETH)
+
 ## Specification
 The contract accepts a single deposit of ETH through the constructor. The function `withdraw(amount)` can be called by anyone to transfer `amount` ETH to the transaction sender.
 
@@ -24,40 +25,16 @@ The contract accepts a single deposit of ETH through the constructor. The functi
 |        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
 |--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
 | **v1** | 1                 | 0[^1]             | 0[^2]             | 0                 | 0[^3]             | 1                 |
-| **v2** | 1                 | 1                 | 0                 | 0                 | 0                 | 1                 |
-| **v3** | 0                 | 1                 | 0                 | 1                 | 0                 | 0                 |
+| **v2** | 1                 | 0                 | 0                 | 0                 | 0                 | 1                 |
+| **v3** | 0                 | 0                 | 0                 | 1                 | 0                 | 0                 |
 | **v4** | 0                 | 0                 | 0                 | 0                 | 0                 | 0                 |
-| **v5** | 0                 | 1                 | 0                 | 0                 | 0                 | 1                 |
-| **v6** | 0                 | 1                 | 0                 | 0                 | 0                 | 1                 |
-| **v7** | 0                 | 1                 | 0                 | 0                 | 0                 | 1                 |
-| **v8** | 1                 | 1                 | 0                 | 1                 | 1                 | 1                 |
+| **v5** | 0                 | 0                 | 0                 | 0                 | 0                 | 1                 |
+| **v6** | 0                 | 0                 | 0                 | 0                 | 0                 | 1                 |
+| **v7** | 0                 | 0                 | 0                 | 0                 | 0                 | 1                 |
+| **v8** | 1                 | 0                 | 0                 | 1                 | 1                 | 1                 |
  
 [^1]: A reentrant call to `withdraw` can remove more ETH than the specified `amount`.
 [^2]: This property should always be false, since the contract can receive ETH when its address is specified in a coinbase transaction or in a `s-leq-destruct`.
 [^3]: `msg.sender` can be an untrusted contract that transfer the received ETH to another account.
 
 ## Experiments
-
-### SolCMC
-|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
-|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | ND                | TN                | TN!               | ND                | TN                | FN                |
-| **v2** | ND                | FN                | TN!               | ND                | TN                | FN                |
-| **v3** | ND                | FN                | TN!               | ND                | TN                | TN                |
-| **v4** | ND                | TN                | TN!               | ND                | TN                | TN                |
-| **v5** | ND                | FN                | TN!               | ND                | TN                | FN                |
-| **v6** | ND                | FN                | TN!               | ND                | TN                | FN                |
-| **v7** | ND                | FN                | TN!               | ND                | TN                | FN                |
-| **v8** | ND                | FN                | TN!               | ND                | FN                | FN                |
-
-### Certora
-|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
-|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
-| **v1** | ND                | TN!               | TN!               | TN!               | TN!               | FN!               |
-| **v2** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
-| **v3** | ND                | FN!               | TN!               | FN!               | TN!               | TN!               |
-| **v4** | ND                | TN!               | TN!               | TN!               | TN!               | TN!               |
-| **v5** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
-| **v6** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
-| **v7** | ND                | FN!               | TN!               | TN!               | TN!               | FN!               |
-| **v8** | ND                | FN!               | TN!               | FN!               | FN!               | FN!               |
