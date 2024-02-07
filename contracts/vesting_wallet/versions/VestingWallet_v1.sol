@@ -2,7 +2,7 @@
 // OpenZeppelin Contracts (last updated v4.8.0) (finance/VestingWallet.sol)
 pragma solidity >= 0.8.2;
 
-/// @custom:version from [OpenZeppelin] (https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol).
+/// @custom:version from [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/finance/VestingWallet.sol).
 contract VestingWallet {
 
     uint256 private released;

@@ -1,3 +1,7 @@
 property,version,truth,footnote-md
 no-deposit-twice,v1,1,
 no-deposit-twice,v2,1,
+wd-leq-init-bal,v1,0,"This property should not hold for ERC20 tokens, since one can easily increase the contract balance without the contract being able to notice or prevent it. Since this is also possible with ETH (via coinbase or `selfdestruct` transactions), the behavior is comparable for the purposes of these tests."
+wd-leq-init-bal,v2,0,
+wd-contract-bal,v1,1,
+wd-contract-bal,v2,1,

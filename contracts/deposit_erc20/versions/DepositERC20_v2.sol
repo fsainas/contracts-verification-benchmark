@@ -11,7 +11,9 @@ contract TokenTransfer {
     IERC20 token;
     bool ever_deposited;
     
-    
+    uint private sent;
+    uint initial_deposit;
+
     // ghost variables
     uint _count_deposit;
 
@@ -19,17 +21,20 @@ contract TokenTransfer {
         token = token_;
     }
 
-    function deposit() external {
+    function deposit() public {
         require(!ever_deposited);
 
         ever_deposited = true;
         uint allowance = token.allowance(msg.sender, address(this));
         token.safeTransferFrom(msg.sender, address(this), allowance);
-        
+
+        initial_deposit = token.totalSupply();
+    
         _count_deposit += 1;	
     }
 
-    function withdraw(uint amount) external {
+    function withdraw(uint amount) public {
+        sent += amount;
         token.safeTransfer(msg.sender, amount);
     }
 }
