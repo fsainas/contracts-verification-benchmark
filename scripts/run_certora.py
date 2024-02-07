@@ -24,6 +24,14 @@ if __name__ == '__main__':
             '--output',
             '-o',
             help='Output directory.')
+    parser.add_argument(
+            '--version',
+            '-v',
+            help='Run experiments on this version only.')
+    parser.add_argument(
+            '--property',
+            '-p',
+            help='Run experiments on this property only.')
     args = parser.parse_args()
 
     contracts = Path(args.contracts)
@@ -35,11 +43,17 @@ if __name__ == '__main__':
             if os.path.isdir(contracts)
             else [str(contracts)])
 
+    if args.version:
+        contracts_paths = [c for c in contracts_paths if args.version in c]
+
     # Get specs paths
     specs_paths = (
             glob.glob(f'{specs}/*.spec')
             if os.path.isdir(specs)
             else [str(specs)])
+
+    if args.property:
+        specs_paths = [s for s in specs_paths if args.property in s]
 
     if args.output:
         output_dir = Path(args.output)
