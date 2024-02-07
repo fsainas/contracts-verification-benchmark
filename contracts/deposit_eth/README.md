@@ -38,3 +38,44 @@ The contract accepts a single deposit of ETH through the constructor. The functi
 [^3]: `msg.sender` can be an untrusted contract that transfer the received ETH to another account.
 
 ## Experiments
+### SolCMC
+#### Z3
+|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
+|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **v1** | ND                | UNK               | TN!               | ND                | TN!               | FN!               |
+| **v2** | ND                | UNK               | TN!               | ND                | TN!               | FN!               |
+| **v3** | ND                | UNK               | TN!               | ND                | TN!               | TN!               |
+| **v4** | ND                | TN!               | TN!               | ND                | TN!               | TN!               |
+| **v5** | ND                | UNK               | TN!               | ND                | TN!               | FN!               |
+| **v6** | ND                | UNK               | TN!               | ND                | TN!               | FN!               |
+| **v7** | ND                | UNK               | TN!               | ND                | TN!               | FN!               |
+| **v8** | ND                | UNK               | TN!               | ND                | FN!               | FN!               |
+ 
+
+#### Eldarica
+|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
+|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **v1** | ND                | TN!               | TN!               | ND                | TN!               | FN!               |
+| **v2** | ND                | FP!               | TN!               | ND                | TN!               | FN!               |
+| **v3** | ND                | FP!               | TN!               | ND                | TN!               | TN!               |
+| **v4** | ND                | TN!               | TN!               | ND                | TN!               | TN!               |
+| **v5** | ND                | FP!               | TN!               | ND                | TN!               | FN!               |
+| **v6** | ND                | FP!               | TN!               | ND                | TN!               | FN!               |
+| **v7** | ND                | FP!               | TN!               | ND                | TN!               | FN!               |
+| **v8** | ND                | TN!               | TN!               | ND                | FN!               | FN!               |
+ 
+
+
+### Certora
+|        | always-depletable | wd-contract-bal   | wd-leq-init-bal   | wd-not-revert     | wd-sender-rcv     | wd-sender-rcv-EOA |
+|--------|-------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **v1** | FN                | TN                | TN                | TN                | TN                | FN                |
+| **v2** | FN                | TN                | TN                | TN                | TN                | FN                |
+| **v3** | TN                | TN                | TN                | FN                | TN                | TN                |
+| **v4** | TN                | TN                | TN                | TN                | TN                | TN                |
+| **v5** | TN                | TN                | TN                | TN                | TN                | FN                |
+| **v6** | TN                | TN                | TN                | TN                | TN                | FN                |
+| **v7** | TN                | TN                | TN                | TN                | TN                | FN                |
+| **v8** | FN                | TN                | TN                | FN                | FN                | FN                |
+ 
+

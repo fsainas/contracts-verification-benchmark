@@ -1,5 +1,2 @@
-function invariant(bytes32 s) public payable {
-   commit(s);
-
-   assert(msg.sender == owner);
-}
+/// @custom:postghost function commit
+assert(msg.sender == owner);

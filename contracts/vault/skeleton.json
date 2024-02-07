@@ -10,6 +10,6 @@
         "wd-fin-before": "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, with no in-between calls.",
         "wd-fin-before-interleave": "after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, possibly with in-between calls.",
         "wd-fin-revert": "calling `withdraw` or `finalize` with a key different from the owner key, reverts.",
-        "wd-twice": "`withdraw` may be called twice in a row."
+        "wd-twice": "`withdraw` cannot be called twice in a row."
     }
 }

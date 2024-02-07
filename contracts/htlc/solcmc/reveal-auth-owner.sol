@@ -1,5 +1,2 @@
-function invariant(string memory s) public {
-   reveal(s);
-
-   assert(msg.sender == owner);
-}
+/// @custom:postghost function reveal
+assert(msg.sender == owner);

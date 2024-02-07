@@ -1,4 +1,2 @@
-function invariant() public {
-    cancel();
-    assert(msg.sender == recovery);
-}
+/// @custom:postghost function cancel
+assert(msg.sender == recovery);

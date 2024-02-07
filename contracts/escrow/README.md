@@ -15,7 +15,7 @@ In the Dispute state, the arbiter redeems the fee, and chooses whom between the 
 In the Redeem state, the chosen recipient can `redeem` the whole contract balance.
 
 ## Properties
-- **arbitrate-send**: during a successful call to `arbitrate`, the arbiter receives `fee` ETH.
+- **arbitrate-send**: during a successful call to `arbitrate`, the contract sends the arbiter `fee` ETH.
 - **auth-in-agree**: in the Agree state, only the buyer and the seller can perform actions.
 - **auth-in-dispute**: in the Dispute state, only the arbiter can perform actions.
 - **dispute-if-agree**: in the Agree state, both the buyer and the seller can open a dispute.
@@ -56,6 +56,6 @@ In the Redeem state, the chosen recipient can `redeem` the whole contract balanc
 |        | arbitrate-send            | auth-in-agree             | auth-in-dispute           | dispute-if-agree          | dispute-onlyif-agree      | no-send-in-agree          | recipient-buyer-or-seller | redeem-send               |
 |--------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|---------------------------|
 | **v1** | FN                        | TP!                       | TP!                       | TP!                       | TP!                       | TP!                       | FN                        | FN                        |
-| **v2** | FN                        | TN                        | TP!                       | TP!                       | TP!                       | TN                        | FN                        | FN                        |
+| **v2** | FN                        | TN                        | FN                        | TP!                       | TP!                       | TN                        | FN                        | FN                        |
  
 

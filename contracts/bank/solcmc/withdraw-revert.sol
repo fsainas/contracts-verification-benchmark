@@ -1,5 +1,2 @@
-function invariant(uint amount) public {
-    require (amount == 0 || amount > balances[msg.sender]);
-    withdraw(amount);
-    assert(false);
-}
+/// @custom:postghost function withdraw
+assert(!(amount == 0 || amount > balances[msg.sender]));

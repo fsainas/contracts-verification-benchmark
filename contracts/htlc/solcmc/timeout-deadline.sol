@@ -1,5 +1,2 @@
-function invariant() public {
-   timeout();
-   
-   assert (block.number >= start + 1000);
-}
+/// @custom:postghost function timeout
+assert (block.number >= start + 1000);

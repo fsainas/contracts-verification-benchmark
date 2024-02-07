@@ -2,7 +2,7 @@
     "name": "Escrow",
     "specification": "file:spec.md",
     "properties": {
-        "arbitrate-send": "during a successful call to `arbitrate`, the arbiter receives `fee` ETH.",
+        "arbitrate-send": "during a successful call to `arbitrate`, the contract sends the arbiter `fee` ETH.",
         "auth-in-agree": "in the Agree state, only the buyer and the seller can perform actions.",
         "auth-in-dispute": "in the Dispute state, only the arbiter can perform actions.",
         "dispute-if-agree": "in the Agree state, both the buyer and the seller can open a dispute.",

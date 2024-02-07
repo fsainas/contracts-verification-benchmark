@@ -1,4 +1,5 @@
 # Vesting Wallet
+
 ## Specification
 The contract handles the maturation (vesting) of native cryptocurrency for a given beneficiary. The constructor specifies the address of the beneficiary, the first block height (start) where the beneficiary can withdraw funds, and the overall duration of the vesting scheme. Once the scheme is expired, the beneficiary can withdraw all the funds from the contract. At any moment between the start and the expiration of the vesting scheme, the beneficiary can withdraw an amount of ETH proportional to the time passed since the start of the scheme. The contract can receive ETH at any time through external transactions: these funds will follow the vesting schedule as if they were deposited from the beginning.
 
@@ -23,20 +24,27 @@ The contract handles the maturation (vesting) of native cryptocurrency for a giv
 | **v2** | 1                | 0                | 1                | 1                | 1                | 0                | 1                | 1                |
  
 
-
 ## Experiments
-
 ### SolCMC
+#### Z3
 |        | benef-only-recv  | exp-all-rel      | ext-release-rel  | no-start-no-rel  | rel-grows-linear | rel-le-bal       | rel-strict-incr  | release-rel      |
 |--------|------------------|------------------|------------------|------------------|------------------|------------------|------------------|------------------|
-| **v1** | ND               | FN               | ND               | FN               | ND               | FN               | ND               | ND               |
-| **v2** | ND               | TN               | ND               | FN               | ND               | TN               | ND               | ND               |
+| **v1** | ND               | FN               | ND               | UNK              | ND               | FN               | ND               | ND               |
+| **v2** | ND               | UNK              | ND               | TP!              | ND               | TN               | ND               | ND               |
+ 
+
+#### Eldarica
+|        | benef-only-recv  | exp-all-rel      | ext-release-rel  | no-start-no-rel  | rel-grows-linear | rel-le-bal       | rel-strict-incr  | release-rel      |
+|--------|------------------|------------------|------------------|------------------|------------------|------------------|------------------|------------------|
+| **v1** | ND               | FN!              | ND               | TP!              | ND               | UNK              | ND               | ND               |
+| **v2** | ND               | TN!              | ND               | TP!              | ND               | UNK              | ND               | ND               |
  
 
 
 ### Certora
 |        | benef-only-recv  | exp-all-rel      | ext-release-rel  | no-start-no-rel  | rel-grows-linear | rel-le-bal       | rel-strict-incr  | release-rel      |
 |--------|------------------|------------------|------------------|------------------|------------------|------------------|------------------|------------------|
-| **v1** | ND               | FN!              | ND               | TP!              | ND               | TP!              | FN!              | ND               |
-| **v2** | ND               | TN!              | ND               | TP!              | ND               | TN!              | FN!              | ND               |
+| **v1** | ND               | FN               | ND               | TP!              | ND               | TP!              | FN               | ND               |
+| **v2** | ND               | TN               | ND               | TP!              | ND               | TN               | FN               | ND               |
  
+

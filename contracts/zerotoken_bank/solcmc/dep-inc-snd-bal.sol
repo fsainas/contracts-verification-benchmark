@@ -1,9 +1,6 @@
-function invariant(uint amount) public {
-    uint currb = balances[msg.sender];
+/// @custom:preghost function deposit
+uint currb = balances[msg.sender];
 
-    deposit(amount);
-
-    uint newb = balances[msg.sender];
-
-    assert(newb == currb + amount);
-}
+/// @custom:postghost function deposit
+uint newb = balances[msg.sender];
+assert(newb == currb + amount);

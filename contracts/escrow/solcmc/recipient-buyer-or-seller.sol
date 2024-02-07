@@ -1,4 +1,2 @@
-function invariant() public {
-    redeem();
-    assert(recipient == buyer || recipient == seller);
-}
+/// @custom:postghost function redeem
+assert(recipient == buyer || recipient == seller);

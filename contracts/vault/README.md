@@ -20,7 +20,7 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 - **wd-fin-before**: after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, with no in-between calls.
 - **wd-fin-before-interleave**: after a successful `withdraw`, `finalize` may be successfully called before `wait_time` blocks have elapsed, possibly with in-between calls.
 - **wd-fin-revert**: calling `withdraw` or `finalize` with a key different from the owner key, reverts.
-- **wd-twice**: `withdraw` may be called twice in a row.
+- **wd-twice**: `withdraw` cannot be called twice in a row.
 
 ## Versions
 - **v1**: conforming to specification.
@@ -30,9 +30,9 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 ## Ground truth
 |        | canc-revert              | fin-canc-twice           | okey-neq-rkey            | okey-rkey-private-wd     | rkey-no-wd               | wd-fin-before            | wd-fin-before-interleave | wd-fin-revert            | wd-twice                 |
 |--------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|
-| **v1** | 1                        | 0                        | 1                        | 1                        | 1                        | 0                        | 0                        | 1                        | 0                        |
-| **v2** | 1                        | 0                        | 0                        | 1                        | 1                        | 0                        | 0                        | 1                        | 0                        |
-| **v3** | 1                        | 0                        | 1                        | 0                        | 0                        | 1                        | 1                        | 1                        | 0                        |
+| **v1** | 1                        | 0                        | 1                        | 1                        | 1                        | 0                        | 0                        | 1                        | 1                        |
+| **v2** | 1                        | 0                        | 0                        | 1                        | 1                        | 0                        | 0                        | 1                        | 1                        |
+| **v3** | 1                        | 0                        | 1                        | 0                        | 0                        | 1                        | 1                        | 1                        | 1                        |
  
 
 ## Experiments
@@ -40,32 +40,6 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 #### Z3
 |        | canc-revert              | fin-canc-twice           | okey-neq-rkey            | okey-rkey-private-wd     | rkey-no-wd               | wd-fin-before            | wd-fin-before-interleave | wd-fin-revert            | wd-twice                 |
 |--------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|
-| **v1** | TP!                      | ND                       | ND                       | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
-| **v2** | TP!                      | ND                       | ND                       | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
-| **v3** | TP!                      | ND                       | ND                       | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
- 
-
-#### Eldarica
-|        | canc-revert              | fin-canc-twice           | okey-neq-rkey            | okey-rkey-private-wd     | rkey-no-wd               | wd-fin-before            | wd-fin-before-interleave | wd-fin-revert            | wd-twice                 |
-|--------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|
-| **v1** | TP!                      | ND                       | ND                       | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
-| **v2** | TP!                      | ND                       | ND                       | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
-| **v3** | TP!                      | ND                       | ND                       | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
- 
-
-
-### Certora
-|        | canc-revert              | fin-canc-twice           | okey-neq-rkey            | okey-rkey-private-wd     | rkey-no-wd               | wd-fin-before            | wd-fin-before-interleave | wd-fin-revert            | wd-twice                 |
-|--------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|
-| **v1** | TP!                      | TN!                      | TP!                      | ND                       | ND                       | TN!                      | ND                       | TP!                      | FP                       |
-| **v2** | TP!                      | TN!                      | TN                       | ND                       | ND                       | TN!                      | ND                       | TP!                      | FP                       |
-| **v3** | TP!                      | TN!                      | TP!                      | ND                       | ND                       | TP                       | ND                       | TP!                      | FP                       |
- 
-
-### SolCMC
-#### Z3
-|        | canc-revert              | fin-canc-twice           | okey-neq-rkey            | okey-rkey-private-wd     | rkey-no-wd               | wd-fin-before            | wd-fin-before-interleave | wd-fin-revert            | wd-twice                 |
-|--------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|
 | **v1** | TP!                      | ND                       | TP!                      | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
 | **v2** | TP!                      | ND                       | TN!                      | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
 | **v3** | TP!                      | ND                       | TP!                      | ND                       | ND                       | ND                       | ND                       | TP!                      | ND                       |
@@ -83,8 +57,8 @@ Concretely, the keys are represented as addresses: requiring that an action can 
 ### Certora
 |        | canc-revert              | fin-canc-twice           | okey-neq-rkey            | okey-rkey-private-wd     | rkey-no-wd               | wd-fin-before            | wd-fin-before-interleave | wd-fin-revert            | wd-twice                 |
 |--------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|--------------------------|
-| **v1** | TP!                      | TN!                      | TP!                      | ND                       | ND                       | TN!                      | ND                       | TP!                      | TN!                      |
-| **v2** | TP!                      | TN!                      | TN                       | ND                       | ND                       | TN!                      | ND                       | TP!                      | TN!                      |
-| **v3** | TP!                      | TN!                      | TP!                      | ND                       | ND                       | TP                       | ND                       | TP!                      | TN!                      |
+| **v1** | TP!                      | TN!                      | TP!                      | ND                       | ND                       | TN!                      | ND                       | TP!                      | TP!                      |
+| **v2** | TP!                      | TN!                      | TN                       | ND                       | ND                       | TN!                      | ND                       | TP!                      | TP!                      |
+| **v3** | TP!                      | TN!                      | TP!                      | ND                       | ND                       | TP                       | ND                       | TP!                      | TP!                      |
  
 

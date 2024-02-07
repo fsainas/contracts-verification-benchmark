@@ -1,6 +1,6 @@
-function invariant() public payable {
-    uint old_user_balance = balances[msg.sender];
-    deposit();
-    uint new_user_balance = balances[msg.sender];
-    assert(new_user_balance == old_user_balance + msg.value);
-}
+/// @custom:preghost function deposit
+uint old_user_balance = balances[msg.sender];
+
+/// @custom:postghost function deposit
+uint new_user_balance = balances[msg.sender];
+assert(new_user_balance == old_user_balance + msg.value);

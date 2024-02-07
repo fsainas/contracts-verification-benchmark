@@ -1,9 +1,6 @@
-function invariant(uint amount) public {
-    uint currb = balances[msg.sender];
+/// @custom:preghost function withdraw
+uint currb = balances[msg.sender];
 
-    withdraw(amount);
-
-    uint newb = balances[msg.sender];
-
-    assert(newb == currb - amount);
-}
+/// @custom:postghost function withdraw
+uint newb = balances[msg.sender];
+assert(newb == currb - amount);

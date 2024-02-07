@@ -2,10 +2,10 @@
     "name": "HTLC",
     "specification": "file:spec.md",
     "properties": {
-        "sent-le-init-bal": "The overall sent amount does not exceed the initial deposit.",
+        "commit-auth-owner": "If `commit` is successfully called, then the sender must be the owner.",
+        "reveal-auth-owner": "If `reveal` is successfully called, then the sender must be the owner.",
         "reveal-timeout-after-commit": "`reveal` and `timeout` can only be called after `commit`.",
-        "timeout-deadline": "If `timeout` is called, then at least 1000 blocks have passed since the contract was deployed.",
-        "commit-auth-owner": "If `commit` is called, then the sender must be the owner.",
-        "reveal-auth-owner": "If `reveal` is called, then the sender must be the owner."
+        "sent-le-init-bal": "The overall sent amount does not exceed the initial deposit.",
+        "timeout-deadline": "If `timeout` is called, then at least 1000 blocks have passed since the contract was deployed."
     }
 }

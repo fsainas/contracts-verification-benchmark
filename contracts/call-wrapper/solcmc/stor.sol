@@ -1,5 +1,5 @@
-function invariant(address called) public {
-    uint _data = data;
-    callwrap(called);
-    assert(_data == data);
-}
+/// @custom:preghost function callwrap
+uint _data = data;
+
+/// @custom:postghost function callwrap
+assert(_data == data);

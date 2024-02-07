@@ -1,4 +1,5 @@
 # Zero Token Bet
+
 ## Specification
 The contract involves two players, each owning 1 token, and an oracle. Player A initiates the contract by depositing its token. Then, player B can deposit its token. Once both players have deposited their token, the oracle chooses the winner, which receives the 2 tokens. After a given time limit, it is only possibile for both players to take their tokens back, if any. In this contract, tokens are stored in contract fields.
 
@@ -25,15 +26,25 @@ The contract involves two players, each owning 1 token, and an oracle. Player A 
 
 ## Experiments
 ### SolCMC
+#### Z3
 |        | ab-gte0   | ab-lte2   | bb-gte0   | bb-lte2   | candep    | cannotdep | cb-gte0   | cb-lte2   |
 |--------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
 | **v1** | TP!       | TP!       | TP!       | TP!       | TP!       | TP!       | TP!       | TP!       |
-| **v2** | TP!       | TN!       | TN!       | FN        | TP!       | TN!       | TP!       | TN!       |
+| **v2** | TP!       | TN!       | TN!       | UNK       | TP!       | FP!       | TP!       | TN!       |
  
+
+#### Eldarica
+|        | ab-gte0   | ab-lte2   | bb-gte0   | bb-lte2   | candep    | cannotdep | cb-gte0   | cb-lte2   |
+|--------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
+| **v1** | TP!       | TP!       | TP!       | TP!       | TP!       | TP!       | TP!       | TP!       |
+| **v2** | TP!       | TN!       | TN!       | TP!       | TP!       | FP!       | TP!       | TN!       |
+ 
+
 
 ### Certora
 |        | ab-gte0   | ab-lte2   | bb-gte0   | bb-lte2   | candep    | cannotdep | cb-gte0   | cb-lte2   |
 |--------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|-----------|
-| **v1** | TP!       | FN!       | TP!       | FN!       | TP!       | FN!       | TP!       | FN!       |
-| **v2** | TP!       | TN!       | TN!       | FN!       | TP!       | TN!       | TP!       | TN!       |
+| **v1** | TP!       | FN        | TP!       | FN        | TP!       | FN        | TP!       | FN        |
+| **v2** | TP!       | TN        | TN        | FN        | TP!       | TN        | TP!       | TN        |
  
+

@@ -13,8 +13,8 @@ After contract creation, the HTLC allows the following actions:
 - `timeout` can be called by anyone only after the deadline, and tranfers the whole contract balance to the verifier.
 
 ## Properties
-- **commit-auth-owner**: If `commit` is called, then the sender must be the owner.
-- **reveal-auth-owner**: If `reveal` is called, then the sender must be the owner.
+- **commit-auth-owner**: If `commit` is successfully called, then the sender must be the owner.
+- **reveal-auth-owner**: If `reveal` is successfully called, then the sender must be the owner.
 - **reveal-timeout-after-commit**: `reveal` and `timeout` can only be called after `commit`.
 - **sent-le-init-bal**: The overall sent amount does not exceed the initial deposit.
 - **timeout-deadline**: If `timeout` is called, then at least 1000 blocks have passed since the contract was deployed.
@@ -49,19 +49,19 @@ After contract creation, the HTLC allows the following actions:
 | **v2** | TP!                         | TP!                         | TN!                         | TN!                         | TP!                         |
 | **v3** | TP!                         | TP!                         | TP!                         | TN!                         | TN!                         |
 | **v4** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
-| **v5** | FP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
+| **v5** | TN!                         | TP!                         | TP!                         | TN!                         | TP!                         |
 | **v6** | TP!                         | TN!                         | TP!                         | TN!                         | TP!                         |
  
 
 #### Eldarica
 |        | commit-auth-owner           | reveal-auth-owner           | reveal-timeout-after-commit | sent-le-init-bal            | timeout-deadline            |
 |--------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
-| **v1** | TP!                         | TP!                         | TP!                         | FP!                         | TP!                         |
-| **v2** | TP!                         | TP!                         | FP!                         | FP!                         | TP!                         |
-| **v3** | TP!                         | TP!                         | TP!                         | FP!                         | FP!                         |
-| **v4** | TP!                         | TP!                         | TP!                         | FP!                         | TP!                         |
-| **v5** | FP!                         | TP!                         | TP!                         | FP!                         | TP!                         |
-| **v6** | TP!                         | FP!                         | TP!                         | FP!                         | TP!                         |
+| **v1** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
+| **v2** | TP!                         | TP!                         | TN!                         | UNK                         | TP!                         |
+| **v3** | TP!                         | TP!                         | TP!                         | TN!                         | TN!                         |
+| **v4** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
+| **v5** | TN!                         | TP!                         | TP!                         | TN!                         | TP!                         |
+| **v6** | TP!                         | TN!                         | TP!                         | TN!                         | TP!                         |
  
 
 

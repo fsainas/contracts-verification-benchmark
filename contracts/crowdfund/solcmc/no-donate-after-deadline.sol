@@ -1,6 +1,5 @@
-function invariant() public {
-    require(block.number > end_donate);
+/// @custom:preghost function donate
+require(block.number > end_donate);
 
-    donate();
-    assert(false);
-}
+/// @custom:postghost function donate
+assert(false);
