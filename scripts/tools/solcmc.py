@@ -68,6 +68,10 @@ def is_ignoring_timeout(output):
     return 'ignoring option :timeout' in output
 
 
+def verification_passed(output):
+    return 'verification condition(s) proved safe!' in output
+
+
 def run(contract_path, timeout=DEFAULT_TIMEOUT, solver=DEFAULT_SOLVER):
     '''
     Runs a single solcmc experiment.
@@ -127,20 +131,17 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT, solver=DEFAULT_SOLVER):
         logging.error(msg)
         return ERROR, msg
         
-
-    print("stderr:\n", log.stderr)
-    print("stdout:\n", log.stdout)
-
-    """Improve this"""
-    if ((not log.stderr) and (not log.stdout)
-        or is_ignoring_timeout(log.stderr)):   # Timeout
-        res = UNKNOWN
-    elif has_weak_assertion_violation(log.stderr):
+    if has_weak_assertion_violation(log.stderr):
         res = WEAK_POSITIVE if negate else WEAK_NEGATIVE
     elif has_assertion_violation(log.stderr):
         res = STRONG_POSITIVE if negate else STRONG_NEGATIVE
-    else:
+    elif verification_passed(log.stderr):
         res = STRONG_NEGATIVE if negate else STRONG_POSITIVE
+    elif ((not log.stderr) and (not log.stdout)
+        or is_ignoring_timeout(log.stderr)):   # Timeout
+        res = UNKNOWN
+    else:
+        res = ERROR
 
     print(f'{contract_path}: {res}')
     return res, log.stderr
