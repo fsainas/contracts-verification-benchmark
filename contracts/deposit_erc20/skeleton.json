@@ -3,7 +3,7 @@
     "specification": "file:spec.md",
     "properties": {
         "no-deposit-twice": "`deposit` can only be called once.",
-        "wd-leq-init-bal": "the overall withdrawn amount does not exceed the initial deposit.",
-        "wd-contract-bal": "the contract token balance is decreased by `amount` after a successful `withdraw(amount)`."
+        "wd-contract-bal": "if token is ERC20-compliant, the contract token balance is decreased by `amount` after a successful `withdraw(amount)`.",
+        "wd-leq-init-bal": "if token is ERC20-compliant, the overall withdrawn amount does not exceed the initial deposit."
      }
 }

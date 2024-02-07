@@ -25,7 +25,7 @@ contract TokenTransfer {
         uint allowance = token.allowance(msg.sender, address(this));
         token.transferFrom(msg.sender, address(this), allowance);
 
-        initial_deposit = token.totalSupply();
+        initial_deposit = token.balanceOf(address(this));
 
         _count_deposit += 1;	
     }
