@@ -58,9 +58,18 @@ def has_weak_assertion_violation(output):
     pattern = r'.*Warning: CHC: Assertion violation might happen here.*'
     return re.search(pattern, output, re.DOTALL)
 
+
 def warning_solver_not_found(output):
     pattern = r'.*Warning: Solver (.*) was selected for SMTChecker but it was not found.*'
     return re.search(pattern, output, re.DOTALL)
+
+
+def is_ignoring_timeout(output):
+    return 'ignoring option :timeout' in output
+
+
+def verification_passed(output):
+    return 'verification condition(s) proved safe!' in output
 
 
 def run(contract_path, timeout=DEFAULT_TIMEOUT, solver=DEFAULT_SOLVER):
@@ -96,7 +105,7 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT, solver=DEFAULT_SOLVER):
     params['solver'] = solver
 
     command = COMMAND_TEMPLATE.substitute(params)
-    # print(command) - substitute with a log that does not go to stdout
+    #print(command) # substitute with a log that does not go to stdout
     log = subprocess.run(command.split(), capture_output=True, text=True)
 
     # Invalid time interval
@@ -122,15 +131,17 @@ def run(contract_path, timeout=DEFAULT_TIMEOUT, solver=DEFAULT_SOLVER):
         logging.error(msg)
         return ERROR, msg
         
-
-    if (not log.stderr) and (not log.stdout):   # Timeout
-        res = UNKNOWN
-    elif has_weak_assertion_violation(log.stderr):
+    if has_weak_assertion_violation(log.stderr):
         res = WEAK_POSITIVE if negate else WEAK_NEGATIVE
     elif has_assertion_violation(log.stderr):
         res = STRONG_POSITIVE if negate else STRONG_NEGATIVE
-    else:
+    elif verification_passed(log.stderr):
         res = STRONG_NEGATIVE if negate else STRONG_POSITIVE
+    elif ((not log.stderr) and (not log.stdout)
+        or is_ignoring_timeout(log.stderr)):   # Timeout
+        res = UNKNOWN
+    else:
+        res = ERROR
 
     print(f'{contract_path}: {res}')
     return res, log.stderr
