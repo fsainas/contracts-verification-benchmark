@@ -15,5 +15,5 @@ rule fin_canc_twice {
         cancel@withrevert(e2);
     }
     
-    satisfy !lastReverted;
+    assert lastReverted;
 }

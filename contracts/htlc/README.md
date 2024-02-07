@@ -57,10 +57,10 @@ After contract creation, the HTLC allows the following actions:
 |        | commit-auth-owner           | reveal-auth-owner           | reveal-timeout-after-commit | sent-le-init-bal            | timeout-deadline            |
 |--------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|-----------------------------|
 | **v1** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
-| **v2** | TP!                         | TP!                         | TN!                         | UNK                         | TP!                         |
+| **v2** | TP!                         | TP!                         | UNK                         | UNK                         | TP!                         |
 | **v3** | TP!                         | TP!                         | TP!                         | TN!                         | TN!                         |
 | **v4** | TP!                         | TP!                         | TP!                         | TN!                         | TP!                         |
-| **v5** | TN!                         | TP!                         | TP!                         | TN!                         | TP!                         |
+| **v5** | TN!                         | TP!                         | TP!                         | UNK                         | TP!                         |
 | **v6** | TP!                         | TN!                         | TP!                         | TN!                         | TP!                         |
  
 

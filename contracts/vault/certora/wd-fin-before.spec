@@ -7,7 +7,7 @@ rule wd_fin_before {
 
     env e2;
     require (to_mathint(e2.block.number) < to_mathint(e1.block.number) + to_mathint(currentContract.wait_time));
-    finalize(e2);
+    finalize@withrevert(e2);
 
-    satisfy !lastReverted;
+    assert lastReverted;
 }

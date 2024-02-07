@@ -1,11 +1,11 @@
-function invariant(bool b, string memory s) public {
-   require(!isCommitted);
+/// @custom:preghost function reveal
+bool pre = !isCommitted;
 
-   if (b) {
-      reveal(s);
-   } else {
-      timeout();
-   }
+/// @custom:postghost function reveal
+assert(!pre);
 
-   assert(false);
-}
+/// @custom:preghost function timeout
+bool pre = !isCommitted;
+
+/// @custom:postghost function timeout
+assert(!pre);

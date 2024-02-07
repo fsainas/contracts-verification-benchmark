@@ -1,7 +1,7 @@
 /// @custom:preghost function withdraw
+bool pre = msg.sender == tx.origin;
 uint prev_sender_balance = address(msg.sender).balance;
-require(msg.sender == tx.origin); // `msg.sender` is an EOA (externally owned account
 
 /// @custom:postghost function withdraw
 uint sender_balance = address(msg.sender).balance;	
-assert(sender_balance == prev_sender_balance + amount);
+assert(!pre || sender_balance == prev_sender_balance + amount);
