@@ -103,11 +103,12 @@ Find a minimal example in [`contracts/template/`](contracts/template) directory.
 
 #### skeleton.json
 
-This file stores the use case's **name**, **specification** and **properties**
+This file stores the use case's **name**, **credits**, **specification** and **properties**
 defined in natural language:
 ```
 {
     "name": "Simple Transfer",
+    "credits": "[Author](https://www.author.com/simple_transfer)"   // optional
     "specification": "The contract has an initial balance...",
     "properties": {
         "sent_a": "the overall sent amount does not exceed the initial deposit.",
