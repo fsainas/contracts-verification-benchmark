@@ -39,7 +39,7 @@ if __name__ == '__main__':
     contracts_paths = (
             glob.glob(f'{contracts}/*.sol')
             if os.path.isdir(contracts)
-            else [contracts])
+            else [str(contracts)])
 
     timeout = args.timeout if args.timeout else DEFAULT_TIMEOUT
     solver = args.solver if args.solver else DEFAULT_SOLVER

@@ -33,13 +33,13 @@ if __name__ == '__main__':
     contracts_paths = (
             glob.glob(f'{contracts}/*.sol')
             if os.path.isdir(contracts)
-            else [contracts])
+            else [str(contracts)])
 
     # Get specs paths
     specs_paths = (
             glob.glob(f'{specs}/*.spec')
             if os.path.isdir(specs)
-            else [specs])
+            else [str(specs)])
 
     if args.output:
         output_dir = Path(args.output)
