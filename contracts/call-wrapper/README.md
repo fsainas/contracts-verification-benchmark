@@ -25,8 +25,8 @@ The contract acts as a wrapper to Solidity's `call` function.
  
 
 ## Experiments
-### SolCMC
-#### Z3
+
+### SolCMC (Z3)
 |        | bal   | stor  |
 |--------|-------|-------|
 | **v1** | TN!   | TP!   |
@@ -35,8 +35,7 @@ The contract acts as a wrapper to Solidity's `call` function.
 | **v4** | TN!   | TN!   |
 | **v5** | FP!   | TP!   |
  
-
-#### Eldarica
+### SolCMC (Eldarica)
 |        | bal   | stor  |
 |--------|-------|-------|
 | **v1** | TN!   | TP!   |
@@ -45,7 +44,6 @@ The contract acts as a wrapper to Solidity's `call` function.
 | **v4** | TN!   | TN!   |
 | **v5** | FP!   | TP!   |
  
-
 
 ### Certora
 |        | bal   | stor  |
