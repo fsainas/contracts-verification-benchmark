@@ -104,15 +104,33 @@ def gen(usecase_dir):
         try:
             with open(f'{usecase_dir}/{spec_file_name}') as f:
                 specification = f.read()
+
         except FileNotFoundError as e:
             logging.error(f'README generation:\n{e}')
             sys.exit(1)
     else:
         specification = skeleton['specification']
 
+    # Allow credits in a separate file (file:filename.md)
+    if 'credits' in skeleton:
+        if skeleton['credits'].startswith('file:'):
+            credits_file_name = skeleton['credits'][len('file:'):]
+
+            try:
+                with open(f'{usecase_dir}/{credits_file_name}') as f:
+                    credits = f.read()
+
+            except FileNotFoundError as e:
+                logging.error(f'README generation:\n{e}')
+                sys.exit(1)
+        else:
+            credits = skeleton['credits']
+    else:
+        credits = ''
+
     readme = {}
     readme['name'] = skeleton['name']
-    readme['credits'] = skeleton['credits'] + "\n" if 'credits' in skeleton else ""
+    readme['credits'] = credits
     readme['specification'] = specification
     readme['properties'] = md_property_list(skeleton['properties'])
     readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
