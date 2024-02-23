@@ -41,4 +41,23 @@ Interface scripts reside at the top level directory.
 - `scoring.py`: Functions to compute the score of tools.
 
 ## Testing
-TODO
+### Dependencies
+Before running tests, ensure that `pytest` is installed. You can install it via
+pip using the following command:
+```
+$ pip install pytest
+```
+
+### Tests Structure
+The tests are located under the `test/` directory. Each file within this
+directory corresponds to a specific module.
+
+Tests are written using the `unittest` framework. Within each test file, test
+classes are utilized to test individual functions.
+
+### Running Tests
+To execute the tests, simply run the following command under the `script/`
+directory:
+```
+$ make
+```
