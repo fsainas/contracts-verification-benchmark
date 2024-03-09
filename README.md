@@ -1,14 +1,11 @@
 # An open benchmark for evaluating smart contracts verification tools
 
-This is an open project to construct a benchmark of Solidity smart contracts
-for evaluating and comparing verification tools.
+This is an open project to construct a benchmark of Solidity contracts for evaluating and comparing formal verification tools.
 
-The repo contains a set of use cases: each use case is associated with
-a set of Solidity implementations (possibly, containing bugs), 
-and a set of properties against which to assess verification tools.
-Here we are also interested in properties that go beyond the capabilities
-of the current tools, hoping that they can be of inspiration for 
-more precise verification techniques.
+The benchmark currently comprises 323 verification tasks, which have been used to compare two leading verification tools, SolCMC and Certora, and to evaluate their completeness, soundness and expressiveness limitations.
+
+Details on the construction of the benchmark and on the comparison between SolCMC and Certora are available in the following research paper:
+- M. Bartoletti, F. Fioravanti, G. Matricardi, R. Pettinau and F. Sainas. [Towards Benchmarking of Solidity verification tools](https://arxiv.org/abs/2402.10750). In [FMBC 2024](https://fmbc.gitlab.io/2024/)
 
 ## Contracts
 
@@ -39,6 +36,9 @@ Currently the benchmark supports the following verification tools:
 - [Certora](https://www.certora.com/)
 
 ## Evaluating a verification tool
+
+The repo contains a set of use cases: each use case is associated with a set of Solidity implementations (possibly, containing bugs), and a set of properties against which to assess verification tools.
+Here we are also interested in properties that go beyond the capabilities of the current tools, hoping that they can be of inspiration for more precise verification techniques.
 
 For each use case, we evaluate the performance of a verification tool
 as a matrix, where columns represent different contract properties, and
