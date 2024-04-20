@@ -10,6 +10,10 @@ from multiprocessing import Pool
 from pathlib import Path
 import subprocess
 import logging
+import sys
+import os
+import re
+
 import utils
 from utils import (STRONG_POSITIVE,
                    STRONG_NEGATIVE,
@@ -17,9 +21,6 @@ from utils import (STRONG_POSITIVE,
                    WEAK_NEGATIVE,
                    NONDEFINABLE,
                    ERROR)
-import sys
-import os
-import re
 
 THREADS = 6     # n of parallel executions
 
@@ -42,6 +43,11 @@ def no_errors_found(output):
 
 def has_critical_error(output):
     pattern = r'.*CRITICAL.*'
+    return re.search(pattern, output, re.DOTALL)
+
+def no_permission(output):
+    """ Parse the output looking for a no permission error. """
+    pattern = r'.*You have no permission.*'
     return re.search(pattern, output, re.DOTALL)
 
 
@@ -127,6 +133,10 @@ def run(contract_path, spec_path):
         print(log.stderr, file=sys.stderr)
 
     if has_critical_error(log.stdout):
+        logging.error(log.stdout)
+        return ERROR, log.stdout
+
+    if no_permission(log.stdout):
         logging.error(log.stdout)
         return ERROR, log.stdout
 

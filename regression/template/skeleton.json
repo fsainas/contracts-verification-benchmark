@@ -1,0 +1,7 @@
+{
+    "name": "Usecase Name",
+    "specification": "Usecase specification.",
+    "properties": {
+        "foo": "Contract balance is not zero when `f()` is called."
+    }
+}

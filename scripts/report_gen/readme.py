@@ -5,15 +5,18 @@ Generates the plain README.
 import json
 from string import Template
 from os import listdir
-import mdtable_gen
+from pathlib import Path
+from typing import List
 import re
 import sys
 import logging
-import argparse
 
-PLAIN_README_TEMPLATE = Template(
+from report_gen import mdtable
+
+# Templates
+CLASSIC_TEMPLATE = Template(
 '''# $name
-$credits
+$credit
 ## Specification
 $specification
 
@@ -27,6 +30,21 @@ $versions
 $ground_truth'''
 )
 
+REGRESSION_TEMPLATE = Template(
+'''# $name
+$credit
+## Specification
+$specification
+
+## Properties
+$properties
+
+## Ground truth
+$ground_truth'''
+)
+
+# Allowed characters for property ids
+ALLOWED_ID_CHARS = r'^[a-zA-Z0-9-]+$'
 
 def md_property_list(properties: dict) -> str:
     """
@@ -40,74 +58,97 @@ def md_property_list(properties: dict) -> str:
     )
 
 
-def md_version_list(versions):
+def md_version_list(versions: List[str]) -> str:
+    """ 
+    Generate a markdown list of versions. 
+
+    Args:
+        versiosn (list): list of version descriptions.
+    """
     return '\n'.join(
-        f'- **v{i+1}**: {p}' for i, p in enumerate(versions)
+        f'- **v{i+1}**: {v}' for i, v in enumerate(versions)
     )
 
 
-def version_files(versions_dir):
+def get_versions_file_paths(versions_dir: Path) -> List[Path]:
+    """ Get versions file paths from the versions directory path """
     return sorted(
-        f for f in listdir(versions_dir) if f.endswith('.sol')
+        Path(f) for f in listdir(versions_dir) if f.endswith('.sol')
     )
 
 
-def get_versions(versions_dir):
+def get_versions_descriptions(versions_dir: Path) -> List[str]:
+    """ Get versions descriptions from versions directory. """
     # could use `solc --devdoc -o . {fname}`
     # but it creates a file for each contract which is harder to parse.
     versions = []
-    for fname in version_files(versions_dir):
+    for v_path in get_versions_file_paths(versions_dir):
         try:
-            with open(versions_dir + fname) as f:
+            with open(versions_dir / v_path, 'r', encoding="utf-8") as f:
                 content = f.read()
         except FileNotFoundError as e:
-            logging.error(f'README generation: {fname} not found.\n{e}')
+            msg = f"README generation: {v_path} not found.\n{e}"
+            logging.error(msg)
             sys.exit(1)
 
         res = re.search('/// @custom:version (.*)', content)
         if res:
             versions.append(res.group(1))
         else:
-            logging.warning(f'{fname} has no version comment.')
+            msg = f"{v_path} has no version comment."
+            logging.warning(msg)
 
     return versions
 
 
-def gen(usecase_dir):
+def gen(usecase_dir: Path) -> str:
+    """ Generate plain README for the the usecase. """
+
+    skeleton_path = usecase_dir / "skeleton.json"
+    ground_truth_path = usecase_dir / "ground-truth.csv"
+    versions_path = usecase_dir / "versions/"
 
     try:
-        with open(f'{usecase_dir}/skeleton.json') as f:
+        with open(skeleton_path, 'r', encoding="utf-8") as f:
             skeleton = json.loads(f.read())
     except json.decoder.JSONDecodeError as e:
-        logging.error(f'README generation: Bad skeleton.json formatting.\n{e}')
+        msg = f"README generation: Bad skeleton.json formatting.\n{e}"
+        logging.error(msg)
         sys.exit(1)
 
     # Check properties formatting
     if not isinstance(skeleton['properties'], dict):
-        logging.error('README generation: Bad formatting of properties in skeleton.json.')
+        msg = "README generation: Bad formatting of properties in skeleton.json."
+        logging.error(msg)
         sys.exit(1)
 
     # Pattern for allowed characters in property ids
-    id_pattern = re.compile(r'^[a-zA-Z0-9-]+$')
+    id_pattern = re.compile(ALLOWED_ID_CHARS)
+
     # Check each key against the pattern
-    for id in skeleton['properties'].keys():
-        if not id_pattern.match(id):
-            logging.error(f'README generation: Invalid characters in property ID "{id}".'
-                          ' Only alphanumeric characters and \'-\' are allowed.')
+    for p in skeleton['properties'].keys():
+        if not id_pattern.match(p):
+            msg = (
+                f'README generation: Invalid characters in property ID "{p}".'
+                " Only alphanumeric characters and '-' are allowed.")
+            logging.error(msg)
             sys.exit(1)
 
     # Allow specification in a separate file (file:filename.md)
-    specification = ''
     if skeleton['specification'].startswith('file:'):
+
+        # Get file name
         spec_file_name = skeleton['specification'][len('file:'):]
 
         try:
-            with open(f'{usecase_dir}/{spec_file_name}') as f:
+            with open(usecase_dir / spec_file_name, 'r', encoding="utf-8") as f:
                 specification = f.read()
 
         except FileNotFoundError as e:
-            logging.error(f'README generation:\n{e}')
+            msg = f"README generation:\n{e}"
+            logging.error(msg)
             sys.exit(1)
+
     else:
         specification = skeleton['specification']
 
@@ -117,23 +158,32 @@ def gen(usecase_dir):
             credits_file_name = skeleton['credits'][len('file:'):]
 
             try:
-                with open(f'{usecase_dir}/{credits_file_name}') as f:
-                    credits = f.read()
+                with open(usecase_dir / credits_file_name, 'r', encoding="utf-8") as f:
+                    credit = f.read()
 
             except FileNotFoundError as e:
-                logging.error(f'README generation:\n{e}')
+                msg = f"README generation:\n{e}"
+                logging.error(msg)
                 sys.exit(1)
+
         else:
-            credits = skeleton['credits']
+            credit = skeleton['credits']
+
     else:
-        credits = ''
+        credit = ''
 
-    readme = {}
-    readme['name'] = skeleton['name']
-    readme['credits'] = credits
-    readme['specification'] = specification
-    readme['properties'] = md_property_list(skeleton['properties'])
-    readme['versions'] = md_version_list(get_versions(f'{usecase_dir}/versions/'))
-    readme['ground_truth'] = mdtable_gen.gen_from_csv(f'{usecase_dir}/ground-truth.csv')
+    versions = (md_version_list(get_versions_descriptions(versions_path))
+    if versions_path.exists() else None)
 
-    return PLAIN_README_TEMPLATE.substitute(readme)
+    readme = {
+        "name": skeleton['name'],
+        "credit": credit,
+        "specification": specification,
+        "properties": md_property_list(skeleton['properties']),
+        "versions": versions,
+        "ground_truth": mdtable.gen_from_csv(ground_truth_path)
+    }
+
+    template = CLASSIC_TEMPLATE if versions else REGRESSION_TEMPLATE
+
+    return template.substitute(readme)

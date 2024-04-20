@@ -10,6 +10,10 @@ from string import Template
 from pathlib import Path
 import subprocess
 import logging
+import sys
+import re
+import os
+
 import utils
 from utils import (STRONG_POSITIVE,
                    STRONG_NEGATIVE,
@@ -18,9 +22,6 @@ from utils import (STRONG_POSITIVE,
                    NONDEFINABLE,
                    UNKNOWN,
                    ERROR)
-import sys
-import re
-import os
 
 DEFAULT_TIMEOUT = '10m'
 DEFAULT_SOLVER = 'z3'

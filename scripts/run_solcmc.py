@@ -1,12 +1,13 @@
 """
 Operates on either a single file or every file within a directory.
 """
-from tools.solcmc import run_all
 from pathlib import Path
 import argparse
 import glob
-import utils
 import os
+
+import utils
+from tools.solcmc import run_all
 
 DEFAULT_TIMEOUT = '10m'
 DEFAULT_SOLVER = 'z3'

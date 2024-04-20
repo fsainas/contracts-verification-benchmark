@@ -1,8 +1,9 @@
 """
 Generates the plain README.
 """
-from report_gen.readme import gen
 import argparse
+from pathlib import Path
+from report_gen.readme import gen
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -13,4 +14,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(gen(args.usecase_dir))
+    print(gen(Path(args.usecase_dir)))
