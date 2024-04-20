@@ -1,6 +1,6 @@
 {
-    "name": "Usecase Name",
-    "specification": "Usecase specification.",
+    "name": "Usecase Template",
+    "specification": "file:specs.md",
     "properties": {
         "foo": "Contract balance is not zero when `f()` is called."
     }

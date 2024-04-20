@@ -1,8 +1,11 @@
 MAKEFLAGS = --no-print-directory
 
 # CHANGE THIS PATHS
+# Original contract path
 CONTRACT = ./C_v1.sol
+# Contract with solcmc instrumentation path
 SOLCMC_CONTRACT = ./C_foo_v1.sol
+# Certora specifications path
 CERTORA_SPEC = ./foo.spec
 
 SKELETON = ./skeleton.json
