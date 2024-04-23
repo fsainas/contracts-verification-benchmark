@@ -79,7 +79,7 @@ $(Z3_CM): $(GROUND_TRUTH) $(Z3_OUT)
 
 # Run experiments
 $(Z3_OUT): setup
-	@echo "Running SolCMC ($(solver)) experiments..."
+	@echo "Running SolCMC (Z3) experiments..."
 	@$(PYTHON) ../../scripts/run_solcmc.py --contracts $(SOLCMC_CONTRACT) --output $(Z3_DIR) --timeout $(to) --solver z3
 
 # Solcmc with eldarica
@@ -96,7 +96,7 @@ $(ELD_CM): $(GROUND_TRUTH) $(ELD_OUT)
 
 # Run experiments
 $(ELD_OUT): setup
-	@echo "Running SolCMC ($(solver)) experiments..."
+	@echo "Running SolCMC (Eldarica) experiments..."
 	@$(PYTHON) ../../scripts/run_solcmc.py --contracts $(SOLCMC_CONTRACT) --output $(ELD_DIR) --timeout $(to) --solver eld
 
 #---------------------------- SETUP ------------------------------#
