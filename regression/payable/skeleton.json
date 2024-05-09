@@ -1,0 +1,7 @@
+{
+    "name": "Payable",
+    "specification": "file:specs.md",
+    "properties": {
+        "g-check-balance": "checks that the function `g()` transfers the correct amount of ether"
+    }
+}

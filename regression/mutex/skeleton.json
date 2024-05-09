@@ -1,0 +1,7 @@
+{
+    "name": "Mutex",
+    "specification": "file:specs.md",
+    "properties": {
+        "check-mutex": "checks that the contract uses mutexes correctly to prevent reentrancy attacks"
+    }
+}
