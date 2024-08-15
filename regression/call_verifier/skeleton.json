@@ -1,0 +1,8 @@
+{
+    "name": "Call Verifier",
+    "specification": "file:specs.md",
+    "properties": {
+        "call-failure": "the external call fails",
+        "call-success": "the external call succeeds"
+    }
+}
