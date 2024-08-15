@@ -1,7 +1,0 @@
-{
-    "name": "Usecase Template",
-    "specification": "file:specs.md",
-    "properties": {
-        "foo": "Contract balance is not zero when `f()` is called."
-    }
-}

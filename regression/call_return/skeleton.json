@@ -1,8 +1,0 @@
-{
-    "name": "Call Revert",
-    "specification": "file:specs.md",
-    "properties": {
-        "call-revert": "checks if the external call failed",
-        "call-not-revert": "checks if the external call succeeded"
-    }
-}

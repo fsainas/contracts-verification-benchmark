@@ -1,7 +1,0 @@
-{
-    "name": "Reentrancy",
-    "specification": "file:specs.md",
-    "properties": {
-        "f-reentrancy-x": "Because of reentrancy x may not be zero after `f()` is called."
-    }
-}

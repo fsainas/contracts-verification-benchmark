@@ -1,7 +1,0 @@
-{
-    "name": "Reentrancy view",
-    "specification": "file:specs.md",
-    "properties": {
-        "f-reentrancy-view-x": "`s()` is a view function so x must hold his value after `f()` is called."
-    }
-}
