@@ -1,0 +1,7 @@
+{
+    "name": "Reentrancy view",
+    "specification": "file:specs.md",
+    "properties": {
+        "f-reentrancy-view-x": "The value of `x` does not change after the call to `f`"
+    }
+}

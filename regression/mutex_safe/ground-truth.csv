@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+check-mutex,v1,1,"All the vulnerable functions are marked as `mutex`, making the contract not vulnerable to reentrancy attacks" 

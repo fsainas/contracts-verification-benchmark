@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+f-reentrancy-x,v1,0,"Because of reentrancy x may not be zero after `f()` is called"

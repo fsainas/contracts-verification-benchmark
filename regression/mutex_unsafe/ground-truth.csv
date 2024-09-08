@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+check-mutex,v1,0,"The contract does not use mutexes correctly because function `f` is not marked as `mutex`, making it vulnerable to reentrancy attacks"

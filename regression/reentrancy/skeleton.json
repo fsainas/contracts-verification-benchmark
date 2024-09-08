@@ -1,0 +1,7 @@
+{
+    "name": "Reentrancy",
+    "specification": "file:specs.md",
+    "properties": {
+        "f-reentrancy-x": "The value of x is 0 after the call to `f`"
+    }
+}
