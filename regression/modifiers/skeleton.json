@@ -1,0 +1,7 @@
+{
+    "name": "Modifiers",
+    "specification": "file:specs.md",
+    "properties": {
+        "g-modifiers-x": "checks that x holds the correct value after the call to `g`"
+    }
+}

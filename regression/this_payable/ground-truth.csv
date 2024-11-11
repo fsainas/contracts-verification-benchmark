@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+g-check-balance,v1,1,"The balance is still the same as before the transaction because if i <= 100 then the contract sends wei to itself, otherwise it reverts and no wei is transferred."

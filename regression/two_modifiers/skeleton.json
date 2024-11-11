@@ -1,0 +1,8 @@
+{
+    "name": "TwoModifiers",
+    "specification": "file:specs.md",
+    "properties": {
+        "g-modifiers-x-right": "checks that x holds the correct value after the call to `g`",
+        "g-modifiers-x-wrong": "checks that x does not hold the correct value after the call to `g`"
+    }
+}

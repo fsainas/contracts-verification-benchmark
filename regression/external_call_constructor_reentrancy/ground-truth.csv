@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+safe-external-call,v1,1,"The called function is safe because there is no reentrancy from the constructor."

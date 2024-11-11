@@ -1,0 +1,7 @@
+{
+    "name": "MergeVariables",
+    "specification": "file:specs.md",
+    "properties": {
+        "f-a": "The value of a is 3 after the call to `f`"
+    }
+}

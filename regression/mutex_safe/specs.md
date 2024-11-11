@@ -1,4 +1,4 @@
-The contract `MutexSafe` a mutex modifier that prevents reentrancy:
+The contract `MutexSafe` has a mutex modifier that prevents reentrancy:
 ```
 modifier mutex {
     require(!lock);

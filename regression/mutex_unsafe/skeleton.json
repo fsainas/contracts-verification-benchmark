@@ -1,5 +1,5 @@
 {
-    "name": "Mutex",
+    "name": "MutexUnsafe",
     "specification": "file:specs.md",
     "properties": {
         "check-mutex": "contract uses mutexes correctly"

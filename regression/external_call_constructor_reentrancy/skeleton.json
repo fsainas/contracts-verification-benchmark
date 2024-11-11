@@ -1,0 +1,7 @@
+{
+    "name": "ExternalCallConstructorReentrancy",
+    "specification": "file:specs.md",
+    "properties": {
+        "safe-external-call": "external call inside constructor is safe"
+    }
+}

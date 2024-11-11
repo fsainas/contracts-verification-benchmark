@@ -1,0 +1,7 @@
+{
+    "name": "ExternalCallConstructor",
+    "specification": "file:specs.md",
+    "properties": {
+        "safe-external-call": "external call to State contract function is safe"
+    }
+}

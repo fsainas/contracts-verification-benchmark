@@ -7,6 +7,7 @@ contract Reentrancy {
 		x = _x;
 	}
 	function f(address a) public {
+		require(x == 0);
 		(bool s, bytes memory data) = a.call("");
 	}
 }
