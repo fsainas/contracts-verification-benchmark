@@ -9,6 +9,7 @@ contract ExternalCallConstructorReentrancy {
 	uint x;
 	function s(uint _x) public { x = _x; }
 	constructor(D d) {
+		require(x == 0);
 		uint a = d.ext(this);
 	}
 }

@@ -25,7 +25,7 @@ function g() public {
 ```
 
 ## Properties
-- **g-modifiers-x**: checks that x holds the correct value after the call to `g`
+- **g-modifiers-x**: x is equal to 7 after the call to `g`
 
 ## Ground truth
 |        | g-modifiers-x |

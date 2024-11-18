@@ -2,6 +2,6 @@
     "name": "ExternalCallConstructorReentrancy",
     "specification": "file:specs.md",
     "properties": {
-        "safe-external-call": "external call inside constructor is safe"
+        "x-after-constructor": "after the constructor, `x` is equal to 0"
     }
 }

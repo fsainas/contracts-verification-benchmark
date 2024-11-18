@@ -1,4 +1,4 @@
-rule f_a{
+rule c_equals_a {
     env e;
     calldataarg args;
     f(e, args);

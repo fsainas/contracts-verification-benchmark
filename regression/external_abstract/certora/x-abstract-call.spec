@@ -1,7 +1,7 @@
 methods {
-	function D.d() external => HAVOC_ALL;
+	function _.d() external => HAVOC_ALL;
 }
-rule secure_abstract_function {
+rule x_abstract_call {
 	env e;
 	uint256 x_before = currentContract.x;
 	g(e);

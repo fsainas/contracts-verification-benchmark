@@ -23,33 +23,32 @@ function f() public view{}
 ```
 
 ## Properties
-- **safe-external-call**: external call to State contract function is safe
+- **z-equals-2**: z is always equal to 2
 
 ## Ground truth
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | 1[^1]              |
+|        | z-equals-2 |
+|--------|------------|
+| **v1** | 1          |
  
-[^1]: The called function is safe, however by default, called contracts are considered untrusted by SolCMC and Certora, even when their code is known.
 
 ## Experiments
 ### SolCMC
 #### Z3
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | FN!                |
+|        | z-equals-2 |
+|--------|------------|
+| **v1** | FN!        |
  
 
 #### ELD
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | FN!                |
+|        | z-equals-2 |
+|--------|------------|
+| **v1** | FN!        |
  
 
 
 ### Certora
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | FN                 |
+|        | z-equals-2 |
+|--------|------------|
+| **v1** | FN         |
  
 

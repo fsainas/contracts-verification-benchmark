@@ -2,6 +2,6 @@
     "name": "External abstract",
     "specification": "file:specs.md",
     "properties": {
-        "secure-abstract-call": "function `d` from abstract contract `D` can be trusted."
+        "x-abstract-call": "after calling the function `d` from abstract contract `D`, `x` remains unchanged"
     }
 }

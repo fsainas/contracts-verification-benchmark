@@ -1,2 +1,2 @@
 property,version,truth,footnote-md
-g-check-balance,v1,0,"The calling contract might fail to send Ether, for example because the called contract calls revert()"
+g-check-balance,v1,0,"The calling contract might fail to send Ether, for example because the called contract calls selfdestruct() and returns the funds back"

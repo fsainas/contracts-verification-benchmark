@@ -36,7 +36,7 @@ The contract `ExternalPayable` has two functions `g` and `balanceOf`:
 |--------|-----------------|
 | **v1** | 0[^1]           |
  
-[^1]: The calling contract might fail to send Ether, for example because the called contract calls revert()
+[^1]: The calling contract might fail to send Ether, for example because the called contract calls selfdestruct() and returns the funds back
 
 ## Experiments
 ### SolCMC

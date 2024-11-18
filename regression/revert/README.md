@@ -1,35 +1,49 @@
-# MergeVariables
+# Revert
 
 ## Specification
-
+The contract `Revert` has a function `f` that takes as input a bool `b` and a uint `a`. If `b` is true, the function calls `revert()`, otherwise it sets the value of `c` to `a + 1` and then increments or decrements `c` based on the value of `b`.
+```
+function f(bool b, uint a) public {
+    require(a <= 256);
+    x = a;
+    if (b)
+        revert();
+    c = a + 1;
+    if (b)
+        c--;
+    else
+        c++;
+}
+```
 
 ## Properties
-- **f-a**: The value of a is 3 after the call to `f`
+- **c-equals-a**: `c` is equal to `a` at the end of function `f`
 
 ## Ground truth
-|        | f-a   |
-|--------|-------|
-| **v1** | 0     |
+|        | c-equals-a |
+|--------|------------|
+| **v1** | 0[^1]      |
  
+[^1]: The condition is always false: if `b` is true, `revert()` is called and the assertion is never reached; otherwise, `c` is set to `a+1` and then incremented by one.
 
 ## Experiments
 ### SolCMC
 #### Z3
-|        | f-a   |
-|--------|-------|
-| **v1** | TN!   |
+|        | c-equals-a |
+|--------|------------|
+| **v1** | TN!        |
  
 
 #### ELD
-|        | f-a   |
-|--------|-------|
-| **v1** | TN!   |
+|        | c-equals-a |
+|--------|------------|
+| **v1** | TN!        |
  
 
 
 ### Certora
-|        | f-a   |
-|--------|-------|
-| **v1** | TN    |
+|        | c-equals-a |
+|--------|------------|
+| **v1** | TN         |
  
 

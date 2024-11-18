@@ -1,2 +1,2 @@
 property,version,truth,footnote-md
-safe-external-call,v1,1,"The called function is safe, however by default, called contracts are considered untrusted by SolCMC and Certora, even when their code is known."
+z-equals-2,v1,1,

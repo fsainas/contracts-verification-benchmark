@@ -27,33 +27,33 @@ constructor(D d) {
 ```
 
 ## Properties
-- **safe-external-call**: external call inside constructor is safe
+- **x-after-constructor**: after the constructor, `x` is equal to 0
 
 ## Ground truth
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | 1[^1]              |
+|        | x-after-constructor |
+|--------|---------------------|
+| **v1** | 1[^1]               |
  
-[^1]: The called function is safe because there is no reentrancy from the constructor.
+[^1]: x is equal to 0 after the constructor, because there is no reentrancy from it
 
 ## Experiments
 ### SolCMC
 #### Z3
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | TP!                |
+|        | x-after-constructor |
+|--------|---------------------|
+| **v1** | TP!                 |
  
 
 #### ELD
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | TP!                |
+|        | x-after-constructor |
+|--------|---------------------|
+| **v1** | TP!                 |
  
 
 
 ### Certora
-|        | safe-external-call |
-|--------|--------------------|
-| **v1** | FN                 |
+|        | x-after-constructor |
+|--------|---------------------|
+| **v1** | FN                  |
  
 

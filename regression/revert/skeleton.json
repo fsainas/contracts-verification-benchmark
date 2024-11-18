@@ -1,7 +1,7 @@
 {
-    "name": "MergeVariables",
+    "name": "Revert",
     "specification": "file:specs.md",
     "properties": {
-        "f-a": "The value of a is 3 after the call to `f`"
+        "c-equals-a": "`c` is equal to `a` at the end of function `f`"
     }
 }

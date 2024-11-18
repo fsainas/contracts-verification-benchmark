@@ -37,33 +37,33 @@ function g() public {
 We cannot trust `d.d` call because `d` could be implemented to call the function `f` of the `ExternalAbstract` contract.
 
 ## Properties
-- **secure-abstract-call**: function `d` from abstract contract `D` can be trusted.
+- **x-abstract-call**: after calling the function `d` from abstract contract `D`, `x` remains unchanged
 
 ## Ground truth
-|        | secure-abstract-function |
-|--------|--------------------------|
-| **v1** | 0[^1]                    |
+|        | x-abstract-call |
+|--------|-----------------|
+| **v1** | 0[^1]           |
  
-[^1]: We do not trust `d`'s code because it can call function `f`
+[^1]: `x` can change because `d`'s code can call function `f`
 
 ## Experiments
 ### SolCMC
 #### Z3
-|        | secure-abstract-function |
-|--------|--------------------------|
-| **v1** | TN!                      |
+|        | x-abstract-call |
+|--------|-----------------|
+| **v1** | TN!             |
  
 
 #### ELD
-|        | secure-abstract-function |
-|--------|--------------------------|
-| **v1** | TN!                      |
+|        | x-abstract-call |
+|--------|-----------------|
+| **v1** | TN!             |
  
 
 
 ### Certora
-|        | secure-abstract-function |
-|--------|--------------------------|
-| **v1** | TN                       |
+|        | x-abstract-call |
+|--------|-----------------|
+| **v1** | TN              |
  
 

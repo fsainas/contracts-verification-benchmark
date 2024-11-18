@@ -27,8 +27,8 @@ function g() public {
 The correct property is `f-modifiers-x-right` because before the function `f` is executed, the modifiers are evaluated up to the `_` symbol and, once the function body has finished, it will continue to execute the modifiers in reverse order.
 
 ## Properties
-- **g-modifiers-x-right**: checks that x holds the correct value after the call to `g`
-- **g-modifiers-x-wrong**: checks that x does not hold the correct value after the call to `g`
+- **g-modifiers-x-right**: x equals to 7 after the call to `g`
+- **g-modifiers-x-wrong**: x equals to 3 after the call to `g`
 
 ## Ground truth
 |        | g-modifiers-x-right | g-modifiers-x-wrong |

@@ -2,6 +2,6 @@
     "name": "ExternalCallConstructor",
     "specification": "file:specs.md",
     "properties": {
-        "safe-external-call": "external call to State contract function is safe"
+        "z-equals-2": "z is always equal to 2"
     }
 }

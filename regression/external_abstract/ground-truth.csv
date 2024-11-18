@@ -1,2 +1,2 @@
 property,version,truth,footnote-md
-secure-abstract-function,v1,0,"We do not trust `d`'s code because it can call function `f`"
+x-abstract-call,v1,0,"`x` can change because `d`'s code can call function `f`"
