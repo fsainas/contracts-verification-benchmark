@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+x-abstract-call,v1,0,"`x` can change because `d`'s code can call function `f`"

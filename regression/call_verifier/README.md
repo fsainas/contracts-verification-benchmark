@@ -1,4 +1,4 @@
-# Call Revert
+# Call Verifier
 
 ## Specification
 The contract has only the function `f` that performs an external call:
@@ -30,7 +30,7 @@ The properties `call-failure` and `call-success` should both fail since we canno
 #### ELD
 |        | call-failure | call-success |
 |--------|--------------|--------------|
-| **v1** | TN           | TN           |
+| **v1** | TN!          | TN!          |
  
 
 

@@ -1,0 +1,7 @@
+{
+    "name": "ExternalCallConstructor",
+    "specification": "file:specs.md",
+    "properties": {
+        "z-equals-2": "z is always equal to 2"
+    }
+}

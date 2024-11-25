@@ -1,0 +1,7 @@
+{
+    "name": "Revert",
+    "specification": "file:specs.md",
+    "properties": {
+        "c-equals-a": "`c` is equal to `a` at the end of function `f`"
+    }
+}

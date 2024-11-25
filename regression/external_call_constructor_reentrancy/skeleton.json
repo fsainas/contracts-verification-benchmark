@@ -1,0 +1,7 @@
+{
+    "name": "ExternalCallConstructorReentrancy",
+    "specification": "file:specs.md",
+    "properties": {
+        "x-after-constructor": "after the constructor, `x` is equal to 0"
+    }
+}

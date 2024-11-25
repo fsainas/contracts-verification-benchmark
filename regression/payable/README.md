@@ -38,7 +38,7 @@ The contract `Payable` has two functions `g` and `balanceOf`:
 #### ELD
 |        | g-check-balance |
 |--------|-----------------|
-| **v1** | TN              |
+| **v1** | FP!             |
  
 
 

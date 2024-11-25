@@ -27,7 +27,7 @@ This contract is vulnerable to reentrancy attack: an attacker can deploy a malic
 |--------|----------------|
 | **v1** | 0[^1]          |
  
-[^1]: Because of reentrancy x may not be zero after `f()` is called.
+[^1]: Because of reentrancy x may not be zero after `f()` is called
 
 ## Experiments
 ### SolCMC
@@ -40,13 +40,13 @@ This contract is vulnerable to reentrancy attack: an attacker can deploy a malic
 #### ELD
 |        | f-reentrancy-x |
 |--------|----------------|
-| **v1** | TN             |
+| **v1** | TN!            |
  
 
 
 ### Certora
 |        | f-reentrancy-x |
 |--------|----------------|
-| **v1** | TN             |
+| **v1** | FP!            |
  
 

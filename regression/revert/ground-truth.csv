@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+c-equals-a,v1,0,"The condition is always false: if `b` is true, `revert()` is called and the assertion is never reached; otherwise, `c` is set to `a+1` and then incremented by one."

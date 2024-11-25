@@ -1,0 +1,2 @@
+property,version,truth,footnote-md
+x-after-constructor,v1,1,"x is equal to 0 after the constructor, because there is no reentrancy from it"

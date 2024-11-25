@@ -1,0 +1,7 @@
+{
+    "name": "Modifiers",
+    "specification": "file:specs.md",
+    "properties": {
+        "g-modifiers-x": "x is equal to 7 after the call to `g`"
+    }
+}

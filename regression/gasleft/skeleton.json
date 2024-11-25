@@ -1,0 +1,8 @@
+{
+    "name": "GasLeft",
+    "specification": "file:specs.md",
+    "properties": {
+        "more-gasleft-assignment": "There is more gas left after the assignment",
+        "less-equal-gasleft-assignment": "There is less or equal gas left after the assignment"
+    }
+}

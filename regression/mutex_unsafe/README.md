@@ -1,7 +1,7 @@
-# Mutex
+# MutexUnsafe
 
 ## Specification
-The contract `Mutex` a mutex modifier that prevents reentrancy:
+The contract `MutexUnsafe` has a mutex modifier that prevents reentrancy:
 ```
 modifier mutex {
     require(!lock);
@@ -42,7 +42,7 @@ function f(address _a) public {
 #### ELD
 |        | check-mutex |
 |--------|-------------|
-| **v1** | TN          |
+| **v1** | TN!         |
  
 
 

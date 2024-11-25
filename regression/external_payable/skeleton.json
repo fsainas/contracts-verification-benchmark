@@ -1,0 +1,7 @@
+{
+    "name": "Payable",
+    "specification": "file:specs.md",
+    "properties": {
+        "g-check-balance": "after calling the function `g()` the contract balance is decreased by 10"
+    }
+}

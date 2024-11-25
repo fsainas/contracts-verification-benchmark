@@ -1,0 +1,7 @@
+{
+    "name": "External abstract",
+    "specification": "file:specs.md",
+    "properties": {
+        "x-abstract-call": "after calling the function `d` from abstract contract `D`, `x` remains unchanged"
+    }
+}
