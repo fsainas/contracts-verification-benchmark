@@ -20,7 +20,7 @@ OUT = $(OUTPUT_DIR)/out.csv
 CM = $(OUTPUT_DIR)/cm.csv
 TABLE = $(OUTPUT_DIR)/table.md
 
-PYTHON = python
+PYTHON = python3
 
 .PHONY: run one setup contracts directories clean
 

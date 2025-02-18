@@ -12,7 +12,7 @@ SKELETON = ./skeleton.json
 GROUND_TRUTH = ./ground-truth.csv
 README = README.md
 
-PYTHON = python
+PYTHON = python3
 
 .PHONY: all certora solcmc plain clean cleanr clean-solcmc clean-certora
 
