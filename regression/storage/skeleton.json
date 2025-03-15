@@ -1,0 +1,7 @@
+{
+    "name": "Storage",
+    "specification": "file:specs.md",
+    "properties": {
+        "equivalent-operations-same-result": "Two equivalent operations starting in the same initial state should produce the same result."
+    }
+}
