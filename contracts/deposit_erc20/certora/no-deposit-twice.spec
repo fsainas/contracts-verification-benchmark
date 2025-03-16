@@ -1,13 +1,11 @@
-rule no_deposit_twice {
-    env e1;
-    env e2;
-
-    method f;
-    calldataarg args;
-
-    deposit(e1);
-    f(e2, args);
-    
-    assert f.selector != sig:deposit().selector;
+persistent ghost bool multiple_deposit {
+    init_state axiom multiple_deposit == false;
 }
 
+hook Sstore ever_deposited bool value (bool old_value) { 
+    if(old_value && value)
+        multiple_deposit = true;
+}
+
+invariant no_deposit_twice()
+    !multiple_deposit;
