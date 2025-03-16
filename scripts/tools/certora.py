@@ -29,6 +29,9 @@ COMMAND_TEMPLATE = Template(
     'certoraRun $contract_path:$name --verify $name:$spec_path --msg "$msg" --wait_for_results'
 )
 
+CONF_FILE_COMMAND_TEMPLATE = Template(
+    'certoraRun $conf_path --wait_for_results'
+)
 
 # Check if there is an error in the output (Deprec)
 def has_property_error(output, property):
@@ -118,16 +121,28 @@ def run(contract_path, spec_path):
     name, version_id = Path(contract_path).stem.split('_')
     property_id = Path(spec_path).stem.split('_')[0]
     params['msg'] = f'{name}_{property_id}_{version_id}'
+    
+    conf_params = {}
+    conf_params['conf_path'] = f'certora/conf/{property_id}.conf'
+    conf_command = CONF_FILE_COMMAND_TEMPLATE.substitute(conf_params)
 
-    command = COMMAND_TEMPLATE.substitute(params)
-    # print(command) - substitute with a log that does not go to stdout
-    try:
-        log = subprocess.run(command.split(), capture_output=True, text=True)
-    except FileNotFoundError as e:
-        if 'certoraRun' in str(e):
-            logging.error('Certora is not installed. Use:\npip install certora-cli.')
-            return ERROR, str(e)
-
+    if os.path.isfile(conf_params['conf_path']):
+        try:
+            log = subprocess.run(conf_command.split(), capture_output=True, text=True)
+        except FileNotFoundError as e:
+            if 'certoraRun' in str(e):
+                logging.error('Certora is not installed. Use:\npip install certora-cli.')
+                return ERROR, str(e)
+    else:
+        command = COMMAND_TEMPLATE.substitute(params)
+        # print(command) - substitute with a log that does not go to stdout
+        try:
+            log = subprocess.run(command.split(), capture_output=True, text=True)
+        except FileNotFoundError as e:
+            if 'certoraRun' in str(e):
+                logging.error('Certora is not installed. Use:\npip install certora-cli.')
+                return ERROR, str(e)
+    
     # Handle Certora errors
     if log.stderr:
         print(log.stderr, file=sys.stderr)
