@@ -9,34 +9,37 @@ function f(address a) public {
 ```
 The properties `call-failure` and `call-success` should both fail since we cannot know if the call will fail or not.
 
+The property `ex-call-is-made` check if an external call appened.
+
 ## Properties
 - **call-failure**: the external call fails
 - **call-success**: the external call succeeds
+- **ex-call-is-made**: an external call has been performed
 
 ## Ground truth
-|        | call-failure | call-success |
-|--------|--------------|--------------|
-| **v1** | 0            | 0            |
+|        | call-failure    | call-success    | ex-call-is-made |
+|--------|-----------------|-----------------|-----------------|
+| **v1** | 0               | 0               | 1               |
  
 
 ## Experiments
 ### SolCMC
 #### Z3
-|        | call-failure | call-success |
-|--------|--------------|--------------|
-| **v1** | TN!          | TN!          |
+|        | call-failure    | call-success    | ex-call-is-made |
+|--------|-----------------|-----------------|-----------------|
+| **v1** | TN!             | TN!             | ND              |
  
 
 #### ELD
-|        | call-failure | call-success |
-|--------|--------------|--------------|
-| **v1** | TN!          | TN!          |
+|        | call-failure    | call-success    | ex-call-is-made |
+|--------|-----------------|-----------------|-----------------|
+| **v1** | TN!             | TN!             | ND              |
  
 
 
 ### Certora
-|        | call-failure | call-success |
-|--------|--------------|--------------|
-| **v1** | TN           | TN           |
+|        | call-failure    | call-success    | ex-call-is-made |
+|--------|-----------------|-----------------|-----------------|
+| **v1** | TN              | TN              | TP!             |
  
 
