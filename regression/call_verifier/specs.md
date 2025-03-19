@@ -6,4 +6,4 @@ function f(address a) public {
 ```
 The properties `call-failure` and `call-success` should both fail since we cannot know if the call will fail or not.
 
-The property `ex-call-is-made` check if an external call appened.
+The property `ex-call-is-made` checks if an external call appened.
