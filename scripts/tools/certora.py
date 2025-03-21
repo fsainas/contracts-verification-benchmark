@@ -123,7 +123,7 @@ def run(contract_path, spec_path):
     params['msg'] = f'{name}_{property_id}_{version_id}'
     
     conf_params = {}
-    conf_params['conf_path'] = f'certora/conf/{property_id}.conf'
+    conf_params['conf_path'] = f'certora/conf/{name}_{property_id}_{version_id}.conf'
     conf_command = CONF_FILE_COMMAND_TEMPLATE.substitute(conf_params)
 
     if os.path.isfile(conf_params['conf_path']):
