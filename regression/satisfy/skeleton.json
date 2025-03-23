@@ -1,0 +1,7 @@
+{
+    "name": "Satify",
+    "specification": "file:specs.md",
+    "properties": {
+        "f-call-not-revert": "There exist values of `a` and `b` that don't make function `f` revert."
+    }
+}
