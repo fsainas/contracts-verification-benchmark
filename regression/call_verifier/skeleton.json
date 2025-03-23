@@ -3,6 +3,7 @@
     "specification": "file:specs.md",
     "properties": {
         "call-failure": "the external call fails",
-        "call-success": "the external call succeeds"
+        "call-success": "the external call succeeds",
+        "ex-call-is-made": "an external call has been performed"
     }
 }
