@@ -1,0 +1,7 @@
+{
+    "name": "Assembly Assignment",
+    "specification": "file:specs.md",
+    "properties": {
+        "f-return-correct-x": "the function `f` returns the correct value of `x` (2)."
+    }
+}
