@@ -1,0 +1,7 @@
+{
+    "name": "Assembly Mstore",
+    "specification": "file:specs.md",
+    "properties": {
+        "struct-store": "after the call to the function `f`, the variable `s.x` is equal to 7."
+    }
+}
