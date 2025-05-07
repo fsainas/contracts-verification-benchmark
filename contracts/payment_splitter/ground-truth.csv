@@ -1,6 +1,6 @@
 property,version,truth,footnote-md
-p1,v1,1,
-p2,v1,0,
-p3,v1,1,
-p4,v1,1,
-p5,v1,1,
+non-zero-payees,v1,1,
+zero-shares-fail,v1,0,
+positive-shares,v1,1,
+releasable-balance-check,v1,1,
+releasable-sum-balance,v1,1,
