@@ -33,6 +33,7 @@ Interface scripts reside at the top level directory.
 ### Tools Package
 - `solcmc.py`: Functions to run Solcmc experiments.
 - `certora.py`: Functions to run Certora experiments.
+- `hardhat.py`: Functions to run Hardhat PoC (Proof of Concept).
 
 ### Report Gen Package
 - `cm.py`: Funcitons to generate a confusion matrix.
