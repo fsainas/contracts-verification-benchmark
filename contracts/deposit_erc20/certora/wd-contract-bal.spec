@@ -5,12 +5,12 @@ rule wd_contract_bal {
     env e;
     uint amount;
     mathint mi_amount = amount;
-    mathint before = getBalance(e);
+    mathint before = currentContract.token.balanceOf(e, currentContract);
     require before >= mi_amount;
     
     withdraw(e, amount);
     
-    mathint after = getBalance(e);
+    mathint after = currentContract.token.balanceOf(e, currentContract);
     if(e.msg.sender == currentContract) {
         assert before == after;
     }

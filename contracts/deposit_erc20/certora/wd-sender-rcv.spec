@@ -6,9 +6,9 @@ rule wd_sender_rcv {
     uint amount;
     address sender = e.msg.sender;
 
-    mathint before = getAddressBalance(e, sender);
+    mathint before = currentContract.token.balanceOf(e, sender);
     withdraw(e, amount);
-    mathint after = getAddressBalance(e, sender);
+    mathint after = currentContract.token.balanceOf(e, sender);
 
     if(e.msg.sender != currentContract)
         assert after == before + amount;

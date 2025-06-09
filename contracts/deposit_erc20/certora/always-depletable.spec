@@ -8,11 +8,12 @@ rule always_depletable {
     require(e.msg.sender != currentContract);
     require(e.msg.value == 0);
     
-    uint amount = getAddressBalance(e, currentContract);
-    require(max_uint >= amount + getAddressBalance(e, e.msg.sender));
+    uint amount = currentContract.token.balanceOf(e, currentContract);
+    require(max_uint >= amount + currentContract.token.balanceOf(e, e.msg.sender));
     require(currentContract.sent + amount <= max_uint);
+    
     withdraw@withrevert(e, amount);
         
     assert !lastReverted;
-    assert (getAddressBalance(e, currentContract) == 0);
+    assert (currentContract.token.balanceOf(e, currentContract) == 0);
 }
