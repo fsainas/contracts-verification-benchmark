@@ -1,7 +1,13 @@
 # Assembly Mstore
 
 ## Specification
-The contract has only the function `f` that executes inline assembly to change the value of `sm.x` with the value `i`:
+The contract defines the struct `S` as:
+```
+struct S {
+    uint x;
+}
+```
+And the function `f` that executes inline assembly to change the value of `sm.x` with the value `i`:
 ```
 function f() public {
     s.x = 42;

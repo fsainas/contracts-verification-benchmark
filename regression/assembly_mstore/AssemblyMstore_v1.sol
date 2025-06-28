@@ -1,5 +1,4 @@
 //https://github.com/leonardoalt/cav_2022_artifact/blob/main/regression/inline_assembly/assembly_memory_write.sol
-
 pragma solidity ^0.8.29;
 contract AssemblyMstore {
 	struct S {
