@@ -51,7 +51,7 @@ We cannot trust `d.d` call because `d` could be implemented to call the function
 #### Z3
 |        | x-abstract-call |
 |--------|-----------------|
-| **v1** | TN!             |
+| **v1** | TN              |
  
 
 #### ELD
