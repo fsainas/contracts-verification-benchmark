@@ -1,0 +1,9 @@
+{
+    "name": "Non Linear Mult",
+    "specification": "file:specs.md",
+    "properties": {
+        "correct-modulo-ab": "the output of ab should be always divisible by 3",
+        "correct-modulo-ac": "the output of ac should be always divisible by 3", 
+        "ab-eq-ac": "The product of two variables, `a` and `b`, should be equal to the product of the same `a` with a constant `c`, if `b` is given the same value of `c`"
+    }
+}
