@@ -17,12 +17,12 @@ contract ExternalAbstract {
 		if (x < 10)
 			++x;
 	}
-	
+
 	function g() public {
 		require(x < 10);
 		d.d();
 	}
-
+	
 	function getX() public view returns (uint) {
 		return x;
 	}
