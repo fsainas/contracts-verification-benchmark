@@ -1,0 +1,17 @@
+{
+    "name": "Simplified Deflationary Token",
+    "specification": "file:spec.md",
+    "properties": {
+        "total-supply-integrity": "After a transfer, the total amount of tokens is always the same.",
+        "validate-transfer-diff-o-s-r": "If owner, sender and receiver have distinct addresses, their balances are updated correctly after the transfer of a positive amount of tokens: Owner balance is incremented by the fee, Sender balance is decremented by the amount and Receiver balance is incremented by the amount minus the fee.",
+        "validate-transfer-same-o-s-r": "If the owner, sender and receiver have the same address, their balances remain unchanged after the transfer of a positive amount of token.",
+        "validate-transfer-same-s-r": "If only sender and receiver have the same address, we check that their balances are updated correctly after the transfer of a positive amount of token: Owner balance is incremented by the fee, Sender balance is decremented by the fee and Receiver balance is the same as the sender balance.",
+        "validate-transfer-same-o-s": "If only owner and sender have the same address, we check that their balances are updated correctly after the transfer of a positive amount of token: Owner balance is decremented by the amount minus the fee, Sender balance is the same as the owner balance and Receiver balance is incremented by the amount minus the fee.",
+        "validate-transfer-same-o-r": "If only owner and receiver have the same address, we check that their balances are updated correctly after the transfer of a positive amount of token: Owner balance is incremented by the amount, Sender balance is decremented by the amount and Receiver balance is the same as the owner balance.",
+        "user-cannot-exclude-include-from-fee": "A generic user cannot include or exclude someone in fees payment.",
+        "owner-can-exclude-include-from-fee": "Owner can include or exclude everyone in the fee payment.",
+        "ownership-cannot-change": "The initial owner of the contract defined during the constructor call, cannot change.",
+        "owner-fee-after-transfer": "To respect the deflationary token property, after every transfer the owner balance must be increased by fees.",
+        "liquidity": "Senders with a positive amount of tokens can always send the amount minus the fee."
+        }
+}

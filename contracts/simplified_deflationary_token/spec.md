@@ -1,0 +1,2 @@
+This contract implements a simplified version of a deflationary token using `uint256`, where each transaction is charged a fixed fee (10% from the amount of tokens sent).
+The contract deployer will get ownership and total token amount and he’ll be excluded from paying transaction fees moreover can decide whether to exclude or include any user from paying them.
