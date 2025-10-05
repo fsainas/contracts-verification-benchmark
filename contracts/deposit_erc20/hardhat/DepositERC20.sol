@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >= 0.8.2;
 
-import "./lib/ERC20v1.sol";
+import "./ERC20v1.sol";
 
 /// @custom:version conformant to specification.
 contract TokenTransfer {
@@ -27,12 +27,28 @@ contract TokenTransfer {
 
         initial_deposit = token.totalSupply();
 
-        _count_deposit += 1;
+        _count_deposit += 1;	
     }
 
     function withdraw(uint amount) public {
         sent += amount;
         token.transfer(msg.sender, amount);
+    }
+    
+    function getBalance() public view returns (uint) {
+        return token.balanceOf(address(this));
+    }
+
+    function getAddressBalance(address addr) public view returns (uint) {
+        return token.balanceOf(addr);
+    }
+
+    function getSent() public view returns (uint) {
+        return sent;
+    }
+
+    function getInitialDeposit() public view returns (uint) {
+        return initial_deposit;
     }
 
 }

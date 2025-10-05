@@ -39,7 +39,7 @@ $(CM): $(GROUND_TRUTH) $(OUT)
 
 $(OUT): setup $(PROPERTIES_FILES) $(VERSIONS_FILES)
 	@echo "Running SolCMC ($(solver)) experiments..."
-	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR) --output $(OUTPUT_DIR) --timeout $(to) --solver $(solver)
+	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(CONTRACTS_DIR)/ --output $(OUTPUT_DIR) --timeout $(to) --solver $(solver)
 
 one: setup
 	@$(PYTHON) ../../../scripts/run_solcmc.py --contracts $(contract) --timeout $(to)
@@ -64,4 +64,5 @@ $(LIB_DIR):
 
 #---------------------------- CLEAN ------------------------------#
 clean:
-	rm -rf $(BUILD_DIR)
+	@echo "Deleting \"solcmc/build/\"..."
+	@rm -rf $(BUILD_DIR)

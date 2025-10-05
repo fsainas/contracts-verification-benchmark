@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-only
+import "helper/erc20.spec";
 
 invariant wd_leq_init_bal()
-    getSent() <= getInitialDeposit();
+    currentContract.sent <= currentContract.initial_deposit;
