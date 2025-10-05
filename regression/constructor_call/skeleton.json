@@ -1,0 +1,7 @@
+{
+    "name": "Constructor Call",
+    "specification": "file:specs.md",
+    "properties": {
+        "sum-matches-array-values": "The sum calculated by the contract during the constructor matches the sum of the values in the array passed to it."
+    }
+}
